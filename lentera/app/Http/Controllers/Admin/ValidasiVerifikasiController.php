@@ -7,59 +7,48 @@ use Illuminate\Http\Request;
 
 class ValidasiVerifikasiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
+            ->latest()
+            ->get();
+
+        return view('admin.validasi.index', compact('pengajuan'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
+            ->findOrFail($id);
+
+        return view('admin.validasi.show', compact('pengajuan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
-        //
-    }
+        $request->validate([
+            'status_validasi' => 'required|in:valid,tidak_valid',
+            'catatan'         => 'nullable|string',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
+        ValidasiVerifikasi::updateOrCreate(
+            ['id_pengajuan' => $id],
+            [
+                'id_admin'         => auth()->id(),
+                'status_validasi'  => $request->status_validasi,
+                'catatan'          => $request->catatan,
+                'tanggal_verifikasi' => now()->toDateString(),
+            ]
+        );
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+        PengajuanBantuan::where('id_pengajuan', $id)->update([
+            'status_pengajuan' => $request->status_validasi === 'valid' 
+                ? 'diverifikasi' 
+                : 'ditolak',
+        ]);
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        return redirect()->route('admin.validasi.index')
+            ->with('success', 'Validasi berhasil disimpan!');
     }
 }
