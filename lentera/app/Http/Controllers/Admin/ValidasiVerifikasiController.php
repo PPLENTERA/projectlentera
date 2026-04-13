@@ -42,13 +42,6 @@ class ValidasiVerifikasiController extends Controller
         );
 
 
-        PengajuanBantuan::where('id_pengajuan', $id)->update([
-            'status_pengajuan' => $request->status_validasi === 'valid' 
-                ? 'diverifikasi' 
-                : 'ditolak',
-        ]);
 
-        return redirect()->route('admin.validasi.index')
-            ->with('success', 'Validasi berhasil disimpan!');
     }
 }
