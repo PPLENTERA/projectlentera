@@ -9,10 +9,14 @@ class Feedback extends Model
 {
     use HasFactory;
 
+    protected $table = 'feedbacks';
+
     protected $fillable = [
         'nama_lengkap',
         'nomor_telepon',
         'kategori_masukan',
         'deskripsi_masukan',
+        'status',
+        'catatan_admin',
     ];
 }

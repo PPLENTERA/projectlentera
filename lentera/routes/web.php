@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -22,6 +23,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return "Ini halaman Dashboard Admin.";
     })->name('admin.dashboard');
+
+    // Admin Feedback Routes
+    Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('admin.feedback.index');
+    Route::get('/feedback/{feedback}/edit', [AdminFeedbackController::class, 'edit'])->name('admin.feedback.edit');
+    Route::put('/feedback/{feedback}', [AdminFeedbackController::class, 'update'])->name('admin.feedback.update');
+    Route::delete('/feedback/{feedback}', [AdminFeedbackController::class, 'destroy'])->name('admin.feedback.destroy');
 });
 
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
@@ -31,6 +38,6 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
 });
 
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
-    Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
-    Route::get('/admin/dashboard', [DashboardController::class, 'index']);
+Route::get('/admin/dashboard', [DashboardController::class, 'index']);
