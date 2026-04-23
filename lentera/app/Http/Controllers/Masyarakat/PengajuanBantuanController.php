@@ -22,7 +22,6 @@ class PengajuanBantuanController extends Controller
             'jumlah_tanggungan'   => 'required|integer|min:0',
             'penghasilan'         => 'required|numeric|min:0',
             'deskripsi_kebutuhan' => 'nullable|string',
-            'dokumen.*'           => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
         ]);
 
         $pengajuan = PengajuanBantuan::create([
@@ -35,18 +34,34 @@ class PengajuanBantuanController extends Controller
             'tanggal_pengajuan'   => now()->toDateString(),
         ]);
 
-        if ($request->hasFile('dokumen')) {
-            foreach ($request->file('dokumen') as $jenis => $file) {
-                $path = $file->store('dokumen_pengajuan', 'public');
-                DokumenPengajuan::create([
-                    'id_pengajuan' => $pengajuan->id_pengajuan,
-                    'jenis_dokumen' => $jenis,
-                    'file_path'    => $path,
-                ]);
-            }
+        return redirect()->route('masyarakat.pengajuan.upload', $pengajuan->id_pengajuan)
+            ->with('success', 'Data berhasil disimpan! Silakan upload dokumen.');
+    }
+
+    public function uploadForm($id)
+    {
+        $pengajuan = PengajuanBantuan::findOrFail($id);
+        return view('masyarakat.pengajuan.upload', compact('pengajuan'));
+    }
+
+    public function uploadDokumen(Request $request, $id)
+    {
+        $request->validate([
+            'dokumen.*' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
+        ]);
+
+        $pengajuan = PengajuanBantuan::findOrFail($id);
+
+        foreach ($request->file('dokumen') as $jenis => $file) {
+            $path = $file->store('dokumen_pengajuan', 'public');
+            DokumenPengajuan::create([
+                'id_pengajuan'  => $pengajuan->id_pengajuan,
+                'jenis_dokumen' => $jenis,
+                'file_path'     => $path,
+            ]);
         }
 
-        return redirect()->route('masyarakat.pengajuan.status')
+        return redirect()->route('masyarakat.pengajuan.index')
             ->with('success', 'Pengajuan berhasil dikirim!');
     }
 
