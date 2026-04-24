@@ -3,6 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
+use App\Http\Controllers\Admin\ValidasiVerifikasiController;
+
+
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,6 +25,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', function () {
         return "Ini halaman Dashboard Admin.";
     })->name('admin.dashboard');
+    Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
+    Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
+    Route::put('/validasi/{id}', [ValidasiVerifikasiController::class, 'update'])->name('admin.validasi.update');
 });
 
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
