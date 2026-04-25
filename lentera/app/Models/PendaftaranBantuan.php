@@ -16,6 +16,10 @@ class PendaftaranBantuan extends Model
         'jenis_kelamin',
         'alamat_lengkap',
         'pekerjaan',
+        'dokumen_ktp',
+        'dokumen_kk',
+        'dokumen_rumah',
+        'dokumen_sktm',
     ];
 
     public function user()

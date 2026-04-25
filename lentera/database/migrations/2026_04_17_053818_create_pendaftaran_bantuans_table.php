@@ -21,6 +21,10 @@ return new class extends Migration
             $table->string('nomor_hp');
             $table->string('jenis_kelamin');
             $table->text('alamat_lengkap');
+            $table->string('dokumen_ktp')->nullable();
+            $table->string('dokumen_kk')->nullable();
+            $table->string('dokumen_rumah')->nullable();
+            $table->string('dokumen_sktm')->nullable();
             $table->timestamps();
         });
     }
