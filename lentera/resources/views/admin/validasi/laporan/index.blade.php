@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
@@ -51,6 +52,32 @@
             <p class="text-2xl font-bold text-green-500">{{ $laporan->where('status', 'selesai')->count() }}</p>
         </div>
 
+    </div>
+
+    <!-- Statistik Wilayah -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+        <!-- Chart -->
+        <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2 border-t-4 border-[#1C2C4E]">
+            <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-4">Statistik Titik Rawan per Wilayah</h2>
+            <div class="relative h-64 w-full">
+                <canvas id="chartWilayah"></canvas>
+            </div>
+        </div>
+        
+        <!-- List Wilayah -->
+        <div class="bg-white rounded-2xl shadow p-6 border-t-4 border-yellow-400">
+            <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-4">10 Wilayah Teratas</h2>
+            <ul class="divide-y divide-slate-100">
+                @forelse($statistikWilayah as $stat)
+                    <li class="py-3 flex justify-between items-center">
+                        <span class="text-slate-700 font-medium" title="{{ $stat->lokasi_kejadian }}">{{ Str::limit($stat->lokasi_kejadian, 25) }}</span>
+                        <span class="bg-red-50 text-red-600 text-xs font-bold px-2 py-1 rounded-md">{{ $stat->total }} Laporan</span>
+                    </li>
+                @empty
+                    <li class="py-3 text-slate-400 text-sm">Belum ada data wilayah.</li>
+                @endforelse
+            </ul>
+        </div>
     </div>
 
     <div class="bg-white rounded-2xl shadow overflow-hidden">
@@ -140,6 +167,48 @@
     </div>
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('chartWilayah');
+        if (!ctx) return;
+        
+        const labels = {!! json_encode($statistikWilayah->pluck('lokasi_kejadian')->map(function($l) { return Str::limit($l, 20); })) !!};
+        const data = {!! json_encode($statistikWilayah->pluck('total')) !!};
+
+        new Chart(ctx.getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Jumlah Laporan Penyalahgunaan',
+                    data: data,
+                    backgroundColor: 'rgba(28, 44, 78, 0.8)',
+                    borderColor: '#1C2C4E',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    });
+</script>
 
 </body>
 </html>

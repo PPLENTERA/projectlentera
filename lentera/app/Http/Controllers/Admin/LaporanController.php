@@ -18,7 +18,14 @@ class LaporanController extends Controller
             ->latest()
             ->get();
 
-        return view('admin.laporan.index', compact('laporan'));
+        // Mengambil statistik laporan per wilayah (10 teratas)
+        $statistikWilayah = LaporanPenyalahgunaan::select('lokasi_kejadian', \DB::raw('count(*) as total'))
+            ->groupBy('lokasi_kejadian')
+            ->orderByDesc('total')
+            ->limit(10)
+            ->get();
+
+        return view('admin.laporan.index', compact('laporan', 'statistikWilayah'));
     }
 
     /**
