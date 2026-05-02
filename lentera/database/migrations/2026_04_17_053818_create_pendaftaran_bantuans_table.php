@@ -21,10 +21,16 @@ return new class extends Migration
             $table->string('nomor_hp');
             $table->string('jenis_kelamin');
             $table->text('alamat_lengkap');
+            $table->string('pekerjaan');
+            $table->decimal('penghasilan_per_bulan', 15, 2);
+            $table->decimal('pengeluaran_bulanan', 15, 2);
+            $table->integer('jumlah_tanggungan');
+            $table->string('status_rumah');
             $table->string('dokumen_ktp')->nullable();
             $table->string('dokumen_kk')->nullable();
             $table->string('dokumen_rumah')->nullable();
             $table->string('dokumen_sktm')->nullable();
+            $table->enum('status', ['pending', 'diproses', 'disetujui', 'ditolak'])->default('pending');
             $table->timestamps();
         });
     }
