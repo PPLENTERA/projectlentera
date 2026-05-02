@@ -26,4 +26,7 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/dashboard', function () {
         return "Ini halaman Dashboard Masyarakat.";
     })->name('masyarakat.dashboard');
+
+    Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
+    Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
 });
