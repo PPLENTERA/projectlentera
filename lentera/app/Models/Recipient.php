@@ -13,7 +13,9 @@ class Recipient extends Model
         'income',
         'dependents',
         'house_condition',
-        'score'
+        'score',
+        'address',
+        'photos'
     ];
 
     protected static function booted()
