@@ -6,6 +6,7 @@ use App\Http\Controllers\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
+use App\Http\Controllers\Admin\LaporanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
     Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
     Route::put('/validasi/{id}', [ValidasiVerifikasiController::class, 'update'])->name('admin.validasi.update');
+    
+    Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
+    Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
+    Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
 });
 
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
