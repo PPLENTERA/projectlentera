@@ -117,6 +117,9 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
         return "Ini halaman Dashboard Masyarakat.";
     })->name('masyarakat.dashboard');
 
+    Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
+    Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
+
     Route::get('/pelaporan', [LaporanPenyalahgunaanController::class, 'create'])->name('masyarakat.pelaporan.create');
     Route::post('/pelaporan', [LaporanPenyalahgunaanController::class, 'store'])->name('masyarakat.pelaporan.store');
 
