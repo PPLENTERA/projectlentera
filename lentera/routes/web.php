@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
+use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 
 Route::get('/', function () {
@@ -38,7 +39,7 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
 
     Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
     Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
-});
+
     Route::get('/pelaporan', [LaporanPenyalahgunaanController::class, 'create'])->name('masyarakat.pelaporan.create');
     Route::post('/pelaporan', [LaporanPenyalahgunaanController::class, 'store'])->name('masyarakat.pelaporan.store');
   
