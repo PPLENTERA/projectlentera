@@ -10,6 +10,7 @@ use App\Http\Controllers\RecipientController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
+use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
 
