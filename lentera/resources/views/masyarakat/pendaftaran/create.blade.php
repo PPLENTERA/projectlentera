@@ -281,7 +281,10 @@
                         input.classList.remove('ring-2', 'ring-red-400', 'bg-red-50');
                         // Custom validation for NIK/KK length
                         if(input.name === 'nik' || input.name === 'nomor_kk') {
-                            if(input.value.length !== 16) isValid = false;
+                            if(input.value.length !== 16) {
+                                input.classList.add('ring-2', 'ring-red-400', 'bg-red-50');
+                                isValid = false;
+                            }
                         }
                     }
                 });
