@@ -12,18 +12,18 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 </style>
 </head>
 <body>
-<header class="wrap nav navfix">
+<header id="top" class="wrap nav navfix">
 <div class="logo">LENTERA</div>
-<nav class="menu"><a class="on">Home</a><a>Dashboard</a><a>Bantuan</a><a>Pengajuan</a></nav>
-<div style="display:flex;gap:10px;align-items:center"><a style="font-size:14px">Login</a><a class="pill dark">Register</a></div>
+<nav class="menu"><a class="on" href="#top">Home</a><a href="#dashboard">Dashboard</a><a href="#bantuan">Bantuan</a><a href="#pengajuan">Pengajuan</a></nav>
+<div style="display:flex;gap:10px;align-items:center"><a href="/login" style="font-size:14px">Login</a><a href="/register" class="pill dark">Register</a></div>
 </header>
 <section class="hero wrap reveal">
 <div class="tag">✦ CAKUPAN BANTUAN RESMI</div>
 <h1>Transparansi Bantuan untuk Semua</h1>
 <p>LENTERA hadir sebagai jembatan kepercayaan antara pemerintah dan masyarakat. Memastikan setiap bantuan sampai ke tangan yang tepat dengan kebijakan penuh.</p>
-<div class="btns float"><a class="pill dark">Ajukan Bantuan →</a><a class="pill light">Lihat Dashboard</a></div>
+<div class="btns float"><a href="#pengajuan" class="pill dark">Ajukan Bantuan →</a><a href="#dashboard" class="pill light">Lihat Dashboard</a></div>
 </section>
-<section class="section reveal">
+<section id="bantuan" class="section reveal">
 <div class="wrap box glow">
 <div class="title">Pilar Transparansi Kami</div>
 <p class="muted">Memberdayakan masyarakat melalui akses informasi yang mudah, akurat, dan dapat dipertanggungjawabkan.</p>
@@ -34,7 +34,7 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 </div>
 </div>
 </section>
-<section class="section reveal">
+<section id="dashboard" class="section reveal">
 <div class="wrap impact">
 <div>
 <div class="title">Dampak Nyata Dalam Angka Terbuka</div>
@@ -52,8 +52,8 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 </section>
 <section class="section reveal">
 <div class="wrap box glow">
-<div class="title">Suara Masyarakat</div>
-<p class="muted">Cerita nyata dari penerima manfaat dan warga yang memantau distribusi bantuan.</p>
+<div class="title">Pengajuan Bantuan</div>
+<p class="muted">Ajukan bantuan secara online dengan proses cepat, transparan, dan mudah dipantau.</p>
 <div class="testi">
 <div class="quote"><strong>Siti Rahma</strong><p class="muted" style="margin-top:10px">Pengajuan lebih cepat dan status bantuan jelas. Tidak perlu datang berkali-kali.</p></div>
 <div class="quote"><strong>Budi Santoso</strong><p class="muted" style="margin-top:10px">Dashboard publik membantu kami memantau penyaluran di wilayah kami.</p></div>
@@ -64,7 +64,7 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <footer class="wrap foot">
 <div class="cols">
 <div><strong>LENTERA</strong><div class="small" style="margin-top:10px">Menjaga amanah negara lewat inovasi digital transparan.</div></div>
-<div><strong>Navigasi</strong><div class="small" style="margin-top:10px">Tentang Kami<br>Dashboard Publik<br>Kontak</div></div>
+<div><strong>Navigasi</strong><div class="small" style="margin-top:10px;line-height:2"><a href="#top">Home</a><br><a href="#dashboard">Dashboard Publik</a><br><a href="/tentang">Tentang Kami</a><br><a href="/kontak">Kontak</a></div></div>
 <div><strong>Hubungi Kami</strong><div class="small" style="margin-top:10px">Gedung Nusantara Lt.12<br>support@lentera.id</div></div>
 </div>
 </footer>
