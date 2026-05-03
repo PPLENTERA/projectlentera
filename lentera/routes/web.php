@@ -29,7 +29,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
     Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
     Route::put('/validasi/{id}', [ValidasiVerifikasiController::class, 'update'])->name('admin.validasi.update');
-    
     Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
     Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
@@ -42,10 +41,10 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
 
     Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
     Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
-});
+
     Route::get('/pelaporan', [LaporanPenyalahgunaanController::class, 'create'])->name('masyarakat.pelaporan.create');
     Route::post('/pelaporan', [LaporanPenyalahgunaanController::class, 'store'])->name('masyarakat.pelaporan.store');
-  
+
     Route::get('/pengajuan/create', [PengajuanBantuanController::class, 'create'])->name('masyarakat.pengajuan.create');
     Route::post('/pengajuan', [PengajuanBantuanController::class, 'store'])->name('masyarakat.pengajuan.store');
     Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
