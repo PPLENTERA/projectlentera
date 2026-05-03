@@ -8,8 +8,6 @@ use App\Http\Controllers\RecommendationController;
 use App\Http\Controllers\RecipientController;
 
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\LaporanPenyalahgunaanController;
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Masyarakat\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
