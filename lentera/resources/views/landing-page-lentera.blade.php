@@ -14,14 +14,24 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <body>
 <header class="wrap nav navfix">
 <div class="logo">LENTERA</div>
-<nav class="menu"><a class="on">Home</a><a>Dashboard</a><a>Bantuan</a><a>Pengajuan</a></nav>
-<div style="display:flex;gap:10px;align-items:center"><a style="font-size:14px">Login</a><a class="pill dark">Register</a></div>
+<nav class="menu">
+<a href="{{ url('/') }}" class="on">Home</a>
+<a href="{{ url('/dashboard') }}">Dashboard</a>
+<a href="{{ url('/bantuan') }}">Bantuan</a>
+<a href="{{ url('/pengajuan') }}">Pengajuan</a></nav>
+<div style="display:flex;gap:10px;align-items:center">
+<a href="{{ url('/login') }}">Login</a>
+<a href="{{ url('/register') }}" class="pill dark">Register</a>
+</div>
 </header>
 <section class="hero wrap reveal">
 <div class="tag">✦ CAKUPAN BANTUAN RESMI</div>
 <h1>Transparansi Bantuan untuk Semua</h1>
 <p>LENTERA hadir sebagai jembatan kepercayaan antara pemerintah dan masyarakat. Memastikan setiap bantuan sampai ke tangan yang tepat dengan kebijakan penuh.</p>
-<div class="btns float"><a class="pill dark">Ajukan Bantuan →</a><a class="pill light">Lihat Dashboard</a></div>
+<div class="btns float">
+<a href="{{ url('/pengajuan') }}" class="pill dark">Ajukan Bantuan →</a>
+<a href="{{ url('/dashboard') }}" class="pill light">Lihat Dashboard</a>
+</div>
 </section>
 <section class="section reveal">
 <div class="wrap box glow">
