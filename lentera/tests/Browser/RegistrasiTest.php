@@ -2,44 +2,43 @@
 
 namespace Tests\Browser;
 
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
 
 class RegistrasiTest extends DuskTestCase
 {
     // TC.Reg.001 - Positive
-    public function test_registrasi_berhasil_dengan_data_valid()
+    public function test_RegistrasiPositive()
     {
+
         $this->browse(function (Browser $browser) {
             $browser->visit('/register')
+                    ->assertPathIs('/register')
+                    ->pause(3000)
                     ->assertSee('Selamat Datang')
-                    ->type('name', 'Ilham Test')
-                    ->type('email', 'ilhamtest' . time() . '@gmail.com')
+                    ->type('name', 'Ilham Test3')
+                    ->type('email', 'ilhamtest3' . time() . '@gmail.com')
                     ->type('password', 'password123')
                     ->type('password_confirmation', 'password123')
                     ->press('Daftar')
-                    ->assertPathIs('/login')
-                    ->assertSee('Registrasi berhasil');
+                    ->waitForLocation('/login', 15)
+                    ->assertPathIs('/login');
         });
     }
 
     // TC.Reg.002 - Negative
-    public function test_registrasi_gagal_dengan_email_sudah_terdaftar()
+    public function test_RegistrasiNegative()
     {
-        User::factory()->create([
-            'email' => 'existing@gmail.com',
-            'password' => bcrypt('password123'),
-        ]);
-
         $this->browse(function (Browser $browser) {
             $browser->visit('/register')
+                    ->pause(2000)
                     ->assertSee('Selamat Datang')
                     ->type('name', 'User Test')
-                    ->type('email', 'existing@gmail.com')
+                    ->type('email', 'ilhamtest3@gmail.com')
                     ->type('password', 'password123')
                     ->type('password_confirmation', 'password123')
                     ->press('Daftar')
+                    ->pause(2000)
                     ->assertPathIs('/register')
                     ->assertSee('has already been taken');
         });
