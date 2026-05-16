@@ -51,22 +51,54 @@
                 </header>
 
                 <section class="grid gap-4 xl:grid-cols-4">
-                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                        <p class="text-sm text-slate-500">Total Bantuan</p>
-                        <p class="mt-3 text-3xl font-semibold">Rp {{ number_format($summary['total_bantuan'], 0, ',', '.') }}</p>
-                        <p class="mt-2 text-sm text-emerald-600">+12% sejak bulan lalu</p>
+                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">+12%</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Pengajuan</p>
+                        <p class="text-3xl font-bold text-slate-900 mb-2">{{ number_format($totalPengajuan, 0, ',', '.') }}</p>
+                        <p class="text-xs text-slate-400">Update terakhir 5 menit yang lalu</p>
                     </article>
-                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                        <p class="text-sm text-slate-500">Pengajuan Pending</p>
-                        <p class="mt-3 text-3xl font-semibold">{{ $summary['pending'] }}</p>
+
+                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-semibold rounded-full">+8%</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Disetujui</p>
+                        <p class="text-3xl font-bold text-slate-900 mb-2">{{ number_format($totalDisetujui, 0, ',', '.') }}</p>
+                        <p class="text-xs text-slate-400">74% Target tercapai</p>
                     </article>
-                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                        <p class="text-sm text-slate-500">Jenis Program</p>
-                        <p class="mt-3 text-3xl font-semibold">{{ $summary['program_count'] }}</p>
+
+                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="h-10 w-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+                            </div>
+                            <span class="text-amber-500">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                            </span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Rata-Rata Score</p>
+                        <p class="text-3xl font-bold text-slate-900 mb-2">{{ number_format($rataRataScore, 1, ',', '.') }}</p>
+                        <p class="text-xs text-slate-400">Kualitas pendaftar meningkat</p>
                     </article>
-                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                        <p class="text-sm text-slate-500">Jumlah Wilayah</p>
-                        <p class="mt-3 text-3xl font-semibold">{{ $summary['wilayah_count'] }}</p>
+
+                    <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-500">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="text-xs font-bold text-slate-600">Rp</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Bantuan</p>
+                        <p class="text-3xl font-bold text-slate-900 mb-2">4.2B</p>
+                        <p class="text-xs text-slate-400">Penyaluran dana Tahap III</p>
                     </article>
                 </section>
 
