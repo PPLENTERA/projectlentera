@@ -928,7 +928,7 @@
                                     </div>
                                     <div class="input">
                                         <div class="container-4">
-                                            <input type="text" name="nomor_telepon" value="{{ old('nomor_telepon') }}" placeholder="+62 812 XXXX" class="text-wrapper-3" />
+                                            <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nomor_telepon" value="{{ old('nomor_telepon') }}" placeholder="0812XXXX" class="text-wrapper-3" />
                                         </div>
                                     </div>
                                     @error('nomor_telepon')<span class="error-message">{{ $message }}</span>@enderror
