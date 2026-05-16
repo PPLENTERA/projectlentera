@@ -10,7 +10,7 @@ use App\Models\Feedback;
 
 class FeedbackTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    //use DatabaseMigrations;
 
     /**
      * PBI #1 - TC.Feedback.001 - Menguji form input feedback
@@ -123,14 +123,16 @@ class FeedbackTest extends DuskTestCase
      */
     public function testFeedbackInvalidTidakTersimpan()
     {
-        $this->browse(function (Browser $browser) {
+        $initialCount = Feedback::count();
+
+        $this->browse(function (Browser $browser) use ($initialCount) {
             $browser->visit('/feedback')
                     // Membiarkan form kosong
                     ->press('Kirim Feedback')
                     ->assertSee('The nama lengkap field is required');
                     
             // Memastikan data tidak masuk ke database
-            $this->assertDatabaseCount('feedbacks', 0);
+            $this->assertDatabaseCount('feedbacks', $initialCount);
         });
     }
 }
