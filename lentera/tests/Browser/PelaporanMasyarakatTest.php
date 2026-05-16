@@ -21,7 +21,7 @@ class PelaporanMasyarakatTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user) {
             $browser->loginAs($user)
                     ->visit('/masyarakat/pelaporan') 
-                    ->type('deskripsi_kejadian', 'Terjadi pungli bantuan di Desa Suka')
+                    ->type('deskripsi_kejadian', 'Terjadi pungli bantuan di Desa')
                     ->attach('bukti', __DIR__.'/stubs/bukti.png')
                     ->type('lokasi_kejadian', 'Wilayah A')
                     ->press('Kirim Laporan')
