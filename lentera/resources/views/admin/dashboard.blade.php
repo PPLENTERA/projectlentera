@@ -103,45 +103,50 @@
                 </section>
 
                 <section class="grid gap-6 xl:grid-cols-[2fr_1fr]">
-                    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+                    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
                         <div class="flex items-center justify-between mb-6">
                             <div>
-                                <p class="text-sm text-slate-500">Penyaluran Bantuan Bulanan</p>
-                                <h2 class="text-xl font-semibold">Rekap penerima per wilayah</h2>
+                                <h2 class="text-lg font-semibold text-slate-900">Progres Verifikasi per Wilayah</h2>
+                                <p class="text-sm text-slate-500">Data kumulatif berdasarkan provinsi terpilih</p>
                             </div>
+                            <button class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-100">
+                                Provinsi Jawa Barat
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </button>
                         </div>
-                        <div class="h-80">
+                        <div class="flex-1 relative min-h-[300px]">
                             <canvas id="wilayahChart"></canvas>
                         </div>
                     </div>
-                    <div class="space-y-6">
-                        <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                            <div class="flex items-center justify-between mb-6">
-                                <div>
-                                    <p class="text-sm text-slate-500">Kategori Bantuan</p>
-                                    <h2 class="text-xl font-semibold">Pembagian program</h2>
+                    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
+                        <h2 class="text-lg font-semibold text-slate-900 mb-6">Status Pendaftaran</h2>
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    <span class="text-sm font-medium text-slate-700">Selesai Verifikasi</span>
                                 </div>
-                                <a href="#" class="text-cyan-600 text-sm font-medium">Lihat semua</a>
+                                <span class="font-bold text-slate-900">7.204</span>
                             </div>
-                            <div class="h-60"><canvas id="programChart"></canvas></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                                    <span class="text-sm font-medium text-slate-700">Dalam Proses</span>
+                                </div>
+                                <span class="font-bold text-slate-900">3.120</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                    <span class="text-sm font-medium text-slate-700">Ditolak / Revisi</span>
+                                </div>
+                                <span class="font-bold text-slate-900">2.518</span>
+                            </div>
                         </div>
-                        <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
-                            <div class="flex items-center justify-between mb-6">
-                                <div>
-                                    <p class="text-sm text-slate-500">Laporan Terkini</p>
-                                    <h2 class="text-xl font-semibold">Update distribusi</h2>
-                                </div>
-                                <a href="#" class="text-slate-400 text-sm">Lihat semua</a>
-                            </div>
-                            <div class="space-y-4">
-                                @foreach($recent as $item)
-                                    <div class="rounded-3xl bg-slate-50 p-4">
-                                        <p class="text-sm font-semibold">{{ $item['jenis_bantuan'] }} — {{ $item['user']['alamat'] }}</p>
-                                        <p class="mt-1 text-sm text-slate-500">{{ $item['user']['nama'] }} / {{ $item['status_pengajuan'] }}</p>
-                                        <p class="mt-2 text-xs text-slate-400">Pengajuan: {{ \Illuminate\Support\Carbon::parse($item['tanggal_pengajuan'])->format('d M Y') }}</p>
-                                    </div>
-                                @endforeach
-                            </div>
+                        <div class="rounded-2xl bg-slate-50 p-5 mt-auto">
+                            <h3 class="text-sm font-bold text-slate-900 mb-2">Pemberitahuan Sistem</h3>
+                            <p class="text-xs text-slate-500 leading-relaxed mb-3">Integrasi data NIK Dukcapil telah diperbarui otomatis. Silakan periksa dashboard sinkronisasi untuk detail lebih lanjut.</p>
+                            <a href="#" class="text-blue-600 text-xs font-semibold hover:underline flex items-center gap-1">Lihat Selengkapnya <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a>
                         </div>
                     </div>
                 </section>
@@ -153,9 +158,6 @@
         const wilayahLabels = @json($perWilayah->map(fn($row) => $row['wilayah'] ?? 'Lainnya'));
         const wilayahData = @json($perWilayah->pluck('total'));
 
-        const programLabels = @json($category->pluck('program'));
-        const programData = @json($category->pluck('total'));
-
         new Chart(document.getElementById('wilayahChart'), {
             type: 'bar',
             data: {
@@ -163,35 +165,31 @@
                 datasets: [{
                     label: 'Jumlah Penerima',
                     data: wilayahData,
-                    backgroundColor: 'rgba(34, 211, 238, 0.8)',
-                    borderRadius: 12,
-                    maxBarThickness: 40,
+                    backgroundColor: '#e2e8f0', // slate-200 for inactive
+                    hoverBackgroundColor: '#0f172a', // slate-900 for active/hover
+                    borderRadius: 4,
+                    barPercentage: 0.5,
+                    categoryPercentage: 0.5
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: { display: false },
                 },
                 scales: {
-                    y: { beginAtZero: true, ticks: { precision: 0 } }
-                }
-            }
-        });
-
-        new Chart(document.getElementById('programChart'), {
-            type: 'doughnut',
-            data: {
-                labels: programLabels,
-                datasets: [{
-                    data: programData,
-                    backgroundColor: ['#06b6d4', '#8b5cf6', '#f97316', '#22c55e'],
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
+                    x: { 
+                        grid: { display: false },
+                        ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                    },
+                    y: { 
+                        display: false,
+                        beginAtZero: true 
+                    }
+                },
+                onHover: (event, chartElement) => {
+                    event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
                 }
             }
         });

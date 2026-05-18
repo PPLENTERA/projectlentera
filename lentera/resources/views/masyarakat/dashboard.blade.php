@@ -128,13 +128,107 @@
                         <p class="text-xs text-slate-400">Perlu perbaikan data NIK</p>
                     </article>
                 </section>
-                
-                <!-- Bottom parts empty for now as requested to focus on top part -->
-                <div class="h-64 rounded-3xl bg-white border border-slate-200 flex items-center justify-center">
-                    <p class="text-slate-400 text-sm">Bagian Chart Penyaluran Bantuan Bulanan dsb.</p>
-                </div>
+                <section class="grid gap-6 mt-6">
+                    <div class="col-span-12 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-lg font-semibold text-slate-900">Penyaluran Bantuan Bulanan</h2>
+                                <p class="text-sm text-slate-500">Data real-time penyaluran dana bansos wilayah Jakarta Pusat</p>
+                            </div>
+                            <div class="flex gap-4 items-center">
+                                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-800"></span><span class="text-xs text-slate-600">Dana Tunai</span></div>
+                                <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-xs text-slate-600">Sembako</span></div>
+                            </div>
+                        </div>
+                        <div class="relative h-64 w-full">
+                            <canvas id="penyaluranChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="grid gap-6 xl:grid-cols-1 mt-6">
+                    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-6">
+                            <h2 class="text-lg font-semibold text-slate-900">Laporan Terkini</h2>
+                            <a href="#" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
+                        </div>
+                        <div class="space-y-4">
+                            @foreach($recent as $item)
+                                <div class="flex items-start gap-4">
+                                    <div class="h-12 w-12 rounded-2xl bg-slate-800 text-white flex items-center justify-center flex-shrink-0">
+                                        @if($item['icon'] == 'beras')
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                        @elseif($item['icon'] == 'buku')
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                        @else
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                        @endif
+                                    </div>
+                                    <div class="flex-1 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                                        <div class="flex justify-between items-start">
+                                            <h3 class="font-semibold text-slate-900 text-sm">{{ $item['judul'] }}</h3>
+                                            <span class="text-xs text-slate-400 whitespace-nowrap ml-4">{{ $item['waktu'] }}</span>
+                                        </div>
+                                        <p class="text-sm text-slate-500 mt-1 leading-relaxed">{{ $item['deskripsi'] }}</p>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
+
+    <script>
+        const penyaluranBulanan = @json($penyaluranBulanan);
+
+        // Penyaluran Chart
+        const labelsPenyaluran = penyaluranBulanan.map(item => item.bulan);
+        const dataTunai = penyaluranBulanan.map(item => item.dana_tunai);
+        const dataSembako = penyaluranBulanan.map(item => item.sembako);
+
+        new Chart(document.getElementById('penyaluranChart'), {
+            type: 'bar',
+            data: {
+                labels: labelsPenyaluran,
+                datasets: [
+                    {
+                        label: 'Dana Tunai',
+                        data: dataTunai,
+                        backgroundColor: '#1e293b', // slate-800
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.4
+                    },
+                    {
+                        label: 'Sembako',
+                        data: dataSembako,
+                        backgroundColor: '#10b981', // emerald-500
+                        borderRadius: 4,
+                        barPercentage: 0.6,
+                        categoryPercentage: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 12, weight: 'bold' }, color: '#64748b' }
+                    },
+                    y: {
+                        display: false,
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
