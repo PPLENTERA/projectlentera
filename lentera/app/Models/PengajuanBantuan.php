@@ -10,13 +10,16 @@ class PengajuanBantuan extends Model
     protected $primaryKey = 'id_pengajuan';
 
     protected $fillable = [
-        'id_users',
-        'jenis_bantuan',
-        'jumlah_tanggungan',
-        'penghasilan',
-        'deskripsi_kebutuhan',
-        'status_pengajuan',
-        'tanggal_pengajuan',
+    'id_users',
+    'nama_lengkap',
+    'nik',
+    'jenis_bantuan',
+    'jumlah_tanggungan',
+    'penghasilan',
+    'deskripsi_kebutuhan',
+    'bukti_pendukung',
+    'status_pengajuan',
+    'tanggal_pengajuan',
     ];
 
     public function user()
