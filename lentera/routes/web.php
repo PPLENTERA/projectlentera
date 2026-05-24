@@ -16,6 +16,7 @@ use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\MonitoringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,9 +99,8 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return "Ini halaman Dashboard Admin.";
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('admin.monitoring');
 
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
     Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
