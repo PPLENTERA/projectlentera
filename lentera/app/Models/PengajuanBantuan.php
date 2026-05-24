@@ -17,6 +17,7 @@ class PengajuanBantuan extends Model
         'deskripsi_kebutuhan',
         'status_pengajuan',
         'tanggal_pengajuan',
+        'skor_kelayakan',
     ];
 
     public function user()
