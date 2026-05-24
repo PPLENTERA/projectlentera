@@ -141,3 +141,13 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
 
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
+Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
+Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
+
+Route::post('/recipient/store', [RecipientController::class, 'store']);
+
+Route::get('/recipient/{id}', [RecipientController::class, 'show']);
+
+Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
+Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
