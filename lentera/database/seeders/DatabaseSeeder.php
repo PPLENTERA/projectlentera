@@ -74,5 +74,60 @@ class DatabaseSeeder extends Seeder
             'deskripsi_masukan' => 'Aplikasi sudah bagus, tapi tampilan interface bisa lebih user-friendly untuk pengguna berusia lanjut.',
             'status' => 'belum_ditinjau',
         ]);
+
+        // Seed Scoring Indicators & Rules
+        $penghasilanInd = \App\Models\ScoringIndicator::create([
+            'name' => 'Penghasilan',
+            'column_name' => 'penghasilan',
+        ]);
+
+        $penghasilanInd->rules()->createMany([
+            [
+                'operator' => '<',
+                'value' => 1000000,
+                'score' => 40,
+                'label' => 'Kurang dari Rp 1.000.000',
+            ],
+            [
+                'operator' => 'between',
+                'value' => 1000000,
+                'value_max' => 3000000,
+                'score' => 25,
+                'label' => 'Rp 1.000.000 - Rp 3.000.000',
+            ],
+            [
+                'operator' => '>',
+                'value' => 3000000,
+                'score' => 10,
+                'label' => 'Lebih dari Rp 3.000.000',
+            ],
+        ]);
+
+        $tanggunganInd = \App\Models\ScoringIndicator::create([
+            'name' => 'Jumlah Tanggungan',
+            'column_name' => 'jumlah_tanggungan',
+        ]);
+
+        $tanggunganInd->rules()->createMany([
+            [
+                'operator' => '>',
+                'value' => 3,
+                'score' => 30,
+                'label' => 'Lebih dari 3 orang',
+            ],
+            [
+                'operator' => 'between',
+                'value' => 2,
+                'value_max' => 3,
+                'score' => 20,
+                'label' => '2 - 3 orang',
+            ],
+            [
+                'operator' => '<',
+                'value' => 2,
+                'score' => 10,
+                'label' => 'Kurang dari 2 orang',
+            ],
+        ]);
     }
 }

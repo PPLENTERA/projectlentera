@@ -114,6 +114,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
     Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
+
+    Route::resource('scoring-indicators', ScoringIndicatorController::class)->names('admin.scoring_indicators');
 });
 
 /*
