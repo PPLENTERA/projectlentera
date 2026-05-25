@@ -150,6 +150,72 @@
                         </div>
                     </div>
                 </section>
+
+                <section class="grid gap-6 xl:grid-cols-12 mt-6">
+                    <!-- Kategori Bantuan Donut Chart Card -->
+                    <div class="col-span-12 xl:col-span-5 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
+                        <h2 class="text-lg font-semibold text-slate-900 mb-4">Kategori Bantuan</h2>
+
+                        <!-- Donut Chart -->
+                        <div class="relative flex items-center justify-center my-2">
+                            <div class="relative w-44 h-44">
+                                <canvas id="kategoriChartAdmin"></canvas>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                    <span class="text-3xl font-bold text-slate-900">{{ $categoriesList->sum('count') }}</span>
+                                    <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest mt-0.5">Program</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legend -->
+                        <div class="mt-4 space-y-2">
+                            @foreach($categoriesList->filter(fn($i) => $i['percentage'] > 0) as $item)
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['hex'] }}"></span>
+                                    <span class="text-sm text-slate-600">{{ $item['name'] }}</span>
+                                </div>
+                                <span class="text-sm font-semibold text-slate-800">{{ $item['percentage'] }}%</span>
+                            </div>
+                            @endforeach
+                            @if($categoriesList->filter(fn($i) => $i['percentage'] > 0)->isEmpty())
+                            <p class="text-xs text-slate-400 text-center py-4">Belum ada data pengajuan bantuan.</p>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Laporan Terkini Card -->
+                    <div class="col-span-12 xl:col-span-7 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <h2 class="text-lg font-semibold text-slate-900">Laporan Terkini</h2>
+                                <a href="#" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
+                            </div>
+                            <div class="space-y-4">
+                                @foreach($recent as $item)
+                                    <div class="flex items-start gap-4">
+                                        <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                                            @if($item['icon'] == 'beras')
+                                                <svg class="w-6 h-6 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                                            @elseif($item['icon'] == 'buku')
+                                                <svg class="w-6 h-6 text-blue-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                                            @else
+                                                <svg class="w-6 h-6 text-emerald-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                                            @endif
+                                        </div>
+                                        <div class="flex-1 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                                            <div class="flex justify-between items-start">
+                                                <h3 class="font-semibold text-slate-900 text-sm">{{ $item['judul'] }}</h3>
+                                                <span class="text-xs text-slate-400 whitespace-nowrap ml-4">{{ $item['waktu'] }}</span>
+                                            </div>
+                                            <p class="text-sm text-slate-500 mt-1 leading-relaxed">{{ $item['deskripsi'] }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -193,6 +259,51 @@
                 }
             }
         });
+
+        // Kategori Bantuan Donut Chart (Admin)
+        const kategoriDataAdmin = @json($categoriesList->filter(fn($i) => $i['percentage'] > 0)->values());
+        const hasKategoriDataAdmin = kategoriDataAdmin.length > 0 && kategoriDataAdmin.some(i => i.count > 0);
+
+        if (hasKategoriDataAdmin) {
+            new Chart(document.getElementById('kategoriChartAdmin'), {
+                type: 'doughnut',
+                data: {
+                    labels: kategoriDataAdmin.map(i => i.name),
+                    datasets: [{
+                        data: kategoriDataAdmin.map(i => i.count),
+                        backgroundColor: kategoriDataAdmin.map(i => i.hex),
+                        borderWidth: 0,
+                        hoverOffset: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ` ${ctx.label}: ${ctx.parsed} program (${kategoriDataAdmin[ctx.dataIndex].percentage}%)`
+                            }
+                        }
+                    }
+                }
+            });
+        } else {
+            new Chart(document.getElementById('kategoriChartAdmin'), {
+                type: 'doughnut',
+                data: {
+                    datasets: [{ data: [1], backgroundColor: ['#e2e8f0'], borderWidth: 0 }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '72%',
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
+                }
+            });
+        }
     </script>
 </body>
 </html>
