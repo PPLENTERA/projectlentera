@@ -36,6 +36,9 @@
                     <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
                         Dashboard
                     </a>
+                    <a href="{{ route('admin.monitoring') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
+                        Monitoring Dana
+                    </a>
                     <a href="{{ route('admin.feedback.index') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
                         Manajemen Feedback
                     </a>
