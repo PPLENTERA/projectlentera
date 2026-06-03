@@ -43,6 +43,39 @@
         </div>
     </div>
 
+    <form action="{{ route('admin.validasi.index') }}" method="GET" class="bg-[#F3F4F5] rounded-3xl px-6 py-4 flex gap-4 items-end">
+        
+        <div class="flex flex-col gap-2 flex-1">
+            <label class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest">Jenis Bantuan</label>
+            <select name="jenis_bantuan" class="w-full px-4 py-2.5 bg-white rounded-lg text-sm font-medium text-slate-800 outline-none">
+                <option value="">Semua Bantuan</option>
+                <option value="Bantuan Pangan" {{ request('jenis_bantuan') == 'Bantuan Pangan' ? 'selected' : '' }}>Bantuan Pangan</option>
+                <option value="Bantuan Kesehatan" {{ request('jenis_bantuan') == 'Bantuan Kesehatan' ? 'selected' : '' }}>Bantuan Kesehatan</option>
+                <option value="Bantuan Pendidikan" {{ request('jenis_bantuan') == 'Bantuan Pendidikan' ? 'selected' : '' }}>Bantuan Pendidikan</option>
+                <option value="Bantuan Perumahan" {{ request('jenis_bantuan') == 'Bantuan Perumahan' ? 'selected' : '' }}>Bantuan Perumahan</option>
+            </select>
+        </div>
+        <div class="flex flex-col gap-2 flex-1">
+            <label class="text-[0.65rem] font-bold text-slate-400 uppercase tracking-widest">Status Verifikasi</label>
+            <select name="status" class="w-full px-4 py-2.5 bg-white rounded-lg text-sm font-medium text-slate-800 outline-none">
+                <option value="">Semua</option>
+                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Belum Diverifikasi</option>
+                <option value="diverifikasi" {{ request('status') == 'diverifikasi' ? 'selected' : '' }}>Sudah Diverifikasi</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+            </select>
+        </div>
+        <button type="submit" class="bg-[#022448] text-white text-sm font-bold px-8 py-2.5 rounded-full h-fit">
+            Terapkan Filter
+        </button>
+        @if(request('status') || request('jenis_bantuan'))
+            <a href="{{ route('admin.validasi.index') }}" 
+                class="text-sm font-bold text-slate-400 hover:text-slate-600 px-4 py-2.5 h-fit">
+                Reset
+            </a>
+        @endif
+
+    </form>
+
     @if(session('success'))
         <div class="bg-green-50 text-green-600 text-sm p-4 rounded-2xl border border-green-100">
             {{ session('success') }}
