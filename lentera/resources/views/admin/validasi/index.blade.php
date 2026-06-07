@@ -18,6 +18,22 @@
         <p class="text-sm text-slate-500 mt-1">Periksa dan validasi dokumen pengajuan bantuan masuk.</p>
     </div>
 
+    <!-- Sub-navigation -->
+    <div class="flex gap-6 mb-6 border-b border-slate-200">
+        <a href="{{ route('admin.validasi.index') }}" 
+           class="text-sm font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E] pb-3 transition-all">
+            Validasi & Verifikasi
+        </a>
+        <a href="{{ route('admin.scoring_indicators.index') }}" 
+           class="text-sm font-semibold text-slate-500 hover:text-[#1C2C4E] pb-3 transition-all">
+            Indikator Scoring
+        </a>
+        <a href="{{ route('admin.validasi.penentuan') }}" 
+           class="text-sm font-semibold text-slate-500 hover:text-[#1C2C4E] pb-3 transition-all">
+            Penentuan Penerima
+        </a>
+    </div>
+
     @if(session('success'))
         <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6">
             {{ session('success') }}
@@ -57,6 +73,7 @@
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Jenis Bantuan</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Tanggal</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Dokumen</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Skor Kelayakan</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Aksi</th>
                     </tr>
@@ -82,6 +99,26 @@
                                 <span class="text-xs font-semibold bg-blue-50 text-blue-600 px-2 py-1 rounded-lg">
                                     {{ $item->dokumen->count() }} file
                                 </span>
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                @if($item->skor_kelayakan !== null)
+                                    @if($item->skor_kelayakan >= 60)
+                                        <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1.5 rounded-lg border border-green-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @elseif($item->skor_kelayakan >= 40)
+                                        <span class="text-xs font-bold bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg border border-yellow-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-lg border border-red-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @endif
+                                @else
+                                    <span class="text-xs text-slate-400 font-medium">Belum dihitung</span>
+                                @endif
                             </td>
 
                             <td class="px-6 py-4">
