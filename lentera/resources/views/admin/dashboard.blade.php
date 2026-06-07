@@ -19,12 +19,10 @@
                     </div>
                 </div>
                 <div class="space-y-4">
-                    <a href="#" class="block rounded-2xl bg-cyan-600 text-white px-4 py-3 shadow">Overview</a>
-                    <a href="#" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Pengajuan</a>
-                    <a href="#" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Riwayat</a>
-                    <a href="#" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Monitoring</a>
-                    <a href="#" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Statistik</a>
-                    <a href="#" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Laporan</a>
+                    <a href="{{ route('admin.dashboard') }}" class="block rounded-2xl bg-cyan-600 text-white px-4 py-3 shadow">Overview</a>
+                    <a href="{{ route('admin.validasi.index') }}" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Pengajuan / Validasi</a>
+                    <a href="{{ route('admin.feedback.index') }}" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Feedback</a>
+                    <a href="{{ route('admin.laporan.index') }}" class="block rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100">Laporan</a>
                 </div>
                 <div class="mt-10 border-t border-slate-200 pt-6 space-y-4 text-sm text-slate-500">
                     <div class="flex items-center justify-between">
@@ -146,7 +144,7 @@
                         <div class="rounded-2xl bg-slate-50 p-5 mt-auto">
                             <h3 class="text-sm font-bold text-slate-900 mb-2">Pemberitahuan Sistem</h3>
                             <p class="text-xs text-slate-500 leading-relaxed mb-3">Integrasi data NIK Dukcapil telah diperbarui otomatis. Silakan periksa dashboard sinkronisasi untuk detail lebih lanjut.</p>
-                            <a href="#" class="text-blue-600 text-xs font-semibold hover:underline flex items-center gap-1">Lihat Selengkapnya <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a>
+                            <a href="{{ route('admin.validasi.index') }}" class="text-blue-600 text-xs font-semibold hover:underline flex items-center gap-1">Lihat Selengkapnya <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg></a>
                         </div>
                     </div>
                 </section>
@@ -189,7 +187,7 @@
                         <div>
                             <div class="flex items-center justify-between mb-6">
                                 <h2 class="text-lg font-semibold text-slate-900">Laporan Terkini</h2>
-                                <a href="#" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
+                                <a href="{{ route('admin.laporan.index') }}" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
                             </div>
                             <div class="space-y-4">
                                 @foreach($recent as $item)
