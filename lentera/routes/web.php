@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Masyarakat\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
+use App\Http\Controllers\Masyarakat\NotificationController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
 
@@ -137,6 +138,10 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
     Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
     Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
+    // Notification Routes
+    Route::get('/notifications/unread', [NotificationController::class, 'getUnread'])->name('masyarakat.notifications.unread');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('masyarakat.notifications.read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead'])->name('masyarakat.notifications.mark-all-read');
 });
 
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');

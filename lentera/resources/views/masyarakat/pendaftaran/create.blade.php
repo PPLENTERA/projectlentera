@@ -27,7 +27,27 @@
                     <span class="text-xl font-extrabold text-[#1C2C4E] tracking-tight">LENTERA</span>
                     <span class="ml-2 text-sm text-slate-500 font-medium">Bantuan Sosial</span>
                 </div>
-                <div class="flex items-center">
+                 <div class="flex items-center gap-4">
+                    <!-- Notification Bell -->
+                    <div class="relative" id="notification-bell-container">
+                        <button id="notification-bell-btn" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:text-slate-800 relative transition-all">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                            <span id="notification-count-badge" class="hidden absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center animate-pulse">0</span>
+                        </button>
+                        <!-- Dropdown -->
+                        <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-slate-50 flex justify-between items-center bg-slate-50">
+                                <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider">Notifikasi</h4>
+                                <button onclick="window.markAllNotificationsRead()" class="text-[10px] text-blue-600 font-bold hover:underline">Tandai semua dibaca</button>
+                            </div>
+                            <div id="notification-list" class="max-h-64 overflow-y-auto divide-y divide-slate-50">
+                                <!-- Loaded via Ajax -->
+                            </div>
+                        </div>
+                    </div>
+                    
                     <a href="{{ route('masyarakat.dashboard') }}" class="text-sm font-semibold text-[#1C2C4E] hover:text-[#1F54CE] transition-colors">
                         Kembali ke Dashboard
                     </a>

@@ -75,6 +75,7 @@
             @endif
         </div>
 
+<<<<<<< Updated upstream
         <div class="bg-white rounded-2xl shadow p-6">
             <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-4">Hasil Validasi</h2>
             
@@ -102,6 +103,36 @@
                         class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none resize-none"
                         placeholder="Tambahkan catatan jika diperlukan..."></textarea>
                 </div>
+=======
+            <div class="bg-white rounded-3xl p-8">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Hasil Validasi</p>
+                
+                <form action="{{ route('admin.validasi.update', $pengajuan->id_pengajuan) }}" method="POST" class="space-y-4">
+                    @csrf
+                    @method('PUT')
+                    
+                    <div>
+                        <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
+                            Status Validasi
+                        </label>
+                        <select name="status_validasi" required
+                            class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 focus:ring-2 focus:ring-[#022448] focus:bg-white transition-all outline-none">
+                            <option value="" disabled selected>Pilih status</option>
+                            <option value="valid" {{ $pengajuan->status_pengajuan === 'diverifikasi' ? 'selected' : '' }}>Valid (Diverifikasi)</option>
+                            <option value="tidak_valid" {{ $pengajuan->status_pengajuan === 'ditolak' ? 'selected' : '' }}>Tidak Valid (Ditolak)</option>
+                            <option value="diterima" {{ $pengajuan->status_pengajuan === 'diterima' ? 'selected' : '' }}>Disetujui (Diterima)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
+                            Catatan
+                        </label>
+                        <textarea name="catatan" rows="4"
+                            class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#022448] focus:bg-white transition-all outline-none resize-none"
+                            placeholder="Tambahkan catatan..."></textarea>
+                    </div>
+>>>>>>> Stashed changes
 
                 <div class="flex gap-3 pt-2">
                     <a href="{{ route('admin.validasi.index') }}"

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lapor Penyalahgunaan Bantuan | LENTERA</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
             --primary: #2563eb;
@@ -229,7 +230,29 @@
 <body>
 
     <div class="glass-container">
-        <a href="{{ route('masyarakat.dashboard') }}" class="back-link">&larr; Kembali ke Dashboard</a>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <a href="{{ route('masyarakat.dashboard') }}" class="back-link" style="margin-bottom: 0;">&larr; Kembali ke Dashboard</a>
+            
+            <!-- Notification Bell -->
+            <div class="relative" id="notification-bell-container" style="position: relative;">
+                <button id="notification-bell-btn" style="width: 36px; height: 36px; border-radius: 50%; border: none; background: #e2e8f0; display: flex; align-items: center; justify-content: center; color: #64748b; cursor: pointer; position: relative; transition: all 0.2s;">
+                    <svg style="width: 18px; height: 18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <span id="notification-count-badge" class="hidden absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center">0</span>
+                </button>
+                <!-- Dropdown -->
+                <div id="notification-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-slate-100 z-50 overflow-hidden" style="position: absolute; right: 0; margin-top: 8px; width: 320px; background: white; border-radius: 16px; border: 1px solid #f1f5f9; z-index: 50;">
+                    <div style="padding: 12px 16px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: #f8fafc;">
+                        <h4 style="margin: 0; font-size: 11px; font-weight: bold; color: #1e293b; text-transform: uppercase; letter-spacing: 0.05em;">Notifikasi</h4>
+                        <button onclick="window.markAllNotificationsRead()" style="background: none; border: none; font-size: 10px; color: #2563eb; font-weight: bold; cursor: pointer; text-decoration: underline;">Tandai semua dibaca</button>
+                    </div>
+                    <div id="notification-list" style="max-height: 256px; overflow-y: auto;">
+                        <!-- Loaded via Ajax -->
+                    </div>
+                </div>
+            </div>
+        </div>
         
         <div class="header">
             <h1>Lapor Penyalahgunaan</h1>
