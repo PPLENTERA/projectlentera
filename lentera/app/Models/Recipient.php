@@ -18,6 +18,7 @@ class Recipient extends Model
         'photos',
         'latitude',
         'longitude',
+        'area',
     ];
 
     protected static function booted()

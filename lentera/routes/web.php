@@ -151,3 +151,22 @@ Route::get('/recipient/{id}', [RecipientController::class, 'show']);
 
 Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
 Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
+
+Route::get('/peta-bantuan', function () {
+    $data = \App\Models\Recipient::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get();
+
+    return view('peta-bantuan', compact('data'));
+});
+
+Route::get('/statistik-bantuan', function () {
+
+    $data = \App\Models\Recipient::selectRaw(
+        'address, COUNT(*) as total'
+    )
+    ->groupBy('address')
+    ->get();
+
+    return view('statistik-bantuan', compact('data'));
+});
