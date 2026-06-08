@@ -8,13 +8,19 @@ use Illuminate\Http\Request;
 
 class ValidasiVerifikasiController extends Controller
 {
-    public function index()
-    {
-        $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
-            ->latest()
-            ->get();
+    public function index(Request $request)
+    {   
+    $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')->latest();
+    if ($request->status) {
+        $query->where('status_pengajuan', $request->status);
+    }
+    
+    if ($request->jenis_bantuan) {
+        $query->where('jenis_bantuan', $request->jenis_bantuan);
+    }
+    $pengajuan = $query->get();
 
-        return view('admin.validasi.index', compact('pengajuan'));
+    return view('admin.validasi.index', compact('pengajuan'));
     }
 
     public function show($id)

@@ -30,6 +30,26 @@
 
     <!-- Content -->
     <div class="flex">
+        <!-- Sidebar -->
+        @if(Auth::user() && Auth::user()->role === 'admin')
+        <div class="w-64 bg-white border-r border-gray-200 min-h-screen sticky top-0">
+            <div class="p-8">
+                <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wider mb-6">Menu Admin</h2>
+                <nav class="space-y-2">
+                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
+                        Dashboard
+                    </a>
+                    <a href="{{ route('admin.monitoring') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
+                        Monitoring Dana
+                    </a>
+                    <a href="{{ route('admin.feedback.index') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
+                        Manajemen Feedback
+                    </a>
+                </nav>
+            </div>
+        </div>
+        @endif
+
         <!-- Main Content -->
         <div class="flex-1">
             @yield('content')
