@@ -10,11 +10,14 @@
     <!-- Navigation Bar -->
     <nav class="bg-white shadow-sm border-b border-gray-200">
         <div class="max-w-7xl mx-auto px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center">
+            <div class="flex items-center gap-6">
                 <h1 class="text-2xl font-bold text-blue-600">LENTERA</h1>
+                @if(Auth::user() && Auth::user()->role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="text-sm font-semibold text-gray-500 hover:text-blue-600 transition-colors">← Kembali ke Dashboard</a>
+                @endif
             </div>
             <div class="flex items-center gap-6">
-                <span class="text-gray-700">{{ Auth::user()->name ?? 'User' }}</span>
+                <span class="text-gray-700 font-medium">{{ Auth::user()->name ?? 'User' }}</span>
                 <form method="POST" action="{{ route('logout') }}" class="inline">
                     @csrf
                     <button type="submit" class="text-red-600 hover:text-red-800 font-medium">
@@ -25,25 +28,8 @@
         </div>
     </nav>
 
-    <!-- Sidebar + Content -->
+    <!-- Content -->
     <div class="flex">
-        <!-- Sidebar -->
-        @if(Auth::user() && Auth::user()->role === 'admin')
-        <div class="w-64 bg-white border-r border-gray-200 min-h-screen sticky top-0">
-            <div class="p-8">
-                <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wider mb-6">Menu Admin</h2>
-                <nav class="space-y-2">
-                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
-                        Dashboard
-                    </a>
-                    <a href="{{ route('admin.feedback.index') }}" class="block px-4 py-2 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 font-medium">
-                        Manajemen Feedback
-                    </a>
-                </nav>
-            </div>
-        </div>
-        @endif
-
         <!-- Main Content -->
         <div class="flex-1">
             @yield('content')

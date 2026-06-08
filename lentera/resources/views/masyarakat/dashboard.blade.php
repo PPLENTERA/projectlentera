@@ -10,8 +10,10 @@
 <body class="bg-slate-50 text-slate-900">
     <div class="min-h-screen">
         <div class="grid grid-cols-12 gap-6 p-6">
-            <aside class="col-span-12 xl:col-span-3 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
-                <div class="flex items-center gap-3 mb-8">
+
+            {{-- ===== SIDEBAR ===== --}}
+            <aside class="col-span-12 xl:col-span-3 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col sticky top-6 h-max">
+                <div class="flex items-center gap-3 mb-6">
                     <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                     </div>
@@ -20,76 +22,108 @@
                         <p class="text-slate-500 text-xs font-medium uppercase tracking-wider">Panel Transparansi</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-3 mb-8 p-3 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                        <span class="text-orange-500 font-semibold">VC</span>
+
+                {{-- Profil User --}}
+                <div class="flex items-center gap-3 mb-6 p-3 rounded-2xl border border-slate-100 bg-slate-50">
+                    <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                        <span class="text-orange-600 font-bold text-sm">{{ strtoupper(substr($authUser->name ?? 'U', 0, 2)) }}</span>
                     </div>
-                    <div>
-                        <p class="font-semibold text-sm">Verified Citizen</p>
-                        <p class="text-slate-500 text-xs">Jakarta Pusat</p>
+                    <div class="overflow-hidden">
+                        <p class="font-semibold text-sm truncate">{{ $authUser->name ?? 'Pengguna' }}</p>
+                        <p class="text-slate-500 text-xs">ID: {{ $authUser->id ?? '-' }}</p>
                     </div>
                 </div>
-                <div class="space-y-2">
+
+                {{-- Status Pendaftaran (badge) --}}
+                @if($pendaftaranUser)
+                    <div class="mb-4 px-3 py-2 rounded-xl
+                        @if($pendaftaranUser->status === 'diterima') bg-emerald-50 border border-emerald-100
+                        @elseif($pendaftaranUser->status === 'ditolak') bg-red-50 border border-red-100
+                        @else bg-amber-50 border border-amber-100 @endif">
+                        <p class="text-xs font-semibold
+                            @if($pendaftaranUser->status === 'diterima') text-emerald-700
+                            @elseif($pendaftaranUser->status === 'ditolak') text-red-600
+                            @else text-amber-700 @endif">
+                            Pendaftaran:
+                            @if($pendaftaranUser->status === 'diterima') ✅ Diterima
+                            @elseif($pendaftaranUser->status === 'ditolak') ❌ Ditolak
+                            @else ⏳ Menunggu Verifikasi
+                            @endif
+                        </p>
+                    </div>
+                @else
+                    <a href="{{ route('pendaftaran.create') }}" class="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Daftar Bantuan Sekarang
+                    </a>
+                @endif
+
+                <nav class="space-y-1 flex-1">
                     <a href="{{ route('masyarakat.dashboard') }}" class="flex items-center gap-3 rounded-2xl bg-white border border-slate-200 text-slate-900 px-4 py-3 shadow-sm font-medium">
                         <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Overview
                     </a>
-                    <a href="{{ route('masyarakat.pengajuan.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium">
+                    <a href="{{ route('masyarakat.pengajuan.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Pengajuan
+                        Pengajuan Saya
+                        @if($pengajuanPending > 0)
+                            <span class="ml-auto bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">{{ $pengajuanPending }}</span>
+                        @endif
                     </a>
-                    <a href="{{ route('masyarakat.pelaporan.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Pelaporan
+                    <a href="{{ route('masyarakat.pengajuan.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 hover:text-slate-900 font-medium transition-colors">
+                        <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        Ajukan Bantuan
                     </a>
-                    <a href="{{ route('pendaftaran.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                        Pendaftaran
+                    <a href="{{ route('masyarakat.pelaporan.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        Laporkan Penyalahgunaan
                     </a>
-                    <a href="{{ route('feedback.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Feedback
+                    <a href="{{ route('feedback.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                        Beri Feedback
                     </a>
-                    <a href="{{ route('logout') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-red-500 hover:bg-red-50 font-medium">
+                </nav>
+
+                <div class="mt-6 pt-6 border-t border-slate-200">
+                    <a href="{{ route('logout') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-red-500 hover:bg-red-50 font-medium transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                         Keluar
                     </a>
                 </div>
             </aside>
 
+            {{-- ===== MAIN CONTENT ===== --}}
             <main class="col-span-12 xl:col-span-9 space-y-6">
                 <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
-                        <h1 class="text-xl font-bold text-slate-900">Dashboard Overview</h1>
+                        <p class="text-sm text-slate-500">Selamat datang kembali,</p>
+                        <h1 class="text-2xl font-bold text-slate-900">{{ $authUser->name ?? 'Pengguna' }} 👋</h1>
                     </div>
-                    <div class="flex items-center gap-6">
-                        <button class="relative text-slate-400 hover:text-slate-600">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
-                            <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 border-2 border-slate-50 rounded-full"></span>
-                        </button>
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('masyarakat.pengajuan.create') }}" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-2xl text-sm font-semibold hover:bg-slate-700 transition-colors shadow">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Ajukan Bantuan
+                        </a>
                         <div class="flex items-center gap-3">
-                            <div class="text-right hidden md:block">
-                                <p class="text-sm font-semibold text-slate-900">Budi Santoso</p>
-                                <p class="text-xs text-slate-400">ID: 982910</p>
-                            </div>
-                            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600">
-                                BS
+                            <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center font-bold text-orange-600">
+                                {{ strtoupper(substr($authUser->name ?? 'U', 0, 2)) }}
                             </div>
                         </div>
                     </div>
                 </header>
 
+                {{-- ===== STAT CARDS ===== --}}
                 <section class="grid gap-4 xl:grid-cols-4">
                     <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
                         <div class="flex items-center justify-between mb-4">
                             <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <span class="text-xs font-semibold text-emerald-600">+12%</span>
+                            <span class="text-xs font-semibold text-emerald-600">Personal</span>
                         </div>
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Bantuan</p>
+                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Bantuan Diterima</p>
                         <p class="text-2xl font-bold text-slate-900 mb-2">Rp {{ number_format($totalBantuan, 0, ',', '.') }}</p>
-                        <p class="text-xs text-slate-400">Akumulasi periode 2023</p>
+                        <p class="text-xs text-slate-400">Akumulasi bantuan Anda</p>
                     </article>
 
                     <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
@@ -97,7 +131,7 @@
                             <div class="h-10 w-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                             </div>
-                            <span class="text-xs font-medium text-slate-500">2 Aktif</span>
+                            <span class="text-xs font-medium text-amber-500">Pending</span>
                         </div>
                         <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Pengajuan Pending</p>
                         <p class="text-2xl font-bold text-slate-900 mb-2">{{ str_pad($pengajuanPending, 2, '0', STR_PAD_LEFT) }} Unit</p>
@@ -121,19 +155,78 @@
                             <div class="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-500">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <span class="text-xs font-medium text-slate-500">0 Baru</span>
+                            <span class="text-xs font-medium text-slate-500">{{ $ditolak > 0 ? $ditolak.' Baru' : 'Nihil' }}</span>
                         </div>
                         <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Ditolak</p>
                         <p class="text-2xl font-bold text-slate-900 mb-2">{{ str_pad($ditolak, 2, '0', STR_PAD_LEFT) }} Berkas</p>
                         <p class="text-xs text-slate-400">Perlu perbaikan data NIK</p>
                     </article>
                 </section>
-                <section class="grid gap-6 mt-6">
+
+                {{-- ===== WIDGET STATUS PENGAJUAN TERBARU ===== --}}
+                @if($pengajuanTerbaru->count() > 0)
+                <section>
+                    <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-semibold text-slate-900">Status Pengajuan Anda</h2>
+                            <a href="{{ route('masyarakat.pengajuan.index') }}" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
+                        </div>
+                        <div class="space-y-3">
+                            @foreach($pengajuanTerbaru as $pj)
+                            <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-xl bg-slate-900 flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-sm text-slate-900">{{ $pj->jenis_bantuan }}</p>
+                                        <p class="text-xs text-slate-400">{{ $pj->tanggal_pengajuan }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @if($pj->validasi && $pj->validasi->catatan)
+                                        <p class="text-xs text-slate-500 hidden md:block max-w-xs truncate">{{ $pj->validasi->catatan }}</p>
+                                    @endif
+                                    @if($pj->status_pengajuan == 'pending')
+                                        <span class="text-xs font-bold bg-amber-50 text-amber-600 px-3 py-1.5 rounded-full whitespace-nowrap">⏳ Pending</span>
+                                    @elseif($pj->status_pengajuan == 'diverifikasi')
+                                        <span class="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full whitespace-nowrap">🔍 Diverifikasi</span>
+                                    @elseif($pj->status_pengajuan == 'diterima')
+                                        <span class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full whitespace-nowrap">✅ Diterima</span>
+                                    @elseif($pj->status_pengajuan == 'ditolak')
+                                        <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-full whitespace-nowrap">❌ Ditolak</span>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </section>
+                @else
+                {{-- Empty state: belum ada pengajuan --}}
+                <section>
+                    <div class="rounded-3xl bg-white p-8 shadow-sm border border-slate-200 text-center">
+                        <div class="h-16 w-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        </div>
+                        <h3 class="font-semibold text-slate-900 mb-1">Belum ada pengajuan</h3>
+                        <p class="text-sm text-slate-400 mb-4">Ajukan bantuan sekarang dan pantau statusnya di sini.</p>
+                        <a href="{{ route('masyarakat.pengajuan.create') }}" class="inline-flex items-center gap-2 bg-slate-900 text-white px-5 py-2.5 rounded-2xl text-sm font-semibold hover:bg-slate-700 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            Ajukan Sekarang
+                        </a>
+                    </div>
+                </section>
+                @endif
+
+
+                {{-- ===== CHART PENYALURAN ===== --}}
+                <section class="grid gap-6">
                     <div class="col-span-12 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
                         <div class="flex items-center justify-between mb-6">
                             <div>
                                 <h2 class="text-lg font-semibold text-slate-900">Penyaluran Bantuan Bulanan</h2>
-                                <p class="text-sm text-slate-500">Data real-time penyaluran dana bansos wilayah Jakarta Pusat</p>
+                                <p class="text-sm text-slate-500">Data real-time penyaluran dana bansos wilayah</p>
                             </div>
                             <div class="flex gap-4 items-center">
                                 <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-800"></span><span class="text-xs text-slate-600">Dana Tunai</span></div>
@@ -146,12 +239,11 @@
                     </div>
                 </section>
 
-                <section class="grid gap-6 xl:grid-cols-12 mt-6">
-                    <!-- Kategori Bantuan Donut Chart Card -->
+                {{-- ===== KATEGORI & LAPORAN ===== --}}
+                <section class="grid gap-6 xl:grid-cols-12">
+                    {{-- Kategori Bantuan Donut --}}
                     <div class="col-span-12 xl:col-span-5 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
                         <h2 class="text-lg font-semibold text-slate-900 mb-4">Kategori Bantuan</h2>
-
-                        <!-- Donut Chart -->
                         <div class="relative flex items-center justify-center my-2">
                             <div class="relative w-44 h-44">
                                 <canvas id="kategoriChart"></canvas>
@@ -161,8 +253,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Legend -->
                         <div class="mt-4 space-y-2">
                             @foreach($categoriesList->filter(fn($i) => $i['percentage'] > 0) as $item)
                             <div class="flex items-center justify-between">
@@ -179,15 +269,15 @@
                         </div>
                     </div>
 
-                    <!-- Laporan Terkini Card -->
+                    {{-- Aktivitas Laporan Terkini (milik user) --}}
                     <div class="col-span-12 xl:col-span-7 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-6">
-                                <h2 class="text-lg font-semibold text-slate-900">Laporan Terkini</h2>
-                                <a href="{{ route('masyarakat.pelaporan.create') }}" class="text-blue-600 text-sm font-semibold hover:underline">Lihat Semua</a>
+                                <h2 class="text-lg font-semibold text-slate-900">Riwayat Laporan Penyalahgunaan</h2>
+                                <a href="{{ route('masyarakat.pelaporan.create') }}" class="text-blue-600 text-sm font-semibold hover:underline">+ Laporan Baru</a>
                             </div>
                             <div class="space-y-4">
-                                @foreach($recent as $item)
+                                @forelse($recent as $item)
                                     <div class="flex items-start gap-4">
                                         <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
                                             @if($item['icon'] == 'beras')
@@ -206,7 +296,14 @@
                                             <p class="text-sm text-slate-500 mt-1 leading-relaxed">{{ $item['deskripsi'] }}</p>
                                         </div>
                                     </div>
-                                @endforeach
+                                @empty
+                                    <div class="text-center py-6">
+                                        <p class="text-sm text-slate-400">Belum ada aktivitas. Mulai dengan mengajukan bantuan!</p>
+                                        <a href="{{ route('masyarakat.pengajuan.create') }}" class="mt-3 inline-flex items-center gap-1 text-blue-600 text-sm font-semibold hover:underline">
+                                            Ajukan sekarang <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                        </a>
+                                    </div>
+                                @endforelse
                             </div>
                         </div>
                     </div>
@@ -218,7 +315,6 @@
     <script>
         const penyaluranBulanan = @json($penyaluranBulanan);
 
-        // Penyaluran Chart
         const labelsPenyaluran = penyaluranBulanan.map(item => item.bulan);
         const dataTunai = penyaluranBulanan.map(item => item.dana_tunai);
         const dataSembako = penyaluranBulanan.map(item => item.sembako);
@@ -228,44 +324,20 @@
             data: {
                 labels: labelsPenyaluran,
                 datasets: [
-                    {
-                        label: 'Dana Tunai',
-                        data: dataTunai,
-                        backgroundColor: '#1e293b', // slate-800
-                        borderRadius: 4,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.4
-                    },
-                    {
-                        label: 'Sembako',
-                        data: dataSembako,
-                        backgroundColor: '#10b981', // emerald-500
-                        borderRadius: 4,
-                        barPercentage: 0.6,
-                        categoryPercentage: 0.4
-                    }
+                    { label: 'Dana Tunai', data: dataTunai, backgroundColor: '#1e293b', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                    { label: 'Sembako', data: dataSembako, backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
                 scales: {
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 12, weight: 'bold' }, color: '#64748b' }
-                    },
-                    y: {
-                        display: false,
-                        grid: { display: false }
-                    }
+                    x: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' }, color: '#64748b' } },
+                    y: { display: false, grid: { display: false } }
                 }
             }
         });
 
-        // Kategori Bantuan Donut Chart
         const kategoriData = @json($categoriesList->filter(fn($i) => $i['percentage'] > 0)->values());
         const hasKategoriData = kategoriData.length > 0 && kategoriData.some(i => i.count > 0);
 
@@ -274,40 +346,21 @@
                 type: 'doughnut',
                 data: {
                     labels: kategoriData.map(i => i.name),
-                    datasets: [{
-                        data: kategoriData.map(i => i.count),
-                        backgroundColor: kategoriData.map(i => i.hex),
-                        borderWidth: 0,
-                        hoverOffset: 6
-                    }]
+                    datasets: [{ data: kategoriData.map(i => i.count), backgroundColor: kategoriData.map(i => i.hex), borderWidth: 0, hoverOffset: 6 }]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '72%',
+                    responsive: true, maintainAspectRatio: false, cutout: '72%',
                     plugins: {
                         legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => ` ${ctx.label}: ${ctx.parsed} program (${kategoriData[ctx.dataIndex].percentage}%)`
-                            }
-                        }
+                        tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${ctx.parsed} program (${kategoriData[ctx.dataIndex].percentage}%)` } }
                     }
                 }
             });
         } else {
-            // Empty state: show a light grey ring
             new Chart(document.getElementById('kategoriChart'), {
                 type: 'doughnut',
-                data: {
-                    datasets: [{ data: [1], backgroundColor: ['#e2e8f0'], borderWidth: 0 }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '72%',
-                    plugins: { legend: { display: false }, tooltip: { enabled: false } }
-                }
+                data: { datasets: [{ data: [1], backgroundColor: ['#e2e8f0'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } } }
             });
         }
     </script>
