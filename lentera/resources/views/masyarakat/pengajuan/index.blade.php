@@ -204,29 +204,6 @@
                         </div>
                     </div>
 
-                    <div class="flex gap-4 pb-6 relative">
-                        <div class="w-7 h-7 rounded-full {{ $latest->status_pengajuan == 'diverifikasi' ? 'bg-yellow-400' : (in_array($latest->status_pengajuan, ['diterima', 'ditolak']) ? 'bg-green-500' : 'bg-slate-200') }} flex items-center justify-center flex-shrink-0 z-10">
-                            @if($latest->status_pengajuan == 'diverifikasi')
-                                <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
-                            @elseif(in_array($latest->status_pengajuan, ['diterima', 'ditolak']))
-                                <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
-                                </svg>
-                            @else
-                                <div class="w-2 h-2 rounded-full bg-slate-400"></div>
-                            @endif
-                        </div>
-                        <div>
-                            <p class="text-sm font-bold {{ $latest->status_pengajuan == 'diverifikasi' ? 'text-yellow-600' : (in_array($latest->status_pengajuan, ['diterima', 'ditolak']) ? 'text-[#1E3A5F]' : 'text-slate-400') }}">Validasi Lapangan</p>
-                            <p class="text-xs text-slate-400 mt-0.5">Petugas sedang melakukan pengecekan data di lokasi.</p>
-                            @if($latest->status_pengajuan == 'diverifikasi')
-                                <div class="mt-2 bg-yellow-50 border border-yellow-100 rounded-xl px-3 py-2">
-                                    <p class="text-xs text-yellow-600 font-medium">"Estimasi selesai dalam 2 hari kerja."</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-
                     <div class="flex gap-4 relative">
                         <div class="w-7 h-7 rounded-full {{ $latest->status_pengajuan == 'diterima' ? 'bg-green-500' : ($latest->status_pengajuan == 'ditolak' ? 'bg-red-400' : 'bg-slate-200') }} flex items-center justify-center flex-shrink-0 z-10">
                             @if($latest->status_pengajuan == 'diterima')
