@@ -29,8 +29,6 @@ Route::get('/', function () {
         'totalPenerima' => 24,
     ]);
 });
-
-Route::get('/admin/dashboard', [DashboardController::class, 'index']);
 /*
 |--------------------------------------------------------------------------
 | Hitung Ulang Score
