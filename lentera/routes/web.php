@@ -101,7 +101,6 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::get('/monitoring', [MonitoringController::class, 'index'])->name('admin.monitoring');
 
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
