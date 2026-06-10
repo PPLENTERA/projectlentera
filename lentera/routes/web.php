@@ -170,3 +170,25 @@ Route::get('/statistik-bantuan', function () {
 
     return view('statistik-bantuan', compact('data'));
 });
+
+Route::get('/statistik-bantuan', function () {
+
+    $total = \App\Models\Recipient::count();
+
+    $mapped = \App\Models\Recipient::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->count();
+
+    $unmapped = $total - $mapped;
+
+    $coverage = $total > 0
+        ? round(($mapped / $total) * 100)
+        : 0;
+
+    return view('statistik-bantuan', compact(
+        'total',
+        'mapped',
+        'unmapped',
+        'coverage'
+    ));
+});
