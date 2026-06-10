@@ -1,3 +1,5 @@
+@extends('layouts.admin')
+
 @section('title', 'Validasi & Verifikasi')
 
 @section('content')
@@ -10,10 +12,6 @@
             <p class="text-sm text-slate-500">Validasi & Verifikasi</p>
             <h1 class="text-3xl font-semibold">Validasi Pengajuan Bantuan</h1>
         </div>
-        <button onclick="openExportModal()" class="flex items-center gap-2 bg-slate-900 text-white px-4 py-2.5 rounded-2xl text-sm font-medium hover:bg-slate-700 transition-colors">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-            Export CSV
-        </button>
     </header>
 
     {{-- Stat Cards --}}
@@ -124,46 +122,6 @@
 
 </div>
 
-{{-- Export Modal --}}
-<div id="exportModal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm" onclick="closeExportModal()"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
-        <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
-            <div>
-                <h3 class="font-semibold text-slate-900 text-lg">Export Data Pengajuan</h3>
-                <p class="text-xs text-slate-500 mt-0.5">Pilih periode tanggal untuk diekspor ke CSV</p>
-            </div>
-            <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-200 transition-colors">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-            </button>
-        </div>
-        <form action="{{ route('admin.validasi.export') }}" method="GET" class="p-6 space-y-4">
-            <div class="space-y-3">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Dari Tanggal</label>
-                    <input type="date" name="start_date" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-2">Sampai Tanggal</label>
-                    <input type="date" name="end_date" required class="w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none transition-all">
-                </div>
-            </div>
 
-            <div class="pt-4 flex gap-3 border-t border-slate-200">
-                <button type="button" onclick="closeExportModal()" class="flex-1 px-4 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors">Batal</button>
-                <button type="submit" class="flex-1 px-4 py-2.5 bg-cyan-600 text-white rounded-xl text-sm font-medium hover:bg-cyan-700 transition-colors">Export CSV</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-    function openExportModal() {
-        document.getElementById('exportModal').classList.remove('hidden');
-    }
-    function closeExportModal() {
-        document.getElementById('exportModal').classList.add('hidden');
-    }
-</script>
 
 @endsection
