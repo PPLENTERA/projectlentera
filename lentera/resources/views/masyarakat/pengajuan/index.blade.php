@@ -20,7 +20,7 @@
         </div>
 
         <nav class="flex-1 px-6 space-y-2">
-            <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-[#1E3A5F] transition-all">
+            <a href="{{ route('masyarakat.dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-full text-sm font-medium text-slate-500 hover:bg-slate-50 hover:text-[#1E3A5F] transition-all">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
                 Overview
             </a>
@@ -75,7 +75,16 @@
                     <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
-                    <input type="text" placeholder="Cari ID atau Jenis Bantuan" class="bg-transparent text-sm text-slate-600 outline-none w-44">
+                    <form action="{{ route('masyarakat.pengajuan.index') }}" method="GET" class="flex items-center gap-2">
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                            placeholder="Cari ID atau Jenis Bantuan" 
+                            class="bg-transparent text-sm text-slate-600 outline-none w-44">
+                        <button type="submit" class="text-slate-400 hover:text-slate-600">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -102,7 +111,8 @@
                         </thead>
                         <tbody class="divide-y divide-slate-50">
                             @forelse($pengajuan as $item)
-                                <tr class="hover:bg-[#F8F9FA] transition-colors cursor-pointer">
+                                <tr class="hover:bg-[#F8F9FA] transition-colors cursor-pointer {{ $selected && $selected->id_pengajuan == $item->id_pengajuan ? 'bg-blue-50' : '' }}"
+                                    onclick="window.location='{{ route('masyarakat.pengajuan.index') }}?id={{ $item->id_pengajuan }}'">
                                     <td class="px-6 py-4 font-bold text-[#1E3A5F]">#LT-{{ str_pad($item->id_pengajuan, 4, '0', STR_PAD_LEFT) }}</td>
                                     <td class="px-6 py-4 text-slate-700">{{ $item->jenis_bantuan }}</td>
                                     <td class="px-6 py-4 text-slate-500">{{ \Carbon\Carbon::parse($item->tanggal_pengajuan)->format('d M Y') }}</td>
@@ -157,8 +167,8 @@
 
             </div>
 
-            @if($pengajuan->count() > 0)
-            @php $latest = $pengajuan->first(); @endphp
+            @if($selected)
+            @php $latest = $selected; @endphp
             <div class="w-80 bg-white rounded-3xl shadow-sm p-6 flex flex-col gap-6 h-fit">
 
                 {{-- Header --}}

@@ -74,13 +74,17 @@ class PengajuanBantuanController extends Controller
             ->with('success', 'Pengajuan berhasil dikirim!');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $pengajuan = PengajuanBantuan::where('id_users', Auth::id())
             ->with('dokumen', 'validasi')
             ->latest()
             ->get();
 
-        return view('masyarakat.pengajuan.index', compact('pengajuan'));
+        $selected = $request->id 
+            ? $pengajuan->firstWhere('id_pengajuan', $request->id)
+            : $pengajuan->first();
+
+        return view('masyarakat.pengajuan.index', compact('pengajuan', 'selected'));
     }
 }
