@@ -176,3 +176,31 @@ Route::get('/statistik-bantuan', function () {
         'coverage'
     ));
 });
+
+Route::get('/statistik-publik', function () {
+
+    $total = \App\Models\Recipient::count();
+
+    $tinggi = \App\Models\Recipient::where('score', '>=', 80)->count();
+
+    $sedang = \App\Models\Recipient::whereBetween('score', [60,79])->count();
+
+    $rendah = \App\Models\Recipient::where('score', '<', 60)->count();
+
+    $jenisBantuan = [
+        ['nama' => 'Pangan', 'total' => 15],
+        ['nama' => 'Pendidikan', 'total' => 10],
+        ['nama' => 'Kesehatan', 'total' => 8],
+    ];
+
+    return view(
+        'statistik-publik',
+        compact(
+            'total',
+            'tinggi',
+            'sedang',
+            'rendah',
+            'jenisBantuan'
+        )
+    );
+});
