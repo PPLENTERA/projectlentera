@@ -15,10 +15,9 @@
     <nav class="bg-white shadow-sm px-8 py-4 flex items-center justify-between">
         <div class="text-xl font-extrabold text-[#1C2C4E]">LENTERA</div>
         <div class="flex gap-6 text-sm font-medium text-slate-600">
-            <a href="#" class="hover:text-[#1C2C4E]">Home</a>
-            <a href="#" class="hover:text-[#1C2C4E]">Dashboard</a>
-            <a href="#" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
-            <a href="#" class="hover:text-[#1C2C4E]">Pelaporan</a>
+            <a href="{{ route('masyarakat.dashboard') }}" class="hover:text-[#1C2C4E]">Dashboard</a>
+            <a href="{{ route('masyarakat.pengajuan.create') }}" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
+            <a href="{{ route('masyarakat.pelaporan.create') }}" class="hover:text-[#1C2C4E]">Pelaporan</a>
         </div>
         <div class="flex items-center gap-3">
             <div class="text-right">
