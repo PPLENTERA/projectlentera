@@ -2,74 +2,269 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PengajuanBantuan;
+use App\Models\Recipient;
+use App\Models\LaporanPenyalahgunaan;
+use App\Models\Feedback;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class DashboardController extends Controller
 {
-    public function index()
+    public function adminDashboard()
     {
-        $pengajuan = collect([
-            [
-                'id_pengajuan' => 1,
-                'user' => ['nama' => 'Budi Santoso', 'alamat' => 'Jakarta Pusat'],
-                'jenis_bantuan' => 'Pendidikan',
-                'jumlah_tanggungan' => 4,
-                'status_pengajuan' => 'Disetujui',
-                'tanggal_pengajuan' => '2026-04-01',
-                'nominal' => 1250000,
-            ],
-            [
-                'id_pengajuan' => 2,
-                'user' => ['nama' => 'Sari Rahma', 'alamat' => 'Jakarta Barat'],
-                'jenis_bantuan' => 'Kesehatan',
-                'jumlah_tanggungan' => 3,
-                'status_pengajuan' => 'Pending',
-                'tanggal_pengajuan' => '2026-04-03',
-                'nominal' => 850000,
-            ],
-            [
-                'id_pengajuan' => 3,
-                'user' => ['nama' => 'Andi Pratama', 'alamat' => 'Jakarta Utara'],
-                'jenis_bantuan' => 'Pangan',
-                'jumlah_tanggungan' => 5,
-                'status_pengajuan' => 'Disetujui',
-                'tanggal_pengajuan' => '2026-04-05',
-                'nominal' => 920000,
-            ],
-            [
-                'id_pengajuan' => 4,
-                'user' => ['nama' => 'Rina Dewi', 'alamat' => 'Jakarta Selatan'],
-                'jenis_bantuan' => 'Pendidikan',
-                'jumlah_tanggungan' => 2,
-                'status_pengajuan' => 'Selesai',
-                'tanggal_pengajuan' => '2026-04-06',
-                'nominal' => 700000,
-            ],
-        ]);
+        $totalPengajuan   = PengajuanBantuan::count();
+        $totalDisetujui   = PengajuanBantuan::whereIn('status_pengajuan', ['diverifikasi', 'diterima'])->count();
+        $sedangMengajukan = PengajuanBantuan::where('status_pengajuan', 'pending')->count();
+        $totalDitolak     = PengajuanBantuan::where('status_pengajuan', 'ditolak')->count();
 
-        $summary = [
-            'total_bantuan' => $pengajuan->sum('nominal'),
-            'pending' => $pengajuan->where('status_pengajuan', 'Pending')->count(),
-            'program_count' => $pengajuan->pluck('jenis_bantuan')->unique()->count(),
-            'wilayah_count' => $pengajuan->pluck('user.alamat')->unique()->count(),
+        $rataRataScore = Recipient::avg('score') ?? 0;
+        $totalBantuan  = $totalDisetujui * 500000;
+
+        $feedbackBelumDitinjau = Feedback::where('status', 'belum_ditinjau')->count();
+        $totalFeedback         = Feedback::count();
+
+        $laporanPending = LaporanPenyalahgunaan::where('status', 'menunggu_tindak_lanjut')->count();
+        $totalLaporan   = LaporanPenyalahgunaan::count();
+
+        $pendaftaranPending = \App\Models\PendaftaranBantuan::where('status', 'pending')->count();
+        $totalPendaftaran   = \App\Models\PendaftaranBantuan::count();
+
+        $pendaftaran   = \App\Models\PendaftaranBantuan::all();
+        $villages = [
+            'Bojongsoang' => 'Desa Bojongsoang',
+            'Bojongsari'  => 'Desa Bojongsari',
+            'Buahbatu'    => 'Desa Buahbatu',
+            'Cipagalo'    => 'Desa Cipagalo',
+            'Lengkong'    => 'Desa Lengkong',
+            'Tegalluar'   => 'Desa Tegalluar',
         ];
 
-        $perWilayah = $pengajuan
-            ->groupBy('user.alamat')
-            ->map(fn ($items, $alamat) => [
-                'wilayah' => $alamat,
-                'total' => $items->count(),
-            ])
-            ->values();
+        $wilayahCounts = [];
+        foreach ($villages as $key => $name) {
+            $wilayahCounts[$name] = 0;
+        }
+        foreach ($pendaftaran as $p) {
+            $alamat = strtoupper($p->alamat_lengkap);
+            foreach ($villages as $key => $name) {
+                if (str_contains($alamat, strtoupper($key))) {
+                    $wilayahCounts[$name]++;
+                    break;
+                }
+            }
+        }
 
-        $category = $pengajuan
-            ->groupBy('jenis_bantuan')
-            ->map(fn ($items, $program) => [
-                'program' => $program,
-                'total' => $items->count(),
-            ])
-            ->values();
+        $perWilayah = collect();
+        foreach ($wilayahCounts as $villageName => $count) {
+            $perWilayah->push(['wilayah' => $villageName, 'total' => $count]);
+        }
 
-        $recent = $pengajuan->sortByDesc('tanggal_pengajuan')->values()->take(4);
+        $recent         = $this->getAdminRecentReports();
+        $categoriesList = $this->getCategoriesData();
+        $authUser       = Auth::user();
 
-        return view('admin.dashboard', compact('summary', 'perWilayah', 'category', 'recent'));
+        return view('admin.dashboard', compact(
+            'totalPengajuan',
+            'totalDisetujui',
+            'sedangMengajukan',
+            'totalDitolak',
+            'rataRataScore',
+            'totalBantuan',
+            'perWilayah',
+            'recent',
+            'categoriesList',
+            'feedbackBelumDitinjau',
+            'totalFeedback',
+            'laporanPending',
+            'totalLaporan',
+            'pendaftaranPending',
+            'totalPendaftaran',
+            'authUser'
+        ));
+    }
+
+    public function masyarakatDashboard()
+    {
+        $userId = Auth::id();
+
+        $totalBantuan = PengajuanBantuan::where('id_users', $userId)
+            ->whereIn('status_pengajuan', ['diverifikasi', 'diterima'])
+            ->count() * 500000;
+
+        $pengajuanPending = PengajuanBantuan::where('id_users', $userId)
+            ->where('status_pengajuan', 'pending')
+            ->count();
+
+        $disetujui = PengajuanBantuan::where('id_users', $userId)
+            ->whereIn('status_pengajuan', ['diverifikasi', 'diterima'])
+            ->count();
+
+        $ditolak = PengajuanBantuan::where('id_users', $userId)
+            ->where('status_pengajuan', 'ditolak')
+            ->count();
+
+        $pendaftaranUser = \App\Models\PendaftaranBantuan::where('user_id', $userId)->latest()->first();
+
+        $pengajuanTerbaru = PengajuanBantuan::where('id_users', $userId)
+            ->with('validasi')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $pengajuan = PengajuanBantuan::whereIn('status_pengajuan', ['diverifikasi', 'diterima'])->get();
+
+        $grouped = $pengajuan->groupBy(function ($date) {
+            return \Carbon\Carbon::parse($date->tanggal_pengajuan)->format('M');
+        });
+
+        $penyaluranBulanan = collect();
+        foreach (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] as $month) {
+            $monthData = $grouped->get($month, collect());
+            $tunai     = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Tunai') !== false)->count() * 500000;
+            $sembako   = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Sembako') !== false)->count() * 300000;
+            $penyaluranBulanan->push([
+                'bulan'      => strtoupper($month),
+                'dana_tunai' => $tunai,
+                'sembako'    => $sembako,
+            ]);
+        }
+
+        $recent         = $this->getMasyarakatRecentReports($userId);
+        $categoriesList = $this->getCategoriesData();
+        $authUser       = Auth::user();
+
+        return view('masyarakat.dashboard', compact(
+            'totalBantuan',
+            'pengajuanPending',
+            'disetujui',
+            'ditolak',
+            'penyaluranBulanan',
+            'recent',
+            'categoriesList',
+            'pendaftaranUser',
+            'pengajuanTerbaru',
+            'authUser'
+        ));
+    }
+
+    private function getCategoriesData()
+    {
+        $allPengajuan = PengajuanBantuan::all();
+
+        $categoriesData = [
+            'Bantuan Pendidikan' => ['name' => 'Pendidikan', 'icon' => 'academic-cap', 'color' => 'blue',    'hex' => '#3b82f6', 'bg_hex' => '#eff6ff', 'count' => 0, 'approved' => 0],
+            'Bantuan Kesehatan'  => ['name' => 'Kesehatan',  'icon' => 'heart',         'color' => 'emerald', 'hex' => '#10b981', 'bg_hex' => '#ecfdf5', 'count' => 0, 'approved' => 0],
+            'Bantuan Pangan'     => ['name' => 'Pangan',     'icon' => 'shopping-bag',  'color' => 'amber',   'hex' => '#f59e0b', 'bg_hex' => '#fffbeb', 'count' => 0, 'approved' => 0],
+            'Bantuan Perumahan'  => ['name' => 'Perumahan',  'icon' => 'home',          'color' => 'purple',  'hex' => '#8b5cf6', 'bg_hex' => '#f5f3ff', 'count' => 0, 'approved' => 0],
+        ];
+
+        foreach ($allPengajuan as $p) {
+            $cat = $p->jenis_bantuan;
+            if (stripos($cat, 'Pendidikan') !== false)    $key = 'Bantuan Pendidikan';
+            elseif (stripos($cat, 'Kesehatan') !== false) $key = 'Bantuan Kesehatan';
+            elseif (stripos($cat, 'Pangan') !== false)    $key = 'Bantuan Pangan';
+            elseif (stripos($cat, 'Perumahan') !== false) $key = 'Bantuan Perumahan';
+            else continue;
+
+            $categoriesData[$key]['count']++;
+            if (in_array(strtolower($p->status_pengajuan), ['diverifikasi', 'diterima', 'disetujui'])) {
+                $categoriesData[$key]['approved']++;
+            }
+        }
+
+        $totalCount     = $allPengajuan->count();
+        $categoriesList = collect();
+
+        foreach ($categoriesData as $data) {
+            $count    = $data['count'];
+            $approved = $data['approved'];
+
+            $percentage   = $totalCount > 0 ? round(($count / $totalCount) * 100) : 0;
+            $progress     = $count > 0 ? round(($approved / $count) * 100) : 0;
+            $danaEstimasi = match ($data['name']) {
+                'Pendidikan' => $count * 1500000,
+                'Kesehatan'  => $count * 1000000,
+                'Pangan'     => $count * 500000,
+                default      => $count * 2000000,
+            };
+
+            $categoriesList->push([
+                'name'       => $data['name'],
+                'icon'       => $data['icon'],
+                'color'      => $data['color'],
+                'hex'        => $data['hex'],
+                'bg_hex'     => $data['bg_hex'],
+                'count'      => $count,
+                'percentage' => $percentage,
+                'progress'   => $progress,
+                'dana'       => $danaEstimasi,
+            ]);
+        }
+
+        return $categoriesList;
+    }
+
+    private function getAdminRecentReports()
+    {
+        $reports = collect();
+
+        try {
+            $laporans = LaporanPenyalahgunaan::latest()->take(3)->get();
+            foreach ($laporans as $lap) {
+                $reports->push([
+                    'icon'      => 'beras',
+                    'judul'     => 'Laporan — ' . ($lap->lokasi_kejadian ?? 'Umum'),
+                    'waktu'     => $lap->created_at ? $lap->created_at->diffForHumans() : 'Baru saja',
+                    'deskripsi' => $lap->deskripsi_kejadian,
+                ]);
+            }
+        } catch (\Exception $e) {}
+
+        try {
+            $feedbacks = Feedback::latest()->take(3)->get();
+            foreach ($feedbacks as $fb) {
+                $reports->push([
+                    'icon'      => 'buku',
+                    'judul'     => 'Masukan dari ' . ($fb->nama_lengkap ?? 'Masyarakat'),
+                    'waktu'     => $fb->created_at ? $fb->created_at->diffForHumans() : 'Baru saja',
+                    'deskripsi' => $fb->deskripsi_masukan,
+                ]);
+            }
+        } catch (\Exception $e) {}
+
+        if ($reports->isEmpty()) {
+            try {
+                $latestPengajuan = PengajuanBantuan::with('user')->latest()->take(3)->get();
+                foreach ($latestPengajuan as $p) {
+                    $reports->push([
+                        'icon'      => 'kesehatan',
+                        'judul'     => 'Pengajuan ' . $p->jenis_bantuan,
+                        'waktu'     => $p->created_at ? $p->created_at->diffForHumans() : 'Baru saja',
+                        'deskripsi' => 'Dari ' . ($p->user->name ?? 'Masyarakat') . ', tanggungan: ' . $p->jumlah_tanggungan,
+                    ]);
+                }
+            } catch (\Exception $e) {}
+        }
+
+        return $reports->take(3);
+    }
+
+    private function getMasyarakatRecentReports($userId)
+    {
+        $reports = collect();
+
+        try {
+            $laporans = LaporanPenyalahgunaan::where('user_id', $userId)->latest()->take(3)->get();
+            foreach ($laporans as $lap) {
+                $reports->push([
+                    'icon'      => 'beras',
+                    'judul'     => 'Laporan — ' . ($lap->lokasi_kejadian ?? 'Umum'),
+                    'waktu'     => $lap->created_at ? $lap->created_at->diffForHumans() : 'Baru saja',
+                    'deskripsi' => $lap->deskripsi_kejadian,
+                ]);
+            }
+        } catch (\Exception $e) {}
+
+        return $reports->take(3);
     }
 }

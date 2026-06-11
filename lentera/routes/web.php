@@ -11,10 +11,13 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Masyarakat\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
+use App\Http\Controllers\Masyarakat\NotificationController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\ScoringIndicatorController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\MonitoringController;
+use App\Http\Controllers\Admin\BroadcastController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,7 +30,6 @@ Route::get('/', function () {
         'totalPenerima' => Recipient::count(),
     ]);
 });
-
 /*
 |--------------------------------------------------------------------------
 | Hitung Ulang Score
@@ -99,8 +101,11 @@ Route::middleware('auth')->group(function () {
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('admin.monitoring');
 
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
+    Route::get('/validasi/export', [ValidasiVerifikasiController::class, 'export'])->name('admin.validasi.export');
     Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
     Route::put('/validasi/{id}', [ValidasiVerifikasiController::class, 'update'])->name('admin.validasi.update');
     Route::get('/penentuan', [ValidasiVerifikasiController::class, 'penentuanPenerima'])->name('admin.validasi.penentuan');
@@ -110,6 +115,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
 
+    Route::get('/broadcast', [BroadcastController::class, 'index'])->name('admin.broadcast.index');
+    Route::post('/broadcast', [BroadcastController::class, 'send'])->name('admin.broadcast.send');
     Route::resource('scoring-indicators', ScoringIndicatorController::class)->names('admin.scoring_indicators');
 });
 
@@ -119,9 +126,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
-    Route::get('/dashboard', function () {
-        return "Ini halaman Dashboard Masyarakat.";
-    })->name('masyarakat.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
 
     Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
     Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
@@ -135,3 +140,11 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
     Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
 });
+
+    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
+    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
+    Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markRead'])->name('masyarakat.notifikasi.read');
+});
+
+Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');

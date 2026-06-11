@@ -9,27 +9,52 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+<body class="bg-[#F3F4F6] min-h-screen font-['Inter']">
 
-    <div class="max-w-2xl mx-auto">
-
-        <div class="mb-6">
-            <h1 class="text-2xl font-bold text-[#1C2C4E]">Pengajuan Bantuan</h1>
-             <p class="text-sm text-slate-500 mt-1">Langkah 1 dari 2 - Isi data pengajuan Anda.</p>
+    {{-- NAVBAR --}}
+    <nav class="bg-white shadow-sm px-8 py-4 flex items-center justify-between">
+        <div class="text-xl font-extrabold text-[#1C2C4E]">LENTERA</div>
+        <div class="flex gap-6 text-sm font-medium text-slate-600">
+            <a href="{{ url('/') }}" class="hover:text-[#1C2C4E]">Home</a>
+            <a href="{{ route('masyarakat.dashboard') }}" class="hover:text-[#1C2C4E]">Dashboard</a>
+            <a href="{{ route('masyarakat.pengajuan.index') }}" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
+            <a href="{{ route('masyarakat.dashboard') }}" class="hover:text-[#1C2C4E]">Dashboard</a>
+            <a href="{{ route('masyarakat.pengajuan.create') }}" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
+            <a href="{{ route('masyarakat.pelaporan.create') }}" class="hover:text-[#1C2C4E]">Pelaporan</a>
         </div>
+        <div class="flex items-center gap-4">
+            <!-- Bell Icon with Badge -->
+            <a href="{{ route('masyarakat.notifikasi.index') }}" class="relative p-2 text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                </svg>
+                @if($unreadNotificationsCount > 0)
+                    <span class="absolute top-0.5 right-0.5 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                @endif
+            </a>
 
-        <div class="flex items-center mb-8">
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-[#1C2C4E] text-white text-sm font-bold">1</div>
-            <div class="flex-1 h-1 bg-[#1C2C4E] mx-2"></div>
-            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-slate-200 text-slate-400 text-sm font-bold">2</div>
-        </div>
-
-        @if(session('success'))
-            <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6">
-                {{ session('success') }}
+            <div class="text-right">
+                <p class="text-sm font-bold text-slate-800">{{ Auth::user()->name }}</p>
+                <p class="text-xs text-slate-400">ID: {{ Auth::user()->id }}</p>
             </div>
-        @endif
+            <div class="w-9 h-9 rounded-full bg-[#1C2C4E] flex items-center justify-center text-white text-sm font-bold">
+                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+            </div>
+        </div>
+    </nav>
 
+    <div class="max-w-3xl mx-auto py-10 px-4">
+
+        {{-- HEADER --}}
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-[#1C2C4E]">Pengajuan Bantuan</h1>
+            <p class="text-sm text-slate-500 mt-2">
+                Silakan lengkapi formulir di bawah ini dengan data yang sebenar-benarnya<br>
+                untuk mempercepat proses verifikasi tim LENTERA.
+            </p>
+        </div>
+
+        {{-- ALERT ERROR --}}
         @if($errors->any())
             <div class="bg-red-50 text-red-600 text-sm p-4 rounded-xl border border-red-100 mb-6">
                 <ul class="list-disc list-inside">
@@ -40,65 +65,131 @@
             </div>
         @endif
 
-        <form action="{{ route('masyarakat.pengajuan.store') }}" method="POST" class="bg-white rounded-2xl shadow p-8 space-y-6">
+        {{-- FORM --}}
+        <form action="{{ route('masyarakat.pengajuan.store') }}" method="POST" enctype="multipart/form-data"
+            class="bg-white rounded-2xl shadow p-8 space-y-6">
             @csrf
-            
+
+            {{-- Nama Lengkap & NIK --}}
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
+                        Nama Lengkap
+                    </label>
+                    <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required
+                        class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
+                        placeholder="Sesuai KTP">
+                </div>
+                <div>
+                    <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
+                        NIK (Nomor Induk Kependudukan)
+                    </label>
+                    <input type="text" name="nik" value="{{ old('nik') }}" required maxlength="16"
+                        class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
+                        placeholder="16 Digit Nomor KTP">
+                </div>
+            </div>
+
+            {{-- Jenis Bantuan --}}
             <div>
                 <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
                     Jenis Bantuan
                 </label>
                 <select name="jenis_bantuan" required
                     class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none">
-                    <option value="" disabled selected>Pilih jenis bantuan</option>
+                    <option value="" disabled selected>Pilih kategori bantuan</option>
                     <option value="Bantuan Pangan" {{ old('jenis_bantuan') == 'Bantuan Pangan' ? 'selected' : '' }}>Bantuan Pangan</option>
                     <option value="Bantuan Kesehatan" {{ old('jenis_bantuan') == 'Bantuan Kesehatan' ? 'selected' : '' }}>Bantuan Kesehatan</option>
                     <option value="Bantuan Pendidikan" {{ old('jenis_bantuan') == 'Bantuan Pendidikan' ? 'selected' : '' }}>Bantuan Pendidikan</option>
                     <option value="Bantuan Perumahan" {{ old('jenis_bantuan') == 'Bantuan Perumahan' ? 'selected' : '' }}>Bantuan Perumahan</option>
                 </select>
             </div>
+
+            {{-- Deskripsi Kebutuhan --}}
             <div>
                 <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                    Penghasilan Per Bulan (Rp)
+                    Deskripsi Kebutuhan
                 </label>
-                <div class="relative flex items-center">
-                    <span class="absolute pl-4 text-slate-400 text-sm font-medium">Rp</span>
-                    <input type="number" name="penghasilan" value="{{ old('penghasilan') }}" required min="0"
-                        class="w-full pl-10 pr-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline
-                                            placeholder="0">
+                <textarea name="deskripsi_kebutuhan" rows="4"
+                    class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none resize-none"
+                    placeholder="Ceritakan kondisi Anda dan alasan mengajukan bantuan ini...">{{ old('deskripsi_kebutuhan') }}</textarea>
             </div>
-        </div> 
 
-        <div>
-            <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                Jumlah Tanggungan
-            </label>
-            <input type="number" name="jumlah_tanggungan" value="{{ old('jumlah_tanggungan') }}" required min="0"
-                class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
-                placeholder="Contoh: 3">
-        </div>
+            {{-- Upload Bukti Pendukung (Opsional) --}}
+            <div>
+                <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
+                    Unggah Bukti Pendukung <span class="text-slate-400 normal-case font-normal">(Opsional)</span>
+                </label>
+                <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center bg-[#F8F9FA]">
+                    <svg class="w-8 h-8 text-slate-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <p class="text-xs text-slate-400 mb-3">Klik atau seret file foto/PDF bukti kondisi (Max. 5MB)</p>
+                    <input type="file" name="bukti_pendukung" accept=".pdf,.jpg,.jpeg,.png"
+                        class="text-sm text-slate-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#1C2C4E] file:text-white hover:file:bg-[#111A31]">
+                </div>
+            </div>
 
-        <div>
-            <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                Deskripsi Kebutuhan
-            </label>
-            <textarea name="deskripsi_kebutuhan" rows="4"
-                class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none resize-none"
-                placeholder="Jelaskan kondisi dan kebutuhan Anda...">{{ old('deskripsi_kebutuhan') }}</textarea>
-        </div>
+            {{-- Tombol --}}
+            <div class="flex gap-3 pt-2 border-t border-slate-100">
+                <a href="{{ route('masyarakat.pengajuan.index') }}"
+                    class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-slate-600 bg-[#F0F2F5] hover:bg-slate-200 transition-all">
+                    ← Sebelumnya
+                </a>
+                <button type="submit"
+                    class="flex-1 flex justify-center items-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#172545] to-[#1F335C] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                    Selanjutnya →
+                </button>
+            </div>
 
-        <div class="pt-2">
-            <button type="submit"
-                class="w-full flex justify-center items-center py-4 px-4 rounded-xl text-[0.95rem] font-bold text-white bg-linear-to-r from-[#172545] to-[#1F335C] shadow-lg shadow-[#172545]/25 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 active:shadow-md transition-all outline-none">
-                Selanjutnya
-                <svg class="ml-2.5 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </form>
+
+        {{-- BANTUAN BOX --}}
+        <div class="mt-6 bg-yellow-50 border border-yellow-100 rounded-2xl p-5 flex gap-4">
+            <div class="text-yellow-400 mt-1">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-            </button>
+            </div>
+            <div>
+                <p class="text-sm font-bold text-slate-700 mb-1">Butuh Bantuan Mengisi?</p>
+                <p class="text-xs text-slate-500 leading-relaxed">
+                    Jika Anda kesulitan mengisi formulir ini, silakan hubungi relawan LENTERA terdekat atau kunjungi pusat bantuan masyarakat di kecamatan Anda.
+                </p>
+                <a href="#" class="text-xs font-bold text-[#1F54CE] mt-2 inline-block hover:underline">Lihat Lokasi Relawan</a>
+            </div>
         </div>
 
-    </form>
+    </div>
 
-</div>
+    {{-- FOOTER --}}
+    <footer class="bg-[#1C2C4E] text-white mt-16 py-10 px-8">
+        <div class="max-w-5xl mx-auto grid grid-cols-3 gap-8">
+            <div>
+                <p class="text-lg font-extrabold mb-3">LENTERA</p>
+                <p class="text-xs text-[#8A99BA] leading-relaxed">
+                    Menyinari jalan menuju keadilan sosial. Platform transparansi bantuan rakyat yang akuntabel dan berintegritas.
+                </p>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest mb-3">Navigasi Cepat</p>
+                <ul class="space-y-2 text-xs text-[#8A99BA]">
+                    <li><a href="#" class="hover:text-white">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-white">Kebijakan Privasi</a></li>
+                    <li><a href="#" class="hover:text-white">Syarat & Ketentuan</a></li>
+                    <li><a href="#" class="hover:text-white">Kontak</a></li>
+                </ul>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest mb-3">Kontak Kami</p>
+                <div class="space-y-2 text-xs text-[#8A99BA]">
+                    <p>info@lentera.go.id</p>
+                    <p>1500-LENTERA</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-[#2E4A7A] mt-8"></div>
+    </footer>
 
 </body>
 </html>

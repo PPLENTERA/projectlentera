@@ -12,7 +12,7 @@ class RecipientController extends Controller
     {
         $data = $request->validate([
             'name' => 'required',
-            'photo' => 'image|mimes:jpg,jpeg,png|max:2048',
+            'photo' => 'image|mimes:jpg,jpeg,png|max:2048'
         ]);
 
         if ($request->hasFile('photo')) {
