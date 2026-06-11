@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ScoringIndicatorController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MonitoringController;
 use App\Http\Controllers\Admin\BroadcastController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
 /*
 |--------------------------------------------------------------------------
@@ -118,6 +120,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/broadcast', [BroadcastController::class, 'index'])->name('admin.broadcast.index');
     Route::post('/broadcast', [BroadcastController::class, 'send'])->name('admin.broadcast.send');
     Route::resource('scoring-indicators', ScoringIndicatorController::class)->names('admin.scoring_indicators');
+    Route::resource('feedback', AdminFeedbackController::class)->names('admin.feedback');
 });
 
 /*

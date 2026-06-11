@@ -68,18 +68,17 @@ class ValidasiVerifikasiController extends Controller
                 $pengajuan->penghasilan,
                 $pengajuan->jumlah_tanggungan
             );
+        } else {
+            $pengajuan = PengajuanBantuan::findOrFail($id);
         }
 
-        PengajuanBantuan::where('id_pengajuan', $id)->update([
+        $pengajuan->update([
             'status_pengajuan' => $status_pengajuan,
             'skor_kelayakan'   => $score,
-        $newStatus = $request->status_validasi === 'valid' ? 'diverifikasi' : 'ditolak';
-        $pengajuan->update([
-            'status_pengajuan' => $newStatus,
         ]);
 
         // Kirim Notifikasi Status Update
-        if ($newStatus === 'diverifikasi') {
+        if ($status_pengajuan === 'diverifikasi') {
             Notification::create([
                 'user_id' => $pengajuan->id_users,
                 'title' => 'Pengajuan Anda telah Disetujui',
@@ -188,6 +187,7 @@ class ValidasiVerifikasiController extends Controller
         return redirect()->route('admin.validasi.penentuan')
             ->with('success', $message);
     }
+ 
     public function export(Request $request)
     {
         $request->validate([

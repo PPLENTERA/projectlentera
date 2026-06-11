@@ -1,30 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indikator Scoring - LENTERA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+@extends('layouts.admin')
 
-<div class="max-w-5xl mx-auto">
+@section('title', 'Indikator Scoring')
 
+@section('content')
+
+<div class="space-y-6">
+
+    {{-- Title Block --}}
     <div class="mb-6 flex justify-between items-center">
         <div>
             <h1 class="text-2xl font-bold text-[#1C2C4E]">Indikator Penilaian</h1>
             <p class="text-sm text-slate-500 mt-1">Tentukan kriteria penilaian dan aturan skor kelayakan secara terstruktur dan objektif.</p>
         </div>
         <a href="{{ route('admin.scoring_indicators.create') }}"
-           class="text-xs font-bold text-white bg-linear-to-r from-[#172545] to-[#1F335C] px-5 py-3 rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+           class="text-xs font-bold text-white bg-linear-to-r from-[#172545] to-[#1F335C] px-5 py-3 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all">
             + Tambah Indikator
         </a>
     </div>
 
-    <!-- Sub-navigation -->
+    {{-- Sub-navigation --}}
     <div class="flex gap-6 mb-6 border-b border-slate-200">
         <a href="{{ route('admin.validasi.index') }}" 
            class="text-sm font-semibold text-slate-500 hover:text-[#1C2C4E] pb-3 transition-all">
@@ -41,17 +35,17 @@
     </div>
 
     @if(session('success'))
-        <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6 shadow-xs">
+        <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6 shadow-sm">
             {{ session('success') }}
         </div>
     @endif
 
-    <!-- Acuan Penilaian Default (Seeder) -->
+    {{-- Panduan Penilaian Default --}}
     <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-6 mb-6">
         <h2 class="text-sm font-bold text-blue-800 uppercase tracking-widest mb-3 flex items-center gap-2">
-            💡 Panduan Penilaian Default (Acuan Seeder)
+            💡 Panduan Penilaian Default 
         </h2>
-        <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bawaan sistem yang ada di seeder LENTERA:</p>
+        <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bantuan:</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700">
             <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
                 <p class="font-bold text-blue-900 mb-2">1. Indikator Penghasilan (penghasilan)</p>
@@ -72,9 +66,10 @@
         </div>
     </div>
 
+    {{-- Rules list --}}
     <div class="space-y-6">
         @forelse($indicators as $indicator)
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-all">
                 <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                     <div>
                         <div class="flex items-center gap-2">
@@ -101,54 +96,52 @@
                         </form>
                     </div>
                 </div>
-
+                
+                {{-- Rules Table --}}
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
+                    <table class="w-full text-sm text-left">
                         <thead>
-                            <tr class="bg-white border-b border-slate-100 text-left">
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-widest">Kondisi / Aturan</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-widest">Operator</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Nilai Pembanding</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-400 uppercase tracking-widest text-right">Skor Nilai</th>
+                            <tr class="bg-slate-50/30 text-slate-400 border-b border-slate-100">
+                                <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider">Kriteria Deskripsi (Label)</th>
+                                <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-center">Aturan Logika</th>
+                                <th class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-right">Skor Poin</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @foreach($indicator->rules as $rule)
-                                <tr class="hover:bg-slate-50/50 transition-colors">
+                        <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+                            @forelse($indicator->rules as $rule)
+                                <tr class="hover:bg-slate-50/30 transition-all">
                                     <td class="px-6 py-4">
-                                        <p class="font-medium text-slate-700">{{ $rule->label ?? '-' }}</p>
+                                        {{ $rule->label }}
                                     </td>
-                                    <td class="px-6 py-4">
-                                        <span class="font-mono text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-md font-semibold">
-                                            {{ strtoupper($rule->operator) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 text-right font-semibold text-slate-600">
-                                        @if($rule->operator === 'between')
-                                            {{ number_format($rule->value, 0, ',', '.') }} - {{ number_format($rule->value_max, 0, ',', '.') }}
+                                    <td class="px-6 py-4 text-center text-xs font-mono font-bold text-slate-500">
+                                        @if($rule->operator == 'between')
+                                            {{ $indicator->column_name }} BETWEEN {{ number_format($rule->value, 0, ',', '.') }} AND {{ number_format($rule->value_max, 0, ',', '.') }}
                                         @else
-                                            {{ number_format($rule->value, 0, ',', '.') }}
+                                            {{ $indicator->column_name }} {{ $rule->operator }} {{ number_format($rule->value, 0, ',', '.') }}
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1.5 rounded-lg border border-green-100">
-                                            +{{ $rule->score }} Poin
-                                        </span>
+                                    <td class="px-6 py-4 text-right font-extrabold text-emerald-600">
+                                        +{{ $rule->score }} Poin
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-6 py-8 text-center text-slate-400 text-xs">
+                                        Belum ada aturan penilaian ditambahkan untuk indikator ini.
+                                    </td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
         @empty
-            <div class="bg-white rounded-2xl shadow p-12 text-center border border-slate-100">
-                <p class="text-slate-400 text-sm">Belum ada indikator scoring yang dikonfigurasi. Klik tombol "+ Tambah Indikator" untuk memulai.</p>
+            <div class="bg-white rounded-2xl p-12 border border-slate-200 text-center shadow-sm">
+                <p class="text-slate-500 text-sm">Belum ada indikator scoring aktif.</p>
             </div>
         @endforelse
     </div>
 
 </div>
 
-</body>
-</html>
+@endsection
