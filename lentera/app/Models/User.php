@@ -47,4 +47,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function pendaftaran()
+    {
+        return $this->hasOne(PendaftaranBantuan::class, 'user_id');
+    }
 }

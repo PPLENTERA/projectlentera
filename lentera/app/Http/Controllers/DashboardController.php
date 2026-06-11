@@ -220,32 +220,6 @@ class DashboardController extends Controller
             }
         } catch (\Exception $e) {}
 
-        try {
-            $feedbacks = Feedback::latest()->take(3)->get();
-            foreach ($feedbacks as $fb) {
-                $reports->push([
-                    'icon'      => 'buku',
-                    'judul'     => 'Masukan dari ' . ($fb->nama_lengkap ?? 'Masyarakat'),
-                    'waktu'     => $fb->created_at ? $fb->created_at->diffForHumans() : 'Baru saja',
-                    'deskripsi' => $fb->deskripsi_masukan,
-                ]);
-            }
-        } catch (\Exception $e) {}
-
-        if ($reports->isEmpty()) {
-            try {
-                $latestPengajuan = PengajuanBantuan::with('user')->latest()->take(3)->get();
-                foreach ($latestPengajuan as $p) {
-                    $reports->push([
-                        'icon'      => 'kesehatan',
-                        'judul'     => 'Pengajuan ' . $p->jenis_bantuan,
-                        'waktu'     => $p->created_at ? $p->created_at->diffForHumans() : 'Baru saja',
-                        'deskripsi' => 'Dari ' . ($p->user->name ?? 'Masyarakat') . ', tanggungan: ' . $p->jumlah_tanggungan,
-                    ]);
-                }
-            } catch (\Exception $e) {}
-        }
-
         return $reports->take(3);
     }
 

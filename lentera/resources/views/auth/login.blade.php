@@ -133,13 +133,6 @@
                     </a>
                 </div>
             </div>
-
-            <!-- Footer Links -->
-            <div class="mt-8 flex justify-center space-x-6 text-[0.7rem] text-slate-400 font-semibold">
-                <a href="#" class="hover:text-slate-600 transition-colors">Bantuan</a>
-                <a href="#" class="hover:text-slate-600 transition-colors">Privasi</a>
-                <a href="#" class="hover:text-slate-600 transition-colors">Syarat</a>
-            </div>
         </div>
     </div>
 

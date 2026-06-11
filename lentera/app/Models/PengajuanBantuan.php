@@ -20,6 +20,7 @@ class PengajuanBantuan extends Model
     'bukti_pendukung',
     'status_pengajuan',
     'tanggal_pengajuan',
+    'skor_kelayakan',
     ];
 
     public function user()
