@@ -13,23 +13,55 @@ class ValidasiVerifikasiController extends Controller
 {
     public function index(Request $request)
     {   
-    $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')->latest();
-    if ($request->status) {
-        $query->where('status_pengajuan', $request->status);
-    }
-    
-    if ($request->jenis_bantuan) {
-        $query->where('jenis_bantuan', $request->jenis_bantuan);
-    }
-    $pengajuan = $query->get();
+        $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')->latest();
+        if ($request->status) {
+            if ($request->status === 'diverifikasi') {
+                $query->whereIn('status_pengajuan', ['diverifikasi', 'diterima']);
+            } else {
+                $query->where('status_pengajuan', $request->status);
+            }
+        }
+        
+        if ($request->jenis_bantuan) {
+            $query->where('jenis_bantuan', $request->jenis_bantuan);
+        }
+        $pengajuan = $query->get();
 
-    return view('admin.validasi.index', compact('pengajuan'));
+        // Sync and recalculate score on-the-fly if income/dependents are different from PendaftaranBantuan
+        foreach ($pengajuan as $item) {
+            $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
+            if ($pendaftaran && ($item->penghasilan != $pendaftaran->penghasilan_per_bulan || $item->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+                $item->update([
+                    'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                    'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+                ]);
+            }
+            if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
+                $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
+                if ($newScore > 0) {
+                    $item->update(['skor_kelayakan' => $newScore]);
+                }
+            }
+        }
+
+        return view('admin.validasi.index', compact('pengajuan'));
     }
 
     public function show($id)
     {
         $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
             ->findOrFail($id);
+
+        $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $pengajuan->id_users)->latest()->first();
+        if ($pendaftaran && ($pengajuan->penghasilan != $pendaftaran->penghasilan_per_bulan || $pengajuan->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+            $pengajuan->update([
+                'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+            ]);
+            
+            $newScore = ScoringIndicator::calculateScore($pendaftaran->penghasilan_per_bulan, $pendaftaran->jumlah_tanggungan);
+            $pengajuan->update(['skor_kelayakan' => $newScore]);
+        }
 
         return view('admin.validasi.show', compact('pengajuan'));
     }
@@ -147,8 +179,15 @@ class ValidasiVerifikasiController extends Controller
             ->orderBy('tanggal_pengajuan')
             ->get();
 
-        // Recalculate score on-the-fly if it is 0 or null using the new calculateScore logic
+        // Sync and recalculate score on-the-fly if income/dependents are different from PendaftaranBantuan
         foreach ($pengajuan as $item) {
+            $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
+            if ($pendaftaran && ($item->penghasilan != $pendaftaran->penghasilan_per_bulan || $item->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+                $item->update([
+                    'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                    'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+                ]);
+            }
             if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
                 $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
                 if ($newScore > 0) {
