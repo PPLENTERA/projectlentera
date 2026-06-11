@@ -146,7 +146,6 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
     Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
     Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markRead'])->name('masyarakat.notifikasi.read');
-});
 
     Route::get('/feedback', [FeedbackController::class, 'create'])->name('masyarakat.feedback.create');
     Route::post('/feedback', [FeedbackController::class, 'store'])->name('masyarakat.feedback.store');
