@@ -34,6 +34,13 @@ Route::get('/hitung', function () {
     return "OK";
 });
 
+Route::get('/', function () {
+    return view('landing-page-lentera', [
+        'totalDana' => 12400000000000,
+        'totalPenerima' => 24,
+    ]);
+});
+
 /*
 |--------------------------------------------------------------------------
 | Ranking
