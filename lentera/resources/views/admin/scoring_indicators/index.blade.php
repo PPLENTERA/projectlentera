@@ -43,9 +43,9 @@
     {{-- Panduan Penilaian Default --}}
     <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-6 mb-6">
         <h2 class="text-sm font-bold text-blue-800 uppercase tracking-widest mb-3 flex items-center gap-2">
-            💡 Panduan Penilaian Default (Acuan Seeder)
+            💡 Panduan Penilaian Default 
         </h2>
-        <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bawaan sistem yang ada di seeder LENTERA:</p>
+        <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bantuan:</p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700">
             <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
                 <p class="font-bold text-blue-900 mb-2">1. Indikator Penghasilan (penghasilan)</p>
