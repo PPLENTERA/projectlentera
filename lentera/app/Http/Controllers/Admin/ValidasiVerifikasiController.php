@@ -187,6 +187,7 @@ class ValidasiVerifikasiController extends Controller
 
         return redirect()->route('admin.validasi.penentuan')
             ->with('success', $message);
+    }
     public function export(Request $request)
     {
         $request->validate([

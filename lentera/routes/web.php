@@ -139,7 +139,6 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
     Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
     Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
-});
 
     Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
     Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
