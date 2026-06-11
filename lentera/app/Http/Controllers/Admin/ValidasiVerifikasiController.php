@@ -85,6 +85,21 @@ class ValidasiVerifikasiController extends Controller
             ->orderBy('tanggal_pengajuan')
             ->get();
 
+        // Recalculate score on-the-fly if it is 0 or null using the new calculateScore logic
+        foreach ($pengajuan as $item) {
+            if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
+                $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
+                if ($newScore > 0) {
+                    $item->update(['skor_kelayakan' => $newScore]);
+                }
+            }
+        }
+
+        // Re-query to sort based on the newly updated scores
+        $pengajuan = $query->orderByRaw('skor_kelayakan IS NULL, skor_kelayakan DESC')
+            ->orderBy('tanggal_pengajuan')
+            ->get();
+
         $jenisBantuanList = PengajuanBantuan::select('jenis_bantuan')
             ->distinct()
             ->pluck('jenis_bantuan');

@@ -10,6 +10,87 @@ class ScoringIndicatorController extends Controller
     public function index()
     {
         $indicators = ScoringIndicator::with('rules')->get();
+
+        $hasPenghasilan = $indicators->contains('column_name', 'penghasilan');
+        $hasTanggungan = $indicators->contains('column_name', 'jumlah_tanggungan');
+
+        $displayIndicators = collect();
+
+        // Penghasilan
+        if ($hasPenghasilan) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'penghasilan'));
+        } else {
+            $penghasilanInd = new ScoringIndicator([
+                'name' => 'Penghasilan (Default)',
+                'column_name' => 'penghasilan',
+            ]);
+            $penghasilanInd->id = 9991;
+            $penghasilanInd->setRelation('rules', collect([
+                new ScoringRule([
+                    'operator' => '<',
+                    'value' => 1000000,
+                    'score' => 40,
+                    'label' => 'Kurang dari Rp 1.000.000',
+                ]),
+                new ScoringRule([
+                    'operator' => 'between',
+                    'value' => 1000000,
+                    'value_max' => 3000000,
+                    'score' => 25,
+                    'label' => 'Rp 1.000.000 - Rp 3.000.000',
+                ]),
+                new ScoringRule([
+                    'operator' => '>',
+                    'value' => 3000000,
+                    'score' => 10,
+                    'label' => 'Lebih dari Rp 3.000.000',
+                ]),
+            ]));
+            $displayIndicators->push($penghasilanInd);
+        }
+
+        // Tanggungan
+        if ($hasTanggungan) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'jumlah_tanggungan'));
+        } else {
+            $tanggunganInd = new ScoringIndicator([
+                'name' => 'Jumlah Tanggungan (Default)',
+                'column_name' => 'jumlah_tanggungan',
+            ]);
+            $tanggunganInd->id = 9992;
+            $tanggunganInd->setRelation('rules', collect([
+                new ScoringRule([
+                    'operator' => '>',
+                    'value' => 3,
+                    'score' => 30,
+                    'label' => 'Lebih dari 3 orang',
+                ]),
+                new ScoringRule([
+                    'operator' => 'between',
+                    'value' => 2,
+                    'value_max' => 3,
+                    'score' => 20,
+                    'label' => '2 - 3 orang',
+                ]),
+                new ScoringRule([
+                    'operator' => '<',
+                    'value' => 2,
+                    'score' => 10,
+                    'label' => 'Kurang dari 2 orang',
+                ]),
+            ]));
+            $displayIndicators->push($tanggunganInd);
+        }
+
+        // Add any other custom indicators if present in the database
+        foreach ($indicators as $ind) {
+            if ($ind->column_name !== 'penghasilan' && $ind->column_name !== 'jumlah_tanggungan') {
+                $displayIndicators->push($ind);
+            }
+        }
+
+        $indicators = $displayIndicators;
+
         return view('admin.scoring_indicators.index', compact('indicators'));
     }
     public function create()

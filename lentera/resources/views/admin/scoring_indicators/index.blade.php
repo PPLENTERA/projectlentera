@@ -46,6 +46,32 @@
         </div>
     @endif
 
+    <!-- Acuan Penilaian Default (Seeder) -->
+    <div class="bg-blue-50/70 border border-blue-200 rounded-2xl p-6 mb-6">
+        <h2 class="text-sm font-bold text-blue-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+            💡 Panduan Penilaian Default (Acuan Seeder)
+        </h2>
+        <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bawaan sistem yang ada di seeder LENTERA:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700">
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                <p class="font-bold text-blue-900 mb-2">1. Indikator Penghasilan (penghasilan)</p>
+                <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
+                    <li>Kurang dari Rp 1.000.000 (&lt; 1.000.000) &rarr; <span class="font-bold text-green-600">+40 Poin</span></li>
+                    <li>Rp 1.000.000 - Rp 3.000.000 (between) &rarr; <span class="font-bold text-green-600">+25 Poin</span></li>
+                    <li>Lebih dari Rp 3.000.000 (&gt; 3.000.000) &rarr; <span class="font-bold text-green-600">+10 Poin</span></li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                <p class="font-bold text-blue-900 mb-2">2. Indikator Jumlah Tanggungan (jumlah_tanggungan)</p>
+                <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
+                    <li>Lebih dari 3 orang (&gt; 3) &rarr; <span class="font-bold text-green-600">+30 Poin</span></li>
+                    <li>2 - 3 orang (between) &rarr; <span class="font-bold text-green-600">+20 Poin</span></li>
+                    <li>Kurang dari 2 orang (&lt; 2) &rarr; <span class="font-bold text-green-600">+10 Poin</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
     <div class="space-y-6">
         @forelse($indicators as $indicator)
             <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all">
