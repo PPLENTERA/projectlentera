@@ -1,3 +1,25 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validasi & Verifikasi - LENTERA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+
+<div class="max-w-5xl mx-auto">
+
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-[#1C2C4E]">Validasi & Verifikasi</h1>
+            <p class="text-sm text-slate-500 mt-1">Periksa dan validasi dokumen pengajuan bantuan masuk.</p>
+        </div>
+
+    </div>
 @extends('layouts.admin')
 
 @section('title', 'Validasi & Verifikasi')
@@ -82,6 +104,70 @@
             {{ session('success') }}
         </div>
     @endif
+
+    <div class="flex flex-col gap-4">
+        @forelse($pengajuan as $item)
+            <div class="bg-white rounded-3xl p-6 flex items-center justify-between
+                {{ $item->status_pengajuan == 'pending' ? 'shadow-[0_0_40px_-10px_rgba(249,189,34,0.3)]' : '' }}
+                overflow-hidden relative">
+
+                @if($item->status_pengajuan == 'pending')
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-yellow-400"></div>
+                @elseif($item->status_pengajuan == 'diverifikasi')
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-400"></div>
+                @elseif($item->status_pengajuan == 'ditolak')
+                    <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-400"></div>
+                @endif
+
+                <div class="flex items-center gap-8 pl-4">
+                    <div class="w-12 h-12 rounded-full bg-[#E7E8E9] flex items-center justify-center text-sm font-bold text-[#022448]">
+                        {{ strtoupper(substr($item->user->name ?? 'U', 0, 2)) }}
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold text-[#022448]">{{ $item->user->name ?? '-' }}</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-widest">{{ $item->jenis_bantuan }} • {{ $item->tanggal_pengajuan }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-12">
+                    {{-- Status Badge --}}
+                    @if($item->status_pengajuan == 'pending')
+                        <span class="bg-yellow-100 text-yellow-700 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest">
+                            Pending
+                        </span>
+                    @elseif($item->status_pengajuan == 'diverifikasi')
+                        <span class="bg-green-100 text-green-700 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest">
+                            Diverifikasi
+                        </span>
+                    @elseif($item->status_pengajuan == 'ditolak')
+                        <span class="bg-red-100 text-red-700 text-xs font-bold px-4 py-2 rounded-full uppercase tracking-widest">
+                            Ditolak
+                        </span>
+                    @endif
+
+                    {{-- Tombol Periksa --}}
+                    <a href="{{ route('admin.validasi.show', $item->id_pengajuan) }}"
+                        class="bg-gradient-to-br from-[#022448] to-[#1E3A5F] text-white text-sm font-bold px-8 py-3 rounded-3xl hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                        Periksa
+                    </a>
+                </div>
+
+            </div>
+        @empty
+            <div class="bg-white rounded-3xl p-12 text-center">
+                <p class="text-slate-400 text-sm">Belum ada pengajuan masuk.</p>
+            </div>
+        @endforelse
+    </div>
+
+    <div class="flex items-center justify-between border-t border-slate-100 pt-6">
+        <p class="text-sm text-slate-500">
+            Showing <span class="font-bold text-[#022448]">{{ $pengajuan->count() }}</span> pengajuan
+        </p>
+    </div>
+
+</div>
+
 
     {{-- Table --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">

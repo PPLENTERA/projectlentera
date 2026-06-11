@@ -22,9 +22,9 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <div style="display:flex;gap:10px;align-items:center">
 @auth
     @if(auth()->user()->role === 'admin')
-        <a href="{{ url('/admin/dashboard') }}" class="pill dark">Dashboard</a>
+        <span class="pill dark" style="cursor: default;">Admin</span>
     @else
-        <a href="{{ url('/masyarakat/dashboard') }}" class="pill dark">Dashboard</a>
+        <span class="pill dark" style="cursor: default;">Masyarakat</span>
     @endif
     <a href="{{ url('/logout') }}">Logout</a>
 @else
@@ -37,10 +37,13 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <div class="tag">✦ CAKUPAN BANTUAN RESMI</div>
 <h1>Transparansi Bantuan untuk Semua</h1>
 <p>LENTERA hadir sebagai jembatan kepercayaan antara pemerintah dan masyarakat. Memastikan setiap bantuan sampai ke tangan yang tepat dengan kebijakan penuh.</p>
+@guest
 <div class="btns float">
 <a href="{{ url('/pengajuan') }}" class="pill dark">Ajukan Bantuan →</a>
 <a href="{{ url('/dashboard') }}" class="pill light">Lihat Dashboard</a>
 </div>
+@endguest
+
 </section>
 <section class="section reveal">
 <div class="wrap box glow">
