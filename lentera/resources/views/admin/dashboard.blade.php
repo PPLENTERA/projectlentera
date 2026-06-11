@@ -12,18 +12,18 @@
         <div class="grid grid-cols-12 gap-6 p-6">
 
             {{-- ===== SIDEBAR ===== --}}
-            <aside class="col-span-12 xl:col-span-3 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm flex flex-col sticky top-6 h-max">
-                <div class="flex items-center gap-3 mb-8">
-                    <div class="h-12 w-12 rounded-2xl bg-cyan-600 text-white flex items-center justify-center text-lg font-semibold">L</div>
+            <aside class="col-span-12 xl:col-span-3 bg-white rounded-4xl border border-slate-200 p-6 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.25)] flex flex-col sticky top-6 h-max transition-shadow duration-300 hover:shadow-[0_30px_85px_-55px_rgba(15,23,42,0.25)]">
+                <div class="flex items-center gap-3 mb-8 rounded-4xl bg-slate-50 p-4 border border-slate-100">
+                    <div class="h-12 w-12 rounded-full bg-linear-to-br from-cyan-600 to-cyan-500 text-white flex items-center justify-center text-lg font-semibold shadow-sm ring-1 ring-cyan-50">L</div>
                     <div>
-                        <p class="text-slate-500 text-sm">LENTERA</p>
-                        <p class="font-semibold">Panel Transparansi</p>
+                        <p class="text-slate-500 text-xs uppercase tracking-[0.4em]">LENTERA</p>
+                        <p class="font-semibold text-sm">Panel Transparansi</p>
                     </div>
                 </div>
 
                 {{-- Profil Admin --}}
-                <div class="flex items-center gap-3 mb-6 p-3 rounded-2xl border border-slate-100 bg-slate-50">
-                    <div class="h-10 w-10 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700 flex-shrink-0">
+                <div class="flex items-center gap-3 mb-6 p-4 rounded-[1.75rem] border border-slate-100 bg-slate-50 shadow-sm">
+                    <div class="h-10 w-10 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700 shrink-0">
                         {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
                     </div>
                     <div class="overflow-hidden">
@@ -32,26 +32,26 @@
                     </div>
                 </div>
 
-                <nav class="space-y-1 flex-1">
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-2xl bg-cyan-600 text-white px-4 py-3 shadow font-medium">
+                <nav class="space-y-3 flex-1">
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 rounded-3xl bg-cyan-600 text-white px-4 py-3 shadow-sm font-medium transition-all duration-200 hover:shadow-md">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
                         Overview
                     </a>
-                    <a href="{{ route('admin.validasi.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                    <a href="{{ route('admin.validasi.index') }}" class="flex items-center gap-3 rounded-3xl border border-slate-100 bg-white px-4 py-3 text-slate-600 hover:bg-slate-50 hover:border-slate-200 font-medium transition-all duration-200">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                         Validasi Pengajuan
                         @if($sedangMengajukan > 0)
                             <span class="ml-auto bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">{{ $sedangMengajukan }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('admin.laporan.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                    <a href="{{ route('admin.laporan.index') }}" class="flex items-center gap-3 rounded-3xl border border-slate-100 bg-white px-4 py-3 text-slate-600 hover:bg-slate-50 hover:border-slate-200 font-medium transition-all duration-200">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         Laporan
                         @if($laporanPending > 0)
                             <span class="ml-auto bg-red-100 text-red-600 text-xs font-bold px-2 py-0.5 rounded-full">{{ $laporanPending }}</span>
                         @endif
                     </a>
-                    <a href="{{ route('admin.feedback.index') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                    <a href="{{ route('admin.feedback.index') }}" class="flex items-center gap-3 rounded-3xl border border-slate-100 bg-white px-4 py-3 text-slate-600 hover:bg-slate-50 hover:border-slate-200 font-medium transition-all duration-200">
                         <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         Feedback
                         @if($feedbackBelumDitinjau > 0)
@@ -82,13 +82,16 @@
                         <p class="text-sm text-slate-500">Dashboard Overview</p>
                         <h1 class="text-3xl font-semibold">Monitoring Distribusi Bantuan</h1>
                     </div>
-                    <div class="flex items-center gap-4 rounded-3xl bg-white p-4 shadow-sm border border-slate-200">
+                    <div class="flex items-center gap-4 rounded-3xl bg-white p-2.5 shadow-md border border-slate-100">
                         <div class="text-right">
                             <p class="text-sm text-slate-500">{{ $authUser->name ?? 'Admin' }}</p>
-                            <p class="font-semibold capitalize">{{ $authUser->role ?? 'Admin' }}</p>
+                            <p class="text-xs font-semibold capitalize text-slate-700">{{ $authUser->role ?? 'Admin' }}</p>
                         </div>
-                        <div class="h-12 w-12 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700">
-                            {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
+                        <div class="relative">
+                            <div class="h-11 w-11 rounded-full bg-linear-to-br from-cyan-100 to-cyan-50 flex items-center justify-center font-bold text-cyan-700 shrink-0 text-sm">
+                                {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
+                            </div>
+                            <span class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-white"></span>
                         </div>
                     </div>
                 </header>
@@ -158,7 +161,7 @@
                 <section class="grid gap-4 xl:grid-cols-2">
                     {{-- Widget Feedback --}}
                     <a href="{{ route('admin.feedback.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-blue-200 transition-all group">
-                        <div class="h-14 w-14 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <div class="h-14 w-14 rounded-2xl bg-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                         </div>
                         <div class="flex-1">
@@ -175,7 +178,7 @@
 
                     {{-- Widget Laporan Penyalahgunaan --}}
                     <a href="{{ route('admin.laporan.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-red-200 transition-all group">
-                        <div class="h-14 w-14 rounded-2xl bg-red-500 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+                        <div class="h-14 w-14 rounded-2xl bg-red-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                             <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
                         <div class="flex-1">
@@ -196,15 +199,15 @@
                     <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
                         <div class="flex items-center justify-between mb-6">
                             <div>
-                                <h2 class="text-lg font-semibold text-slate-900">Progres Verifikasi per Wilayah</h2>
-                                <p class="text-sm text-slate-500">Data kumulatif berdasarkan provinsi terpilih</p>
+                                <h2 class="text-lg font-semibold text-slate-900">Distribusi Pendaftaran per Wilayah</h2>
+                                <p class="text-sm text-slate-500">Data berdasarkan wilayah desa pemohon</p>
                             </div>
                             <a href="{{ route('admin.validasi.export') }}" onclick="event.preventDefault(); document.getElementById('export-form').submit();" class="flex items-center gap-2 bg-slate-900 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                                 Export CSV
                             </a>
                         </div>
-                        <div class="flex-1 relative min-h-[300px]">
+                        <div class="flex-1 relative min-h-75">
                             <canvas id="wilayahChart"></canvas>
                         </div>
                     </div>
@@ -229,7 +232,7 @@
                             @foreach($categoriesList->filter(fn($i) => $i['percentage'] > 0) as $item)
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['hex'] }}"></span>
+                                    <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['hex'] }}"></span>
                                     <span class="text-sm text-slate-600">{{ $item['name'] }}</span>
                                 </div>
                                 <span class="text-sm font-semibold text-slate-800">{{ $item['percentage'] }}%</span>
@@ -251,7 +254,7 @@
                             <div class="space-y-4">
                                 @foreach($recent as $item)
                                     <div class="flex items-start gap-4">
-                                        <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                                        <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
                                             @if($item['icon'] == 'beras')
                                                 <svg class="w-6 h-6 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                                             @elseif($item['icon'] == 'buku')

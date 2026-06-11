@@ -6,10 +6,7 @@
             <nav class="flex flex-wrap items-center gap-8 text-sm font-medium">
                 <a href="#" class="text-slate-500 transition hover:text-slate-950">Dashboard</a>
                 <a href="#" class="text-slate-500 transition hover:text-slate-950">Verifikasi</a>
-                <a href="{{ route('feedback.create') }}" class="text-slate-950 border-b-2 border-[#f9bd22] pb-1">Pelaporan</a>
-                <a href="#" class="text-slate-500 transition hover:text-slate-950">Laporan</a>
-            </nav>
-
+                    <a href="{{ route('masyarakat.feedback.create') }}" class="text-slate-950 border-b-2 border-[#f9bd22] pb-1">Pelaporan</a>
             <div class="flex items-center gap-3">
                 <button type="button" class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200">
                     <span class="text-base font-semibold">D</span>

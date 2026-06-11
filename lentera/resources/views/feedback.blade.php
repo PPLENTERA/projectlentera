@@ -763,6 +763,24 @@
             gap: 32px;
             position: relative;
             flex: 0 0 auto;
+            margin: 0 auto;
+        }
+
+        .LENTERA-feedback .nav-link {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .LENTERA-feedback .nav-link:hover {
+            color: #1e3a5f;
+        }
+
+        .LENTERA-feedback .nav-link.active {
+            color: #1e3a5f;
+            font-weight: 700;
+            border-bottom: 2px solid #f9bd22;
+            padding-bottom: 4px;
         }
 
         .LENTERA-feedback .text-12 {
@@ -856,21 +874,18 @@
                 <div class="text-11">LENTERA</div>
             </div>
             <div class="container-13">
-                <div class="div-2">
+                <a href="{{ route('masyarakat.dashboard') }}" class="nav-link">
                     <div class="text-12">Dashboard</div>
-                </div>
-                <div class="div-2">
+                </a>
+                <a href="{{ route('masyarakat.pengajuan.index') }}" class="nav-link">
                     <div class="text-13">Verifikasi</div>
-                </div>
-                <div class="link">
+                </a>
+                <a href="{{ route('masyarakat.feedback.create') }}" class="nav-link active">
                     <div class="text-wrapper-6">Pelaporan</div>
-                </div>
-                <div class="div-2">
+                </a>
+                <a href="{{ route('masyarakat.pelaporan.create') }}" class="nav-link">
                     <div class="text-14">Laporan</div>
-                </div>
-            </div>
-            <div class="container-14">
-                <img class="container-14" src="img/container.svg" />
+                </a>
             </div>
         </div>
     </div>
@@ -906,7 +921,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('feedback.store') }}" method="POST" class="space-y-8">
+                        <form action="{{ route('masyarakat.feedback.store') }}" method="POST" class="space-y-8">
                             @csrf
 
                             <div class="input-fields">
