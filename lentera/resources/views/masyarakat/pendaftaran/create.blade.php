@@ -43,6 +43,17 @@
             <p class="mt-2 text-sm text-slate-500">Lengkapi data di bawah ini dengan valid dan benar.</p>
         </div>
 
+        @if(session('warning'))
+            <div class="bg-amber-50 text-amber-600 text-sm p-4 rounded-xl border border-amber-100 mb-6 font-medium">
+                {{ session('warning') }}
+            </div>
+        @endif
+        @if(session('info'))
+            <div class="bg-blue-50 text-blue-600 text-sm p-4 rounded-xl border border-blue-100 mb-6 font-medium">
+                {{ session('info') }}
+            </div>
+        @endif
+
         @if ($errors->any())
             <div class="bg-red-50 text-red-600 text-sm p-4 rounded-xl border border-red-100 mb-6 font-medium">
                 <ul class="list-disc pl-5">

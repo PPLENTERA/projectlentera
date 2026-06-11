@@ -9,6 +9,12 @@ class PendaftaranBantuanController extends Controller
 {
     public function create()
     {
+        $hasRegistered = \App\Models\PendaftaranBantuan::where('user_id', auth()->id())->exists();
+        if ($hasRegistered) {
+            return redirect()->route('masyarakat.dashboard')
+                ->with('info', 'Anda sudah melakukan pendaftaran bantuan.');
+        }
+
         return view('masyarakat.pendaftaran.create');
     }
 
