@@ -16,6 +16,7 @@ use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
+use App\Http\Controllers\Admin\MonitoringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +29,6 @@ Route::get('/', function () {
         'totalPenerima' => 24,
     ]);
 });
-
 /*
 |--------------------------------------------------------------------------
 | Hitung Ulang Score
@@ -98,11 +98,11 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return "Ini halaman Dashboard Admin.";
-    })->name('admin.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/monitoring', [MonitoringController::class, 'index'])->name('admin.monitoring');
 
     Route::get('/validasi', [ValidasiVerifikasiController::class, 'index'])->name('admin.validasi.index');
+    Route::get('/validasi/export', [ValidasiVerifikasiController::class, 'export'])->name('admin.validasi.export');
     Route::get('/validasi/{id}', [ValidasiVerifikasiController::class, 'show'])->name('admin.validasi.show');
     Route::put('/validasi/{id}', [ValidasiVerifikasiController::class, 'update'])->name('admin.validasi.update');
 
@@ -124,9 +124,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
-    Route::get('/dashboard', function () {
-        return "Ini halaman Dashboard Masyarakat.";
-    })->name('masyarakat.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
 
     Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
     Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
