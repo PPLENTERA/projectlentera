@@ -18,6 +18,22 @@
         <p class="text-sm text-slate-500 mt-1">Periksa dan validasi dokumen pengajuan bantuan masuk.</p>
     </div>
 
+    <!-- Sub-navigation -->
+    <div class="flex gap-6 mb-6 border-b border-slate-200">
+        <a href="{{ route('admin.validasi.index') }}" 
+           class="text-sm font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E] pb-3 transition-all">
+            Validasi & Verifikasi
+        </a>
+        <a href="{{ route('admin.scoring_indicators.index') }}" 
+           class="text-sm font-semibold text-slate-500 hover:text-[#1C2C4E] pb-3 transition-all">
+            Indikator Scoring
+        </a>
+        <a href="{{ route('admin.validasi.penentuan') }}" 
+           class="text-sm font-semibold text-slate-500 hover:text-[#1C2C4E] pb-3 transition-all">
+            Penentuan Penerima
+        </a>
+    </div>
+
     @if(session('success'))
         <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6">
 @extends('layouts.admin')
@@ -184,15 +200,100 @@
                     </div>
                 </div>
 
-                {{-- Status & Action --}}
-                <div class="flex items-center gap-4">
-                    @if($item->status_pengajuan == 'pending')
-                        <span class="bg-amber-100 text-amber-700 text-xs font-bold px-3 py-1.5 rounded-full">Pending</span>
-                    @elseif($item->status_pengajuan == 'diverifikasi')
-                        <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1.5 rounded-full">Diverifikasi</span>
-                    @elseif($item->status_pengajuan == 'ditolak')
-                        <span class="bg-red-100 text-red-700 text-xs font-bold px-3 py-1.5 rounded-full">Ditolak</span>
-                    @endif
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-[#F0F2F5] text-left">
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Nama</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Jenis Bantuan</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Tanggal</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Dokumen</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Skor Kelayakan</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Status</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($pengajuan as $item)
+                        <tr class="hover:bg-[#F8F9FA] transition-colors">
+
+                            <td class="px-6 py-4">
+                                <p class="font-semibold text-slate-800">{{ $item->user->name }}</p>
+                                <p class="text-xs text-slate-400">{{ $item->user->email }}</p>
+                            </td>
+
+                            <td class="px-6 py-4 font-medium text-slate-700">
+                                {{ $item->jenis_bantuan }}
+                            </td>
+
+                            <td class="px-6 py-4 text-slate-500">
+                                {{ $item->tanggal_pengajuan }}
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <span class="text-xs font-semibold bg-blue-50 text-blue-600 px-2 py-1 rounded-lg">
+                                    {{ $item->dokumen->count() }} file
+                                </span>
+                            </td>
+
+                            <td class="px-6 py-4 text-center">
+                                @if($item->skor_kelayakan !== null)
+                                    @if($item->skor_kelayakan >= 60)
+                                        <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1.5 rounded-lg border border-green-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @elseif($item->skor_kelayakan >= 40)
+                                        <span class="text-xs font-bold bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg border border-yellow-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-lg border border-red-100 shadow-xs">
+                                            {{ $item->skor_kelayakan }}
+                                        </span>
+                                    @endif
+                                @else
+                                    <span class="text-xs text-slate-400 font-medium">Belum dihitung</span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4">
+                                @if($item->status_pengajuan == 'pending')
+                                    <span class="text-xs font-bold bg-yellow-50 text-yellow-600 px-3 py-1 rounded-full">
+                                        Pending
+                                    </span>
+                                @elseif($item->status_pengajuan == 'diverifikasi')
+                                    <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full">
+                                        Diverifikasi
+                                    </span>
+                                @elseif($item->status_pengajuan == 'ditolak')
+                                    <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1 rounded-full">
+                                        Ditolak
+                                    </span>
+                                @else
+                                    <span class="text-xs font-bold bg-slate-50 text-slate-600 px-3 py-1 rounded-full">
+                                        {{ $item->status_pengajuan }}
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td class="px-6 py-4">
+                                <a href="{{ route('admin.validasi.show', $item->id_pengajuan) }}"
+                                    class="text-xs font-bold text-white bg-[#1C2C4E] px-4 py-2 rounded-lg hover:bg-[#111A31] transition-colors">
+                                    Periksa
+                                </a>
+                            </td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-6 py-10 text-center text-slate-400 text-sm">
+                                Belum ada pengajuan masuk.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
                     <a href="{{ route('admin.validasi.show', $item->id_pengajuan) }}" class="bg-cyan-600 text-white text-sm font-medium px-6 py-2.5 rounded-2xl hover:bg-cyan-700 transition-colors">
                         Periksa

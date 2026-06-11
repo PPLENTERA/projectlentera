@@ -1,11 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
 use App\Models\PengajuanBantuan;
 use App\Models\ValidasiVerifikasi;
 use App\Models\Notification;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\ScoringIndicator;
 
 class ValidasiVerifikasiController extends Controller
 {
@@ -57,6 +59,20 @@ class ValidasiVerifikasiController extends Controller
             ]
         );
 
+        $status_pengajuan = $request->status_validasi === 'valid' ? 'diverifikasi' : 'ditolak';
+        $score = null;
+
+        if ($status_pengajuan === 'diverifikasi') {
+            $pengajuan = PengajuanBantuan::findOrFail($id);
+            $score = ScoringIndicator::calculateScore(
+                $pengajuan->penghasilan,
+                $pengajuan->jumlah_tanggungan
+            );
+        }
+
+        PengajuanBantuan::where('id_pengajuan', $id)->update([
+            'status_pengajuan' => $status_pengajuan,
+            'skor_kelayakan'   => $score,
         $newStatus = $request->status_validasi === 'valid' ? 'diverifikasi' : 'ditolak';
         $pengajuan->update([
             'status_pengajuan' => $newStatus,
@@ -111,6 +127,66 @@ class ValidasiVerifikasiController extends Controller
             ->with('success', 'Validasi berhasil disimpan!');
     }
 
+    public function penentuanPenerima(Request $request)
+    {
+        $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')
+            ->whereIn('status_pengajuan', ['diverifikasi', 'diterima']);
+
+        if ($request->filled('jenis_bantuan')) {
+            $query->where('jenis_bantuan', $request->jenis_bantuan);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $pengajuan = $query->orderByRaw('skor_kelayakan IS NULL, skor_kelayakan DESC')
+            ->orderBy('tanggal_pengajuan')
+            ->get();
+
+        // Recalculate score on-the-fly if it is 0 or null using the new calculateScore logic
+        foreach ($pengajuan as $item) {
+            if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
+                $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
+                if ($newScore > 0) {
+                    $item->update(['skor_kelayakan' => $newScore]);
+                }
+            }
+        }
+
+        // Re-query to sort based on the newly updated scores
+        $pengajuan = $query->orderByRaw('skor_kelayakan IS NULL, skor_kelayakan DESC')
+            ->orderBy('tanggal_pengajuan')
+            ->get();
+
+        $jenisBantuanList = PengajuanBantuan::select('jenis_bantuan')
+            ->distinct()
+            ->pluck('jenis_bantuan');
+
+        return view('admin.validasi.penentuan', compact('pengajuan', 'jenisBantuanList'));
+    }
+
+    public function updateStatusPenerima(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:diverifikasi,diterima,ditolak',
+        ]);
+
+        $pengajuan = PengajuanBantuan::findOrFail($id);
+        $pengajuan->update([
+            'status_pengajuan' => $request->status,
+        ]);
+
+        $message = $request->status === 'diterima'
+            ? 'Pengajuan berhasil disetujui sebagai penerima bantuan!'
+            : 'Status pengajuan berhasil diperbarui.';
+
+        return redirect()->route('admin.validasi.penentuan')
+            ->with('success', $message);
     public function export(Request $request)
     {
         $request->validate([
