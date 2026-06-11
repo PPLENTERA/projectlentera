@@ -91,10 +91,20 @@
                                     </svg>
                                     <span class="text-sm font-semibold text-slate-700 uppercase">{{ $dok->jenis_dokumen }}</span>
                                 </div>
-                                <a href="{{ asset('storage/' . $dok->file_path) }}" target="_blank"
-                                    class="text-xs font-bold text-cyan-600 hover:text-cyan-700">
-                                    Buka File &rarr;
-                                </a>
+                                <div class="flex items-center gap-3">
+                                    <a href="{{ asset('storage/' . $dok->file_path) }}" target="_blank"
+                                        class="text-xs font-bold text-cyan-600 hover:text-cyan-700">
+                                        Buka File &rarr;
+                                    </a>
+                                    <span class="text-slate-300">|</span>
+                                    <a href="{{ asset('storage/' . $dok->file_path) }}" download
+                                        class="text-xs font-bold text-slate-500 hover:text-slate-700 flex items-center gap-1">
+                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                        </svg>
+                                        Unduh
+                                    </a>
+                                </div>
                             </div>
                         @endforeach
                     </div>
@@ -106,10 +116,20 @@
                             </svg>
                             <span class="text-sm font-semibold text-slate-700">Bukti Pendukung</span>
                         </div>
-                        <a href="{{ asset('storage/' . $pengajuan->bukti_pendukung) }}" target="_blank"
-                            class="text-xs font-bold text-cyan-600 hover:text-cyan-700">
-                            Buka File &rarr;
-                        </a>
+                        <div class="flex items-center gap-3">
+                            <a href="{{ asset('storage/' . $pengajuan->bukti_pendukung) }}" target="_blank"
+                                class="text-xs font-bold text-cyan-600 hover:text-cyan-700">
+                                Buka File &rarr;
+                            </a>
+                            <span class="text-slate-300">|</span>
+                            <a href="{{ asset('storage/' . $pengajuan->bukti_pendukung) }}" download
+                                class="text-xs font-bold text-slate-500 hover:text-slate-700 flex items-center gap-1">
+                                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                                Unduh
+                            </a>
+                        </div>
                     </div>
                 @else
                     <div class="text-center py-6">
@@ -153,9 +173,9 @@
                     </div>
 
                     <div class="border-t border-slate-100 pt-4">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Jadwal Pengambilan (Opsional)</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Jadwal Survei (Opsional)</p>
                         
-                        <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[0.65rem] font-bold text-slate-500 uppercase tracking-wider mb-1">Tanggal</label>
                                 <input type="date" name="tanggal_pengambilan" 
@@ -166,12 +186,6 @@
                                 <input type="time" name="waktu_pengambilan" 
                                     class="w-full px-3 py-2 bg-slate-50 rounded-xl text-sm font-medium text-slate-800 border border-slate-200 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none">
                             </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[0.65rem] font-bold text-slate-500 uppercase tracking-wider mb-1">Lokasi Kantor</label>
-                            <input type="text" name="lokasi_pengambilan" placeholder="misal: Kantor Kelurahan Lentera"
-                                class="w-full px-3 py-2.5 bg-slate-50 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 border border-slate-200 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none">
                         </div>
                     </div>
 

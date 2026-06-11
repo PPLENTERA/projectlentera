@@ -19,7 +19,7 @@ class PengajuanBantuanController extends Controller
     {
         $request->validate([
             'nama_lengkap'        => 'required|string|max:255',
-            'nik'                 => 'required|digits:16',
+            'nik'                 => 'required|numeric|digits:16',
             'jenis_bantuan'       => 'required|string',
             'deskripsi_kebutuhan' => 'nullable|string',
             'bukti_pendukung'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -30,13 +30,17 @@ class PengajuanBantuanController extends Controller
             $buktiPath = $request->file('bukti_pendukung')->store('bukti_pendukung', 'public');
         }
 
+        $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', Auth::id())->latest()->first();
+        $jumlahTanggungan = $pendaftaran ? $pendaftaran->jumlah_tanggungan : 0;
+        $penghasilan = $pendaftaran ? $pendaftaran->penghasilan_per_bulan : 0;
+
         PengajuanBantuan::create([
             'id_users'            => Auth::id(),
             'nama_lengkap'        => $request->nama_lengkap,
             'nik'                 => $request->nik,
             'jenis_bantuan'       => $request->jenis_bantuan,
-            'jumlah_tanggungan'   => 0,
-            'penghasilan'         => 0,
+            'jumlah_tanggungan'   => $jumlahTanggungan,
+            'penghasilan'         => $penghasilan,
             'deskripsi_kebutuhan' => $request->deskripsi_kebutuhan,
             'bukti_pendukung'     => $buktiPath,
             'status_pengajuan'    => 'pending',
