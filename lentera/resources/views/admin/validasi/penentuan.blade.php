@@ -89,8 +89,11 @@
 
     {{-- Comparison Table --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="p-6 border-b border-slate-100">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <h2 class="text-sm font-bold text-slate-600 uppercase tracking-wider">Peringkat Kelayakan Pengajuan</h2>
+            <span class="text-xs text-slate-400 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+                ⚠️ Skor &lt; 40 (<strong>Kurang Layak</strong>) otomatis ditolak
+            </span>
         </div>
 
         <div class="overflow-x-auto">
@@ -164,6 +167,10 @@
                                 @elseif($item->status_pengajuan == 'diterima')
                                     <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
                                         Diterima
+                                    </span>
+                                @elseif($item->status_pengajuan == 'ditolak')
+                                    <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100">
+                                        Ditolak
                                     </span>
                                 @else
                                     <span class="text-xs font-bold bg-slate-50 text-slate-600 px-3 py-1 rounded-full border border-slate-100">

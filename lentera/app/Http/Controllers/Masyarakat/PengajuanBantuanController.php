@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Masyarakat;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanBantuan;
+use App\Models\PendaftaranBantuan;
 use App\Models\DokumenPengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,13 +31,18 @@ class PengajuanBantuanController extends Controller
             $buktiPath = $request->file('bukti_pendukung')->store('bukti_pendukung', 'public');
         }
 
+        // Ambil data ekonomi dari PendaftaranBantuan milik user
+        $pendaftaran = PendaftaranBantuan::where('user_id', Auth::id())->first();
+        $penghasilan       = $pendaftaran ? $pendaftaran->penghasilan_per_bulan : 0;
+        $jumlahTanggungan  = $pendaftaran ? $pendaftaran->jumlah_tanggungan : 0;
+
         PengajuanBantuan::create([
             'id_users'            => Auth::id(),
             'nama_lengkap'        => $request->nama_lengkap,
             'nik'                 => $request->nik,
             'jenis_bantuan'       => $request->jenis_bantuan,
-            'jumlah_tanggungan'   => 0,
-            'penghasilan'         => 0,
+            'jumlah_tanggungan'   => $jumlahTanggungan,
+            'penghasilan'         => $penghasilan,
             'deskripsi_kebutuhan' => $request->deskripsi_kebutuhan,
             'bukti_pendukung'     => $buktiPath,
             'status_pengajuan'    => 'pending',

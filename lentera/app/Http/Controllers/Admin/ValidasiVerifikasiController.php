@@ -66,7 +66,9 @@ class ValidasiVerifikasiController extends Controller
             $pengajuan = PengajuanBantuan::findOrFail($id);
             $score = ScoringIndicator::calculateScore(
                 $pengajuan->penghasilan,
-                $pengajuan->jumlah_tanggungan
+                $pengajuan->jumlah_tanggungan,
+                $pengajuan->deskripsi_kebutuhan,
+                $pengajuan->bukti_pendukung
             );
         } else {
             $pengajuan = PengajuanBantuan::findOrFail($id);
@@ -147,18 +149,52 @@ class ValidasiVerifikasiController extends Controller
             ->orderBy('tanggal_pengajuan')
             ->get();
 
-        // Recalculate score on-the-fly if it is 0 or null using the new calculateScore logic
+        // Recalculate score on-the-fly jika 0 atau null
         foreach ($pengajuan as $item) {
             if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
-                $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
+                $newScore = ScoringIndicator::calculateScore(
+                    $item->penghasilan,
+                    $item->jumlah_tanggungan,
+                    $item->deskripsi_kebutuhan,
+                    $item->bukti_pendukung
+                );
                 if ($newScore > 0) {
                     $item->update(['skor_kelayakan' => $newScore]);
                 }
             }
         }
 
-        // Re-query to sort based on the newly updated scores
-        $pengajuan = $query->orderByRaw('skor_kelayakan IS NULL, skor_kelayakan DESC')
+        // Otomatis tolak pengajuan yang "Kurang Layak" (skor < 40)
+        foreach ($pengajuan as $item) {
+            if (
+                $item->status_pengajuan === 'diverifikasi' &&
+                $item->skor_kelayakan !== null &&
+                $item->skor_kelayakan < 40
+            ) {
+                $item->update(['status_pengajuan' => 'ditolak']);
+
+                Notification::create([
+                    'user_id'      => $item->id_users,
+                    'title'        => 'Pengajuan Bantuan Ditolak (Skor Kurang Layak)',
+                    'message'      => 'Mohon maaf, pengajuan ' . $item->jenis_bantuan . ' Anda ditolak karena skor kelayakan (' . $item->skor_kelayakan . ') di bawah ambang batas yang ditetapkan.',
+                    'type'         => 'status_update',
+                    'icon'         => 'info',
+                    'status_badge' => 'STATUS: DITOLAK',
+                    'action_link'  => route('masyarakat.pengajuan.index'),
+                ]);
+            }
+        }
+
+        // Re-query untuk menampilkan data terbaru (termasuk yang baru ditolak akan hilang dari list)
+        $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
+            ->whereIn('status_pengajuan', ['diverifikasi', 'diterima'])
+            ->when($request->filled('jenis_bantuan'), fn($q) => $q->where('jenis_bantuan', $request->jenis_bantuan))
+            ->when($request->filled('search'), function ($q) use ($request) {
+                $search = $request->search;
+                $q->whereHas('user', fn($q2) => $q2->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%"));
+            })
+            ->orderByRaw('skor_kelayakan IS NULL, skor_kelayakan DESC')
             ->orderBy('tanggal_pengajuan')
             ->get();
 
