@@ -20,8 +20,17 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <a href="{{ url('/bantuan') }}">Bantuan</a>
 <a href="{{ url('/pengajuan') }}">Pengajuan</a></nav>
 <div style="display:flex;gap:10px;align-items:center">
-<a href="{{ url('/login') }}">Login</a>
-<a href="{{ url('/register') }}" class="pill dark">Register</a>
+@auth
+    @if(auth()->user()->role === 'admin')
+        <a href="{{ url('/admin/dashboard') }}" class="pill dark">Dashboard</a>
+    @else
+        <a href="{{ url('/masyarakat/dashboard') }}" class="pill dark">Dashboard</a>
+    @endif
+    <a href="{{ url('/logout') }}">Logout</a>
+@else
+    <a href="{{ url('/login') }}">Login</a>
+    <a href="{{ url('/register') }}" class="pill dark">Register</a>
+@endauth
 </div>
 </header>
 <section class="hero wrap reveal">
