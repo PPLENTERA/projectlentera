@@ -120,8 +120,20 @@ class DashboardController extends Controller
         $penyaluranBulanan = collect();
         foreach (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] as $month) {
             $monthData = $grouped->get($month, collect());
-            $tunai     = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Tunai') !== false)->count() * 500000;
-            $sembako   = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Sembako') !== false)->count() * 300000;
+            
+            // Map types of received assistance:
+            // Tunai includes Kesehatan, Pendidikan, Perumahan
+            $tunai = $monthData->filter(fn($q) => 
+                stripos($q->jenis_bantuan, 'Kesehatan') !== false || 
+                stripos($q->jenis_bantuan, 'Pendidikan') !== false ||
+                stripos($q->jenis_bantuan, 'Perumahan') !== false
+            )->count() * 500000;
+            
+            // Sembako includes Pangan
+            $sembako = $monthData->filter(fn($q) => 
+                stripos($q->jenis_bantuan, 'Pangan') !== false
+            )->count() * 300000;
+
             $penyaluranBulanan->push([
                 'bulan'      => strtoupper($month),
                 'dana_tunai' => $tunai,
@@ -130,7 +142,7 @@ class DashboardController extends Controller
         }
 
         $recent         = $this->getMasyarakatRecentReports($userId);
-        $categoriesList = $this->getCategoriesData();
+        $categoriesList = $this->getCategoriesData(true);
         $authUser       = Auth::user();
 
         return view('masyarakat.dashboard', compact(
@@ -147,9 +159,13 @@ class DashboardController extends Controller
         ));
     }
 
-    private function getCategoriesData()
+    private function getCategoriesData($onlyApproved = false)
     {
-        $allPengajuan = PengajuanBantuan::all();
+        $query = PengajuanBantuan::query();
+        if ($onlyApproved) {
+            $query->whereIn('status_pengajuan', ['diverifikasi', 'diterima']);
+        }
+        $allPengajuan = $query->get();
 
         $categoriesData = [
             'Bantuan Pendidikan' => ['name' => 'Pendidikan', 'icon' => 'academic-cap', 'color' => 'blue',    'hex' => '#3b82f6', 'bg_hex' => '#eff6ff', 'count' => 0, 'approved' => 0],

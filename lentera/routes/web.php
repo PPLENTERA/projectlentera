@@ -32,6 +32,33 @@ Route::get('/', function () {
         'totalPenerima' => Recipient::count(),
     ]);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Root Redirections
+|--------------------------------------------------------------------------
+*/
+Route::get('/dashboard', function () {
+    if (auth()->check()) {
+        return auth()->user()->role === 'admin'
+            ? redirect('/admin/dashboard')
+            : redirect('/masyarakat/dashboard');
+    }
+    return redirect('/login');
+});
+
+Route::get('/pengajuan', function () {
+    if (auth()->check()) {
+        return auth()->user()->role === 'admin'
+            ? redirect('/admin/validasi')
+            : redirect('/masyarakat/pengajuan');
+    }
+    return redirect('/login');
+});
+
+Route::get('/bantuan', function () {
+    return redirect('/login');
+});
 /*
 |--------------------------------------------------------------------------
 | Hitung Ulang Score

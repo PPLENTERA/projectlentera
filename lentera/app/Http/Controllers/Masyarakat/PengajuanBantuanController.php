@@ -19,7 +19,7 @@ class PengajuanBantuanController extends Controller
     {
         $request->validate([
             'nama_lengkap'        => 'required|string|max:255',
-            'nik'                 => 'required|digits:16',
+            'nik'                 => 'required|numeric|digits:16',
             'jenis_bantuan'       => 'required|string',
             'deskripsi_kebutuhan' => 'nullable|string',
             'bukti_pendukung'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',

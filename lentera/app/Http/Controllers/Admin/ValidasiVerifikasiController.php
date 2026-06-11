@@ -73,7 +73,6 @@ class ValidasiVerifikasiController extends Controller
             'catatan'         => 'nullable|string',
             'tanggal_pengambilan' => 'nullable|date',
             'waktu_pengambilan'   => 'nullable',
-            'lokasi_pengambilan'  => 'nullable|string',
         ]);
 
         $pengajuan = PengajuanBantuan::findOrFail($id);
@@ -87,7 +86,7 @@ class ValidasiVerifikasiController extends Controller
                 'tanggal_verifikasi' => now()->toDateString(),
                 'tanggal_pengambilan' => $request->tanggal_pengambilan,
                 'waktu_pengambilan'   => $request->waktu_pengambilan,
-                'lokasi_pengambilan'  => $request->lokasi_pengambilan,
+                'lokasi_pengambilan'  => null,
             ]
         );
 
@@ -132,10 +131,10 @@ class ValidasiVerifikasiController extends Controller
             ]);
         }
 
-        // Kirim Notifikasi Reminder (Jadwal Pengambilan) jika diisi
+        // Kirim Notifikasi Reminder (Jadwal Survei) jika diisi
         if ($request->tanggal_pengambilan) {
             $formattedDate = \Carbon\Carbon::parse($request->tanggal_pengambilan)->translatedFormat('d M Y');
-            // Cek apakah tanggal pengambilan adalah besok
+            // Cek apakah tanggal survei adalah besok
             $isTomorrow = \Carbon\Carbon::parse($request->tanggal_pengambilan)->isTomorrow();
             $dateTitle = $isTomorrow ? 'Besok' : $formattedDate;
             
@@ -145,8 +144,8 @@ class ValidasiVerifikasiController extends Controller
 
             Notification::create([
                 'user_id' => $pengajuan->id_users,
-                'title' => 'Jadwal Pengambilan Bantuan: ' . $dateTitle,
-                'message' => 'Jangan lupa membawa Kartu Keluarga (KK) asli dan KTP ke ' . ($request->lokasi_pengambilan ?? 'Kantor Pos terdekat') . ' pada pukul ' . $timeText . '.',
+                'title' => 'Jadwal Survei Lapangan: ' . $dateTitle,
+                'message' => 'Petugas akan melakukan survei lapangan ke lokasi tempat tinggal Anda pada pukul ' . $timeText . '. Mohon bersiap di lokasi.',
                 'type' => 'reminder',
                 'icon' => 'calendar',
                 'status_badge' => null,
@@ -221,7 +220,7 @@ class ValidasiVerifikasiController extends Controller
 
         $message = $request->status === 'diterima'
             ? 'Pengajuan berhasil disetujui sebagai penerima bantuan!'
-            : 'Status pengajuan berhasil diperbarui.';
+            : ($request->status === 'ditolak' ? 'Pengajuan berhasil ditolak!' : 'Status pengajuan berhasil diperbarui.');
 
         return redirect()->route('admin.validasi.penentuan')
             ->with('success', $message);

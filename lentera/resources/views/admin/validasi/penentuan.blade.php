@@ -173,7 +173,7 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 @if($item->status_pengajuan == 'diverifikasi')
-                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
+                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline-block">
                                         @csrf
                                         <input type="hidden" name="status" value="diterima">
                                         <button type="submit"
@@ -181,7 +181,15 @@
                                             Terima Bantuan
                                         </button>
                                     </form>
-                                @elseif($item->status_pengajuan == 'diterima')
+                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline-block ml-1" onsubmit="return confirm('Apakah Anda yakin ingin menolak pengajuan ini?');">
+                                        @csrf
+                                        <input type="hidden" name="status" value="ditolak">
+                                        <button type="submit"
+                                                class="text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-colors">
+                                            Tolak Bantuan
+                                        </button>
+                                    </form>
+                                @elseif($item->status_pengajuan == 'diterima' || $item->status_pengajuan == 'ditolak')
                                     <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
                                         @csrf
                                         <input type="hidden" name="status" value="diverifikasi">

@@ -114,7 +114,7 @@
                         <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
                             NIK (Nomor Induk Kependudukan)
                         </label>
-                        <input type="text" name="nik" value="{{ old('nik') }}" required maxlength="16"
+                        <input type="text" name="nik" value="{{ old('nik') }}" required maxlength="16" minlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                             class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
                             placeholder="16 Digit Nomor KTP">
                     </div>
