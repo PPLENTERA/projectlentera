@@ -15,7 +15,10 @@ class Recipient extends Model
         'house_condition',
         'score',
         'address',
-        'photos'
+        'photos',
+        'latitude',
+        'longitude',
+        'area',
     ];
 
     protected static function booted()
