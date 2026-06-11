@@ -150,30 +150,125 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('feedback', AdminFeedbackController::class)->names('admin.feedback');
 });
 
+| /*                                                                                        |
+| ----------------------------------------------------------------------------------------- |
+| Masyarakat                                                                                |
+| --------------------------------------------------------------------------                |
+| */                                                                                        |
+| Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () { |
+
+Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
+
+Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
+Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
+
+Route::get('/pelaporan', [LaporanPenyalahgunaanController::class, 'create'])->name('masyarakat.pelaporan.create');
+Route::post('/pelaporan', [LaporanPenyalahgunaanController::class, 'store'])->name('masyarakat.pelaporan.store');
+
+Route::get('/pengajuan/create', [PengajuanBantuanController::class, 'create'])->name('masyarakat.pengajuan.create');
+Route::post('/pengajuan', [PengajuanBantuanController::class, 'store'])->name('masyarakat.pengajuan.store');
+Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
+Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
+Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
+
+Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
+Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
+Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markRead'])->name('masyarakat.notifikasi.read');
+
+Route::get('/feedback', [FeedbackController::class, 'create'])->name('masyarakat.feedback.create');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('masyarakat.feedback.store');
+
 /*
 |--------------------------------------------------------------------------
-| Masyarakat
+| PBI #43 - Perbandingan Bantuan Antar Daerah
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
 
-    Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
-    Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
+Route::get('/peta-bantuan', function () {
 
-    Route::get('/pelaporan', [LaporanPenyalahgunaanController::class, 'create'])->name('masyarakat.pelaporan.create');
-    Route::post('/pelaporan', [LaporanPenyalahgunaanController::class, 'store'])->name('masyarakat.pelaporan.store');
+    $data = Recipient::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->get();
 
-    Route::get('/pengajuan/create', [PengajuanBantuanController::class, 'create'])->name('masyarakat.pengajuan.create');
-    Route::post('/pengajuan', [PengajuanBantuanController::class, 'store'])->name('masyarakat.pengajuan.store');
-    Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
-    Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
-    Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
+    return view('peta-bantuan', compact('data'));
+});
 
-    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
-    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
-    Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markRead'])->name('masyarakat.notifikasi.read');
+/*
+|--------------------------------------------------------------------------
+| PBI #45 - Statistik Distribusi Bantuan
+|--------------------------------------------------------------------------
+*/
 
-    Route::get('/feedback', [FeedbackController::class, 'create'])->name('masyarakat.feedback.create');
-    Route::post('/feedback', [FeedbackController::class, 'store'])->name('masyarakat.feedback.store');
+Route::get('/statistik-publik', function () {
+
+    $total = Recipient::count();
+
+    $tinggi = Recipient::where('score', '>=', 80)->count();
+
+    $sedang = Recipient::whereBetween('score', [60,79])->count();
+
+    $rendah = Recipient::where('score', '<', 60)->count();
+
+    $jenisBantuan = [
+        ['nama' => 'Pangan', 'total' => 15],
+        ['nama' => 'Pendidikan', 'total' => 10],
+        ['nama' => 'Kesehatan', 'total' => 8],
+    ];
+
+    return view(
+        'statistik-publik',
+        compact(
+            'total',
+            'tinggi',
+            'sedang',
+            'rendah',
+            'jenisBantuan'
+        )
+    );
+});
+
+});
+
+| /*                                                                         |
+| -------------------------------------------------------------------------- |
+| Route Umum                                                                 |
+| -------------------------------------------------------------------------- |
+| */                                                                         |
+
+Route::post('/recipient/store', [RecipientController::class, 'store']);
+Route::get('/recipient/{id}', [RecipientController::class, 'show']);
+
+| /*                                                                         |
+| -------------------------------------------------------------------------- |
+| PBI #42 & PBI #44 (ADMIN)                                                  |
+| -------------------------------------------------------------------------- |
+| */                                                                         |
+
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
+
+Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
+Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
+
+Route::get('/statistik-bantuan', function () {
+
+    $total = Recipient::count();
+
+    $mapped = Recipient::whereNotNull('latitude')
+        ->whereNotNull('longitude')
+        ->count();
+
+    $unmapped = $total - $mapped;
+
+    $coverage = $total > 0
+        ? round(($mapped / $total) * 100)
+        : 0;
+
+    return view('statistik-bantuan', compact(
+        'total',
+        'mapped',
+        'unmapped',
+        'coverage'
+    ));
+});
+
 });

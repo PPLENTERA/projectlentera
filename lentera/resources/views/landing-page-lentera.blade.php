@@ -33,8 +33,41 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <h1>Transparansi Bantuan untuk Semua</h1>
 <p>LENTERA hadir sebagai jembatan kepercayaan antara pemerintah dan masyarakat. Memastikan setiap bantuan sampai ke tangan yang tepat dengan kebijakan penuh.</p>
 <div class="btns float">
-<a href="{{ url('/pengajuan') }}" class="pill dark">Ajukan Bantuan →</a>
-<a href="{{ url('/dashboard') }}" class="pill light">Lihat Dashboard</a>
+
+@guest
+
+<a href="{{ url('/login') }}" class="pill dark">
+    Masuk ke Sistem →
+</a>
+
+<a href="{{ url('/login') }}" class="pill light">
+    Dashboard
+</a>
+
+@endguest
+
+@auth
+
+@if(auth()->user()->role === 'admin')
+
+<a href="{{ url('/admin/dashboard') }}" class="pill dark">
+    Dashboard Admin →
+</a>
+
+@else
+
+<a href="{{ url('/masyarakat/dashboard') }}" class="pill dark">
+    Dashboard Masyarakat →
+</a>
+
+@endif
+
+<a href="{{ url('/statistik-publik') }}" class="pill light">
+    Statistik Bantuan
+</a>
+
+@endauth
+
 </div>
 </section>
 <div class='cursor' id='cursor'></div>
