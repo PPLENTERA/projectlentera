@@ -14,9 +14,11 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Masyarakat\LaporanPenyalahgunaanController;
 use App\Http\Controllers\Masyarakat\PengajuanBantuanController;
 use App\Http\Controllers\Masyarakat\PendaftaranBantuanController;
+use App\Http\Controllers\Masyarakat\NotificationController;
 use App\Http\Controllers\Admin\ValidasiVerifikasiController;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\Admin\MonitoringController;
+use App\Http\Controllers\Admin\BroadcastController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,6 +116,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
     Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
+
+    Route::get('/broadcast', [BroadcastController::class, 'index'])->name('admin.broadcast.index');
+    Route::post('/broadcast', [BroadcastController::class, 'send'])->name('admin.broadcast.send');
 });
 
 /*
@@ -137,6 +142,10 @@ Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(func
     Route::get('/pengajuan', [PengajuanBantuanController::class, 'index'])->name('masyarakat.pengajuan.index');
     Route::get('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadForm'])->name('masyarakat.pengajuan.upload');
     Route::post('/pengajuan/{id}/upload', [PengajuanBantuanController::class, 'uploadDokumen'])->name('masyarakat.pengajuan.upload.dokumen');
+
+    Route::get('/notifikasi', [NotificationController::class, 'index'])->name('masyarakat.notifikasi.index');
+    Route::post('/notifikasi/read-all', [NotificationController::class, 'markAllRead'])->name('masyarakat.notifikasi.read_all');
+    Route::post('/notifikasi/{id}/read', [NotificationController::class, 'markRead'])->name('masyarakat.notifikasi.read');
 });
 
 Route::get('/feedback', [FeedbackController::class, 'create'])->name('feedback.create');

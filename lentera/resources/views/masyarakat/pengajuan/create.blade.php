@@ -15,12 +15,24 @@
     <nav class="bg-white shadow-sm px-8 py-4 flex items-center justify-between">
         <div class="text-xl font-extrabold text-[#1C2C4E]">LENTERA</div>
         <div class="flex gap-6 text-sm font-medium text-slate-600">
-            <a href="#" class="hover:text-[#1C2C4E]">Home</a>
-            <a href="#" class="hover:text-[#1C2C4E]">Dashboard</a>
-            <a href="#" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
-            <a href="#" class="hover:text-[#1C2C4E]">Pelaporan</a>
+            <a href="{{ url('/') }}" class="hover:text-[#1C2C4E]">Home</a>
+            <a href="{{ route('masyarakat.dashboard') }}" class="hover:text-[#1C2C4E]">Dashboard</a>
+            <a href="{{ route('masyarakat.pengajuan.index') }}" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
+            <a href="{{ route('masyarakat.dashboard') }}" class="hover:text-[#1C2C4E]">Dashboard</a>
+            <a href="{{ route('masyarakat.pengajuan.create') }}" class="font-bold text-[#1C2C4E] border-b-2 border-[#1C2C4E]">Bantuan</a>
+            <a href="{{ route('masyarakat.pelaporan.create') }}" class="hover:text-[#1C2C4E]">Pelaporan</a>
         </div>
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-4">
+            <!-- Bell Icon with Badge -->
+            <a href="{{ route('masyarakat.notifikasi.index') }}" class="relative p-2 text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100 rounded-full transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                </svg>
+                @if($unreadNotificationsCount > 0)
+                    <span class="absolute top-0.5 right-0.5 block h-2.5 w-2.5 rounded-full bg-red-500 ring-2 ring-white"></span>
+                @endif
+            </a>
+
             <div class="text-right">
                 <p class="text-sm font-bold text-slate-800">{{ Auth::user()->name }}</p>
                 <p class="text-xs text-slate-400">ID: {{ Auth::user()->id }}</p>
