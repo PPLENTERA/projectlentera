@@ -91,6 +91,7 @@
                 <thead>
                     <tr class="bg-[#F0F2F5] text-left">
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Pelapor</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Jenis Bantuan</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Deskripsi Kejadian</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Lokasi</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Tanggal</th>
@@ -105,6 +106,12 @@
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-slate-800">{{ $item->user->name }}</p>
                                 <p class="text-xs text-slate-400">{{ $item->user->email }}</p>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2.5 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-md border border-cyan-100">
+                                    {{ $item->jenis_bantuan }}
+                                </span>
                             </td>
 
                             <td class="px-6 py-4">
@@ -155,7 +162,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-400 text-sm">
+                            <td colspan="7" class="px-6 py-10 text-center text-slate-400 text-sm">
                                 Belum ada laporan penyalahgunaan masuk.
                             </td>
                         </tr>

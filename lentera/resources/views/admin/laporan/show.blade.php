@@ -52,6 +52,12 @@
                     @endif
                 </div>
                 <div class="col-span-2 mt-2">
+                    <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Jenis Bantuan yang Dilaporkan</p>
+                    <span class="px-2.5 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-md border border-cyan-100 inline-block mt-1">
+                        {{ $laporan->jenis_bantuan }}
+                    </span>
+                </div>
+                <div class="col-span-2 mt-2">
                     <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Lokasi Kejadian</p>
                     <p class="font-semibold text-slate-800">{{ $laporan->lokasi_kejadian }}</p>
                 </div>
