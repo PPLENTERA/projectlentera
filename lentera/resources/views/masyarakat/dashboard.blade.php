@@ -36,21 +36,25 @@
 
                 {{-- Status Pendaftaran (badge) --}}
                 @if($pendaftaranUser)
-                    <div class="mb-4 px-3 py-2 rounded-xl
-                        @if($pendaftaranUser->status === 'disetujui') bg-emerald-50 border border-emerald-100
-                        @elseif($pendaftaranUser->status === 'ditolak') bg-red-50 border border-red-100
-                        @else bg-amber-50 border border-amber-100 @endif">
-                        <p class="text-xs font-semibold
-                            @if($pendaftaranUser->status === 'disetujui') text-emerald-700
-                            @elseif($pendaftaranUser->status === 'ditolak') text-red-600
-                            @else text-amber-700 @endif">
-                            Pendaftaran:
-                            @if($pendaftaranUser->status === 'disetujui') ✅ Diterima
-                            @elseif($pendaftaranUser->status === 'ditolak') ❌ Ditolak
-                            @else ⏳ Menunggu Verifikasi
-                            @endif
-                        </p>
-                    </div>
+                    @if($pendaftaranUser->status === 'disetujui')
+                        <div class="mb-4 px-3 py-2 rounded-xl border bg-emerald-50 border-emerald-100">
+                            <p class="text-xs font-semibold text-emerald-700">
+                                Pendaftaran: ✅ Diterima
+                            </p>
+                        </div>
+                    @elseif($pendaftaranUser->status === 'ditolak')
+                        <div class="mb-4 px-3 py-2 rounded-xl border bg-red-50 border-red-100">
+                            <p class="text-xs font-semibold text-red-600">
+                                Pendaftaran: ❌ Ditolak
+                            </p>
+                        </div>
+                    @else
+                        <div class="mb-4 px-3 py-2 rounded-xl border bg-amber-50 border-amber-100">
+                            <p class="text-xs font-semibold text-amber-700">
+                                Pendaftaran: ⏳ Menunggu Verifikasi
+                            </p>
+                        </div>
+                    @endif
                 @else
                     <a href="{{ route('pendaftaran.create') }}" class="mb-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-700 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
@@ -230,7 +234,7 @@
                                     @elseif($pj->status_pengajuan == 'diterima')
                                         <span class="text-xs font-bold bg-emerald-50 text-emerald-600 px-3 py-1.5 rounded-full whitespace-nowrap">✅ Diterima</span>
                                     @elseif($pj->status_pengajuan == 'ditolak')
-                                        <span class="text-xs font-bold bg-red-50 text-red-650 text-xs font-bold px-3 py-1.5 rounded-full whitespace-nowrap">❌ Ditolak</span>
+                                        <span class="text-xs font-bold bg-red-50 text-red-650 px-3 py-1.5 rounded-full whitespace-nowrap">❌ Ditolak</span>
                                     @endif
                                 </div>
                             </div>
@@ -256,6 +260,21 @@
                 @endif
 
 
+                {{-- ===== CHART PROGRESS PER WILAYAH ===== --}}
+                <section class="grid gap-6">
+                    <div class="col-span-12 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <h2 class="text-lg font-semibold text-slate-900">Progress Bantuan per Wilayah</h2>
+                                <p class="text-sm text-slate-500">Persentase permohonan yang telah disetujui per desa</p>
+                            </div>
+                        </div>
+                        <div class="relative h-64 w-full">
+                            <canvas id="wilayahProgressChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
                 {{-- ===== CHART PENYALURAN ===== --}}
                 <section class="grid gap-6">
                     <div class="col-span-12 rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
@@ -265,8 +284,10 @@
                                 <p class="text-sm text-slate-500">Data real-time penyaluran dana bansos wilayah</p>
                             </div>
                             <div class="flex gap-4 items-center">
-                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-slate-800"></span><span class="text-xs text-slate-655 text-xs text-slate-600 font-medium font-semibold">Dana Tunai</span></div>
-                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span class="text-xs text-slate-655 text-xs text-slate-600 font-medium font-semibold">Sembako</span></div>
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #3b82f6;"></span><span class="text-xs text-slate-600 font-semibold">Pendidikan</span></div>
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #10b981;"></span><span class="text-xs text-slate-600 font-semibold">Kesehatan</span></div>
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #f59e0b;"></span><span class="text-xs text-slate-600 font-semibold">Pangan</span></div>
+                                <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #8b5cf6;"></span><span class="text-xs text-slate-600 font-semibold">Perumahan</span></div>
                             </div>
                         </div>
                         <div class="relative h-64 w-full">
@@ -294,7 +315,7 @@
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['hex'] }}"></span>
-                                    <span class="text-sm text-slate-655 text-slate-600 font-medium">{{ $item['name'] }}</span>
+                                    <span class="text-sm text-slate-600 font-medium">{{ $item['name'] }}</span>
                                 </div>
                                 <span class="text-sm font-semibold text-slate-800">{{ $item['percentage'] }}%</span>
                             </div>
@@ -349,19 +370,74 @@
     </div>
 
     <script>
+        // Chart Progress Per Wilayah
+        const wilayahProgressData = @json($wilayahProgress->values());
+        const wilayahLabels = wilayahProgressData.map(item => item.wilayah);
+        const wilayahProgress = wilayahProgressData.map(item => item.progress);
+        const wilayahColors = wilayahProgressData.map(item => {
+            if (item.progress >= 75) return '#10b981'; // emerald
+            if (item.progress >= 50) return '#3b82f6'; // blue
+            if (item.progress >= 25) return '#f59e0b'; // amber
+            return '#ef4444'; // red
+        });
+
+        new Chart(document.getElementById('wilayahProgressChart'), {
+            type: 'bar',
+            data: {
+                labels: wilayahLabels,
+                datasets: [{
+                    label: 'Progress Persetujuan (%)',
+                    data: wilayahProgress,
+                    backgroundColor: wilayahColors,
+                    borderRadius: 6,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.5
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => `${ctx.parsed.x}% Disetujui`
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: { color: '#e2e8f0' },
+                        ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                    },
+                    y: {
+                        grid: { display: false },
+                        ticks: { font: { size: 10, weight: 'bold' }, color: '#64748b' }
+                    }
+                }
+            }
+        });
+
         const penyaluranBulanan = @json($penyaluranBulanan);
 
         const labelsPenyaluran = penyaluranBulanan.map(item => item.bulan);
-        const dataTunai = penyaluranBulanan.map(item => item.dana_tunai);
-        const dataSembako = penyaluranBulanan.map(item => item.sembako);
+        const dataPendidikan = penyaluranBulanan.map(item => item.pendidikan);
+        const dataKesehatan = penyaluranBulanan.map(item => item.kesehatan);
+        const dataPangan = penyaluranBulanan.map(item => item.pangan);
+        const dataPerumahan = penyaluranBulanan.map(item => item.perumahan);
 
         new Chart(document.getElementById('penyaluranChart'), {
             type: 'bar',
             data: {
                 labels: labelsPenyaluran,
                 datasets: [
-                    { label: 'Dana Tunai', data: dataTunai, backgroundColor: '#1e293b', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
-                    { label: 'Sembako', data: dataSembako, backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 }
+                    { label: 'Pendidikan', data: dataPendidikan, backgroundColor: '#3b82f6', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                    { label: 'Kesehatan', data: dataKesehatan, backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                    { label: 'Pangan', data: dataPangan, backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                    { label: 'Perumahan', data: dataPerumahan, backgroundColor: '#8b5cf6', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 }
                 ]
             },
             options: {
