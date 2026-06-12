@@ -14,51 +14,83 @@ Kelola titik koordinat penerima bantuan di wilayah Bojongsoang
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-<div class="bg-white p-6 rounded-3xl shadow-sm">
+<!-- FORM -->
+<div class="bg-white p-6 rounded-3xl shadow-sm h-fit">
 
-<form method="POST" action="{{ url('/admin/lokasi-bantuan/save') }}">
+<form method="POST" action="{{ url('/admin/lokasi-bantuan/save') }}" class="space-y-5">
 @csrf
 
-<label>Penerima Bantuan</label>
+<div>
+<label class="block mb-2 text-sm font-semibold text-slate-700">
+Penerima Bantuan
+</label>
 
-<select name="recipient_id">
+<select
+name="recipient_id"
+class="w-full border border-slate-300 rounded-xl px-4 py-3">
+
+<option selected disabled>Pilih Penerima Bantuan</option>
 
 @foreach($data as $d)
-
 <option value="{{ $d->id }}">
 {{ $d->name }}
 </option>
-
 @endforeach
 
 </select>
+</div>
 
-<label>Latitude</label>
+<div>
+<label class="block mb-2 text-sm font-semibold text-slate-700">
+Latitude
+</label>
+
 <input
 type="text"
 id="latitude"
 name="latitude"
-readonly>
+readonly
+class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-slate-50">
+</div>
 
-<label>Longitude</label>
+<div>
+<label class="block mb-2 text-sm font-semibold text-slate-700">
+Longitude
+</label>
+
 <input
 type="text"
 id="longitude"
 name="longitude"
-readonly>
+readonly
+class="w-full border border-slate-300 rounded-xl px-4 py-3 bg-slate-50">
+</div>
 
-<button type="submit">
-Simpan Lokasi
+<button
+type="submit"
+class="w-full bg-cyan-600 text-white py-3 rounded-xl">
+📍 Simpan Lokasi
 </button>
 
 </form>
 
 </div>
 
+<!-- MAP -->
 <div class="lg:col-span-2 bg-white p-4 rounded-3xl shadow-sm">
-    <div id="map"></div>
+
+<div class="mb-4">
+<h3 class="text-lg font-semibold">
+Peta Persebaran Bantuan
+</h3>
+<p class="text-sm text-slate-500">
+Klik peta untuk menentukan koordinat
+</p>
 </div>
 
+<div id="map"></div>
+
+</div>
 </div>
 <style>
 #map{
@@ -66,6 +98,10 @@ Simpan Lokasi
     border-radius:16px;
 }
 </style>
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script>
 
 var map = L.map('map')
