@@ -29,10 +29,10 @@
             {{-- Profil User --}}
             <div class="flex items-center gap-3 mb-6 p-3 rounded-2xl border border-slate-100 bg-slate-50">
                 <div class="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
-                    <span class="text-orange-600 font-bold text-sm">{{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}</span>
+                    <span class="text-orange-600 font-bold text-sm">{{ strtoupper(substr(Auth::user()?->name ?? 'U', 0, 2)) }}</span>
                 </div>
                 <div class="overflow-hidden">
-                    <p class="font-semibold text-sm truncate">{{ Auth::user()->name ?? 'Pengguna' }}</p>
+                    <p class="font-semibold text-sm truncate">{{ Auth::user()?->name ?? 'Pengguna' }}</p>
                     <p class="text-slate-500 text-xs">Verified Citizen</p>
                 </div>
             </div>
