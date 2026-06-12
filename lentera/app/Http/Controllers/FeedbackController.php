@@ -30,7 +30,7 @@ class FeedbackController extends Controller
 
         Feedback::create($validated);
 
-        return redirect()->route('feedback.create')
+        return redirect()->route('masyarakat.feedback.create')
             ->with('success', 'Terima kasih, masukan Anda telah dikirim. Kami akan meninjau umpan balik Anda secepatnya.');
     }
 }

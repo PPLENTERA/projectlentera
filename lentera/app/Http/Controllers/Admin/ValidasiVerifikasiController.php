@@ -13,23 +13,55 @@ class ValidasiVerifikasiController extends Controller
 {
     public function index(Request $request)
     {   
-    $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')->latest();
-    if ($request->status) {
-        $query->where('status_pengajuan', $request->status);
-    }
-    
-    if ($request->jenis_bantuan) {
-        $query->where('jenis_bantuan', $request->jenis_bantuan);
-    }
-    $pengajuan = $query->get();
+        $query = PengajuanBantuan::with('user', 'dokumen', 'validasi')->latest();
+        if ($request->status) {
+            if ($request->status === 'diverifikasi') {
+                $query->whereIn('status_pengajuan', ['diverifikasi', 'diterima']);
+            } else {
+                $query->where('status_pengajuan', $request->status);
+            }
+        }
+        
+        if ($request->jenis_bantuan) {
+            $query->where('jenis_bantuan', $request->jenis_bantuan);
+        }
+        $pengajuan = $query->get();
 
-    return view('admin.validasi.index', compact('pengajuan'));
+        // Sync and recalculate score on-the-fly if income/dependents are different from PendaftaranBantuan
+        foreach ($pengajuan as $item) {
+            $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
+            if ($pendaftaran && ($item->penghasilan != $pendaftaran->penghasilan_per_bulan || $item->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+                $item->update([
+                    'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                    'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+                ]);
+            }
+            if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
+                $newScore = ScoringIndicator::calculateScore($item->penghasilan, $item->jumlah_tanggungan);
+                if ($newScore > 0) {
+                    $item->update(['skor_kelayakan' => $newScore]);
+                }
+            }
+        }
+
+        return view('admin.validasi.index', compact('pengajuan'));
     }
 
     public function show($id)
     {
         $pengajuan = PengajuanBantuan::with('user', 'dokumen', 'validasi')
             ->findOrFail($id);
+
+        $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $pengajuan->id_users)->latest()->first();
+        if ($pendaftaran && ($pengajuan->penghasilan != $pendaftaran->penghasilan_per_bulan || $pengajuan->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+            $pengajuan->update([
+                'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+            ]);
+            
+            $newScore = ScoringIndicator::calculateScore($pendaftaran->penghasilan_per_bulan, $pendaftaran->jumlah_tanggungan);
+            $pengajuan->update(['skor_kelayakan' => $newScore]);
+        }
 
         return view('admin.validasi.show', compact('pengajuan'));
     }
@@ -41,7 +73,6 @@ class ValidasiVerifikasiController extends Controller
             'catatan'         => 'nullable|string',
             'tanggal_pengambilan' => 'nullable|date',
             'waktu_pengambilan'   => 'nullable',
-            'lokasi_pengambilan'  => 'nullable|string',
         ]);
 
         $pengajuan = PengajuanBantuan::findOrFail($id);
@@ -55,7 +86,7 @@ class ValidasiVerifikasiController extends Controller
                 'tanggal_verifikasi' => now()->toDateString(),
                 'tanggal_pengambilan' => $request->tanggal_pengambilan,
                 'waktu_pengambilan'   => $request->waktu_pengambilan,
-                'lokasi_pengambilan'  => $request->lokasi_pengambilan,
+                'lokasi_pengambilan'  => null,
             ]
         );
 
@@ -110,10 +141,10 @@ class ValidasiVerifikasiController extends Controller
             ]);
         }
 
-        // Kirim Notifikasi Reminder (Jadwal Pengambilan) jika diisi
+        // Kirim Notifikasi Reminder (Jadwal Survei) jika diisi
         if ($request->tanggal_pengambilan) {
             $formattedDate = \Carbon\Carbon::parse($request->tanggal_pengambilan)->translatedFormat('d M Y');
-            // Cek apakah tanggal pengambilan adalah besok
+            // Cek apakah tanggal survei adalah besok
             $isTomorrow = \Carbon\Carbon::parse($request->tanggal_pengambilan)->isTomorrow();
             $dateTitle = $isTomorrow ? 'Besok' : $formattedDate;
             
@@ -123,8 +154,8 @@ class ValidasiVerifikasiController extends Controller
 
             Notification::create([
                 'user_id' => $pengajuan->id_users,
-                'title' => 'Jadwal Pengambilan Bantuan: ' . $dateTitle,
-                'message' => 'Jangan lupa membawa Kartu Keluarga (KK) asli dan KTP ke ' . ($request->lokasi_pengambilan ?? 'Kantor Pos terdekat') . ' pada pukul ' . $timeText . '.',
+                'title' => 'Jadwal Survei Lapangan: ' . $dateTitle,
+                'message' => 'Petugas akan melakukan survei lapangan ke lokasi tempat tinggal Anda pada pukul ' . $timeText . '. Mohon bersiap di lokasi.',
                 'type' => 'reminder',
                 'icon' => 'calendar',
                 'status_badge' => null,
@@ -159,6 +190,13 @@ class ValidasiVerifikasiController extends Controller
 
         // Recalculate score on-the-fly jika 0 atau null
         foreach ($pengajuan as $item) {
+            $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
+            if ($pendaftaran && ($item->penghasilan != $pendaftaran->penghasilan_per_bulan || $item->jumlah_tanggungan != $pendaftaran->jumlah_tanggungan)) {
+                $item->update([
+                    'penghasilan' => $pendaftaran->penghasilan_per_bulan,
+                    'jumlah_tanggungan' => $pendaftaran->jumlah_tanggungan,
+                ]);
+            }
             if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
                 $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
                 $status_rumah = $pendaftaran ? $pendaftaran->status_rumah : null;

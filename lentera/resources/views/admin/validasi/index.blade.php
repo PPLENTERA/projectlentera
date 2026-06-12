@@ -42,7 +42,7 @@
         </article>
         <article class="rounded-2xl bg-white p-6 shadow-sm border border-slate-200">
             <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Diverifikasi</p>
-            <p class="text-3xl font-extrabold text-emerald-600">{{ $pengajuan->where('status_pengajuan', 'diverifikasi')->count() }}</p>
+            <p class="text-3xl font-extrabold text-emerald-600">{{ $pengajuan->whereIn('status_pengajuan', ['diverifikasi', 'diterima'])->count() }}</p>
         </article>
     </section>
 
@@ -83,23 +83,41 @@
         </div>
     @endif
 
-    {{-- Table --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-200 text-slate-500">
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Nama</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Rank</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Nama Pemohon</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Jenis Bantuan</th>
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Tanggal</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-right">Penghasilan</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Tanggungan</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Skor Kelayakan</th>
-                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Tingkat</th>
+                        <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-center">Status</th>
                         <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-right">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @forelse($pengajuan as $item)
+                    @forelse($pengajuan as $index => $item)
+                        @php
+                            $rank = $index + 1;
+                            $score = $item->skor_kelayakan;
+                            $level = 'Kurang Layak';
+                            $levelClass = 'bg-red-50 text-red-650 border-red-100';
+                            if ($score >= 60) {
+                                $level = 'Sangat Layak';
+                                $levelClass = 'bg-green-50 text-green-600 border-green-100';
+                            } elseif ($score >= 40) {
+                                $level = 'Layak';
+                                $levelClass = 'bg-yellow-50 text-yellow-600 border-yellow-100';
+                            }
+                        @endphp
                         <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-4 text-center font-bold text-slate-500">
+                                #{{ str_pad($rank, 2, '0', STR_PAD_LEFT) }}
+                            </td>
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-slate-800">{{ $item->user->name ?? 'N/A' }}</p>
                                 <p class="text-xs text-slate-400">{{ $item->user->email ?? 'N/A' }}</p>
@@ -107,43 +125,47 @@
                             <td class="px-6 py-4 font-medium text-slate-700">
                                 {{ $item->jenis_bantuan }}
                             </td>
-                            <td class="px-6 py-4 text-slate-500">
-                                {{ $item->tanggal_pengajuan }}
+                            <td class="px-6 py-4 text-right font-semibold text-slate-650">
+                                Rp {{ number_format($item->penghasilan, 0, ',', '.') }}
                             </td>
-                            <td class="px-6 py-4 text-center">
-                                @if($item->skor_kelayakan !== null)
-                                    @if($item->skor_kelayakan >= 60)
-                                        <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1.5 rounded-lg border border-green-100 shadow-2xs">
-                                            {{ $item->skor_kelayakan }}
-                                        </span>
-                                    @elseif($item->skor_kelayakan >= 40)
-                                        <span class="text-xs font-bold bg-yellow-50 text-yellow-600 px-3 py-1.5 rounded-lg border border-yellow-100 shadow-2xs">
-                                            {{ $item->skor_kelayakan }}
-                                        </span>
-                                    @else
-                                        <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1.5 rounded-lg border border-red-100 shadow-2xs">
-                                            {{ $item->skor_kelayakan }}
-                                        </span>
-                                    @endif
+                            <td class="px-6 py-4 text-center text-slate-700 font-semibold">
+                                {{ $item->jumlah_tanggungan }} Orang
+                            </td>
+                            <td class="px-6 py-4 text-center font-extrabold text-slate-900">
+                                @if($score !== null)
+                                    {{ $score }}
                                 @else
                                     <span class="text-xs text-slate-400 font-medium">Belum dihitung</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center">
+                                @if($score !== null)
+                                    <span class="text-xs font-bold px-2.5 py-1 rounded-lg border {{ $levelClass }}">
+                                        {{ $level }}
+                                    </span>
+                                @else
+                                    <span class="text-xs text-slate-400 font-medium">-</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 text-center">
                                 @if($item->status_pengajuan == 'pending')
                                     <span class="text-xs font-bold bg-amber-50 text-amber-600 px-3 py-1 rounded-full border border-amber-100">
                                         Pending
                                     </span>
                                 @elseif($item->status_pengajuan == 'diverifikasi')
-                                    <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
+                                    <span class="text-xs font-bold bg-yellow-50 text-yellow-600 px-3 py-1 rounded-full border border-yellow-100">
                                         Diverifikasi
+                                    </span>
+                                @elseif($item->status_pengajuan == 'diterima')
+                                    <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
+                                        Diterima
                                     </span>
                                 @elseif($item->status_pengajuan == 'ditolak')
                                     <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100">
                                         Ditolak
                                     </span>
                                 @else
-                                    <span class="text-xs font-bold bg-slate-50 text-slate-600 px-3 py-1 rounded-full border border-slate-100">
+                                    <span class="text-xs font-bold bg-slate-50 text-slate-650 px-3 py-1 rounded-full border border-slate-100">
                                         {{ $item->status_pengajuan }}
                                     </span>
                                 @endif
@@ -157,7 +179,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center text-slate-400 text-sm">
+                            <td colspan="9" class="px-6 py-12 text-center text-slate-400 text-sm">
                                 Belum ada pengajuan masuk.
                             </td>
                         </tr>
@@ -165,6 +187,12 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <div class="flex items-center justify-between border-t border-slate-100 pt-6">
+        <p class="text-sm text-slate-500">
+            Showing <span class="font-bold text-[#022448]">{{ $pengajuan->count() }}</span> pengajuan
+        </p>
     </div>
 
 </div>

@@ -1,17 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ubah Indikator - LENTERA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+@extends('layouts.admin')
 
-<div class="max-w-4xl mx-auto">
+@section('title', 'Ubah Indikator Penilaian')
+
+@section('content')
+<div class="space-y-6">
 
     <div class="mb-6 flex justify-between items-end">
         <div>
@@ -106,6 +98,9 @@
 
 </div>
 
+@endsection
+
+@push('scripts')
 <script>
     let ruleIndex = 0;
 
@@ -195,6 +190,4 @@
         }
     });
 </script>
-
-</body>
-</html>
+@endpush

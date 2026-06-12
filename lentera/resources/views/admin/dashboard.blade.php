@@ -8,16 +8,19 @@
 <div class="space-y-6">
     <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-            <p class="text-sm text-slate-500">Dashboard Overview</p>
-            <h1 class="text-3xl font-semibold">Monitoring Distribusi Bantuan</h1>
+            <p class="text-sm text-slate-500 font-medium">Dashboard Overview</p>
+            <h1 class="text-3xl font-bold text-slate-900">Monitoring Distribusi Bantuan</h1>
         </div>
-        <div class="flex items-center gap-4 rounded-3xl bg-white p-4 shadow-sm border border-slate-200">
+        <div class="flex items-center gap-4 rounded-3xl bg-white p-3 shadow-sm border border-slate-200">
             <div class="text-right">
                 <p class="text-sm text-slate-500">{{ $authUser->name ?? 'Admin' }}</p>
-                <p class="font-semibold capitalize">{{ $authUser->role ?? 'Admin' }}</p>
+                <p class="text-xs font-semibold capitalize text-slate-700">{{ $authUser->role ?? 'Admin' }}</p>
             </div>
-            <div class="h-12 w-12 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700">
-                {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
+            <div class="relative">
+                <div class="h-11 w-11 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700 text-sm">
+                    {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
+                </div>
+                <span class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-emerald-400 ring-2 ring-white"></span>
             </div>
         </div>
     </header>
@@ -27,14 +30,16 @@
         {{-- Total Pengajuan --}}
         <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
-                <div class="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <div class="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-650">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
-                <span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full">Total</span>
+                <span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Total</span>
             </div>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Total Pengajuan</p>
-            <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalPengajuan, 0, ',', '.') }}</p>
-            <p class="text-xs font-medium text-slate-500">Pending: <span class="text-amber-600">{{ $sedangMengajukan }}</span> | Ditolak: <span class="text-red-500">{{ $totalDitolak }}</span></p>
+            <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Total Pengajuan</p>
+                <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalPengajuan, 0, ',', '.') }}</p>
+                <p class="text-xs font-semibold text-slate-500">Pending: <span class="text-amber-600">{{ $sedangMengajukan }}</span> | Ditolak: <span class="text-red-500">{{ $totalDitolak }}</span></p>
+            </div>
         </article>
 
         {{-- Total Disetujui --}}
@@ -43,11 +48,13 @@
                 <div class="h-10 w-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 </div>
-                <span class="px-2 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full">+Terverifikasi</span>
+                <span class="px-2.5 py-1 bg-emerald-50 text-emerald-800 text-[10px] font-bold rounded-full uppercase tracking-wider">Approved</span>
             </div>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Disetujui</p>
-            <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalDisetujui, 0, ',', '.') }}</p>
-            <p class="text-xs font-medium text-emerald-600">{{ $totalPengajuan > 0 ? round(($totalDisetujui / $totalPengajuan) * 100) : 0 }}% dari total pengajuan</p>
+            <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Disetujui</p>
+                <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalDisetujui, 0, ',', '.') }}</p>
+                <p class="text-xs font-semibold text-emerald-600">{{ $totalPengajuan > 0 ? round(($totalDisetujui / $totalPengajuan) * 100) : 0 }}% dari total pengajuan</p>
+            </div>
         </article>
 
         {{-- Rata-rata Score --}}
@@ -60,63 +67,67 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 </span>
             </div>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Rata-Rata Score</p>
-            <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($rataRataScore, 1, ',', '.') }}</p>
-            <p class="text-xs font-medium text-slate-500">Kualitas pendaftar meningkat</p>
+            <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Rata-Rata Score Kelayakan</p>
+                <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($rataRataScore, 1, ',', '.') }}</p>
+                <p class="text-xs font-semibold text-slate-500">Kualitas penargetan bantuan</p>
+            </div>
         </article>
 
         {{-- Total Pendaftaran --}}
         <article class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
-                <div class="h-10 w-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                <div class="h-10 w-10 rounded-full bg-cyan-50 flex items-center justify-center text-cyan-600">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                 </div>
                 @if($pendaftaranPending > 0)
-                    <span class="px-2 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full">{{ $pendaftaranPending }} Baru</span>
+                    <span class="px-2.5 py-1 bg-amber-100 text-amber-800 text-[10px] font-bold rounded-full uppercase tracking-wider">{{ $pendaftaranPending }} Baru</span>
                 @else
-                    <span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs font-bold rounded-full">Terkini</span>
+                    <span class="px-2.5 py-1 bg-slate-100 text-slate-700 text-[10px] font-bold rounded-full uppercase tracking-wider">Terkini</span>
                 @endif
             </div>
-            <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Total Pendaftaran</p>
-            <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalPendaftaran, 0, ',', '.') }}</p>
-            <p class="text-xs font-medium text-slate-500"><span class="text-amber-600">{{ $pendaftaranPending }}</span> menunggu verifikasi</p>
+            <div>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-1.5">Pendaftaran Warga</p>
+                <p class="text-3xl font-extrabold text-slate-900 mb-2">{{ number_format($totalPendaftaran, 0, ',', '.') }}</p>
+                <p class="text-xs font-semibold text-slate-500"><span class="text-amber-600 font-bold">{{ $pendaftaranPending }}</span> menunggu verifikasi</p>
+            </div>
         </article>
     </section>
 
-    {{-- ===== WIDGET BARU: Feedback & Laporan ===== --}}
+    {{-- ===== FEEDBACK & LAPORAN ===== --}}
     <section class="grid gap-4 xl:grid-cols-2">
         {{-- Widget Feedback --}}
-        <a href="{{ route('admin.feedback.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-blue-200 transition-all group">
-            <div class="h-14 w-14 rounded-2xl bg-blue-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+        <a href="{{ route('admin.feedback.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-cyan-200 transition-all group">
+            <div class="h-14 w-14 rounded-2xl bg-cyan-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
             <div class="flex-1">
-                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Masukan Masyarakat</p>
-                <p class="text-2xl font-bold text-slate-900">{{ $totalFeedback }} <span class="text-sm font-normal text-slate-400">total</span></p>
+                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Masukan / Feedback</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $totalFeedback }} <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Total</span></p>
                 @if($feedbackBelumDitinjau > 0)
-                    <p class="text-xs text-blue-600 font-semibold mt-1">⚠ {{ $feedbackBelumDitinjau }} belum ditinjau</p>
+                    <p class="text-xs text-cyan-600 font-semibold mt-1">⚠ {{ $feedbackBelumDitinjau }} belum ditinjau</p>
                 @else
-                    <p class="text-xs text-emerald-600 font-semibold mt-1">✓ Semua sudah ditinjau</p>
+                    <p class="text-xs text-emerald-600 font-semibold mt-1">✓ Semua masukan sudah ditinjau</p>
                 @endif
             </div>
-            <svg class="w-5 h-5 text-slate-300 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </a>
 
         {{-- Widget Laporan Penyalahgunaan --}}
         <a href="{{ route('admin.laporan.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-red-200 transition-all group">
-            <div class="h-14 w-14 rounded-2xl bg-red-500 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform">
+            <div class="h-14 w-14 rounded-2xl bg-rose-500 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <div class="flex-1">
-                <p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Laporan Penyalahgunaan</p>
-                <p class="text-2xl font-bold text-slate-900">{{ $totalLaporan }} <span class="text-sm font-normal text-slate-400">total</span></p>
+                <p class="text-xs text-slate-500 font-bold uppercase tracking-wider mb-1">Aduan Penyalahgunaan</p>
+                <p class="text-2xl font-bold text-slate-900">{{ $totalLaporan }} <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Total</span></p>
                 @if($laporanPending > 0)
-                    <p class="text-xs text-red-600 font-semibold mt-1">⚠ {{ $laporanPending }} menunggu tindak lanjut</p>
+                    <p class="text-xs text-rose-600 font-semibold mt-1">⚠ {{ $laporanPending }} menunggu tindak lanjut</p>
                 @else
-                    <p class="text-xs text-emerald-600 font-semibold mt-1">✓ Tidak ada laporan baru</p>
+                    <p class="text-xs text-emerald-600 font-semibold mt-1">✓ Tidak ada aduan aktif</p>
                 @endif
             </div>
-            <svg class="w-5 h-5 text-slate-300 group-hover:text-red-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+            <svg class="w-5 h-5 text-slate-300 group-hover:text-rose-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         </a>
     </section>
 
@@ -126,9 +137,9 @@
             <div class="flex items-center justify-between mb-6">
                 <div>
                     <h2 class="text-lg font-semibold text-slate-900">Progres Verifikasi per Wilayah</h2>
-                    <p class="text-sm text-slate-500">Data kumulatif berdasarkan provinsi terpilih</p>
+                    <p class="text-xs text-slate-400 font-semibold">Data kumulatif pendaftaran regional desa</p>
                 </div>
-                <a href="{{ route('admin.validasi.export') }}" onclick="event.preventDefault(); document.getElementById('export-form').submit();" class="flex items-center gap-2 bg-slate-900 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors">
+                <a href="{{ route('admin.validasi.export') }}" onclick="event.preventDefault(); document.getElementById('export-form').submit();" class="flex items-center gap-2 bg-slate-900 text-white px-3.5 py-2 rounded-xl text-sm font-medium hover:bg-slate-700 transition-colors">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Export CSV
                 </a>

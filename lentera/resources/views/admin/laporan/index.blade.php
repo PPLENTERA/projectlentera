@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen Status Laporan - LENTERA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+@extends('layouts.admin')
 
-<div class="max-w-6xl mx-auto">
+@section('title', 'Manajemen Laporan Penyalahgunaan')
+
+@section('content')
+<div class="space-y-6">
 
     <div class="mb-6 flex justify-between items-end">
         <div>
@@ -91,6 +82,7 @@
                 <thead>
                     <tr class="bg-[#F0F2F5] text-left">
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Pelapor</th>
+                        <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Jenis Bantuan</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Deskripsi Kejadian</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Lokasi</th>
                         <th class="px-6 py-3 text-xs font-bold text-slate-500 uppercase tracking-widest">Tanggal</th>
@@ -105,6 +97,12 @@
                             <td class="px-6 py-4">
                                 <p class="font-semibold text-slate-800">{{ $item->user->name }}</p>
                                 <p class="text-xs text-slate-400">{{ $item->user->email }}</p>
+                            </td>
+
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2.5 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-md border border-cyan-100">
+                                    {{ $item->jenis_bantuan }}
+                                </span>
                             </td>
 
                             <td class="px-6 py-4">
@@ -155,7 +153,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-slate-400 text-sm">
+                            <td colspan="7" class="px-6 py-10 text-center text-slate-400 text-sm">
                                 Belum ada laporan penyalahgunaan masuk.
                             </td>
                         </tr>
@@ -168,6 +166,10 @@
 
 </div>
 
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const ctx = document.getElementById('chartWilayah');
@@ -209,6 +211,4 @@
         });
     });
 </script>
-
-</body>
-</html>
+@endpush

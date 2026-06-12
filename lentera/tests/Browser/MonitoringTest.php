@@ -113,7 +113,7 @@ class MonitoringTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Monitoring Dana');
         $response->assertSee('Filter Audit Penggunaan Dana');
-        $response->assertSee('Peta Penyerapan Regional');
+        $response->assertSee('Peta Penyerapan Jawa Barat');
         $response->assertSee('Alokasi Per Kategori');
         $response->assertSee('Perbandingan Bulanan');
         $response->assertSee('Indeks Transparansi');
