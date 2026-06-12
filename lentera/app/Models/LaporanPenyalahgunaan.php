@@ -14,6 +14,7 @@ class LaporanPenyalahgunaan extends Model
 
     protected $fillable = [
         'user_id',
+        'jenis_bantuan',
         'deskripsi_kejadian',
         'lokasi_kejadian',
         'bukti_path',

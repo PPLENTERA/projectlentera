@@ -11,7 +11,7 @@
             <h1 class="text-3xl font-extrabold text-[#022448] font-['Plus_Jakarta_Sans'] tracking-tight">
                 Monitoring Dana
             </h1>
-            <p class="text-base text-slate-500 mt-1">Data real-time penyaluran bantuan nasional.</p>
+            <p class="text-base text-slate-500 mt-1">Data real-time penyaluran bantuan di Jawa Barat.</p>
         </div>
         
         <div class="flex flex-wrap items-center gap-4">
@@ -23,13 +23,13 @@
                     </svg>
                 </span>
                 <input type="text" placeholder="Cari wilayah atau kategori..." 
-                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#022448] outline-none shadow-sm transition-all">
+                    class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-full text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-cyan-600 outline-none shadow-sm transition-all">
             </div>
 
             {{-- Verified Status --}}
             <div class="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-full shadow-sm">
                 <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                <span class="text-xs font-bold text-[#022448]">Verified Admin</span>
+                <span class="text-xs font-bold text-cyan-700">Verified Admin</span>
             </div>
         </div>
     </div>
@@ -59,14 +59,14 @@
                 <div class="flex flex-col gap-1.5">
                     <label for="start_date" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Tanggal Mulai</label>
                     <input type="date" id="start_date" name="start_date" value="{{ request('start_date') }}"
-                        class="bg-slate-50 border border-slate-200 text-[#022448] px-4 py-2.5 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#022448] w-full">
+                        class="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-cyan-600 w-full">
                 </div>
 
                 {{-- Rentang Waktu: Selesai --}}
                 <div class="flex flex-col gap-1.5">
                     <label for="end_date" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Tanggal Selesai</label>
                     <input type="date" id="end_date" name="end_date" value="{{ request('end_date') }}"
-                        class="bg-slate-50 border border-slate-200 text-[#022448] px-4 py-2.5 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#022448] w-full">
+                        class="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-cyan-600 w-full">
                 </div>
 
                 {{-- Jenis Bantuan --}}
@@ -74,7 +74,7 @@
                     <label for="jenis_bantuan" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Jenis Bantuan</label>
                     <div class="relative">
                         <select id="jenis_bantuan" name="jenis_bantuan"
-                            class="appearance-none bg-slate-50 border border-slate-200 text-[#022448] px-4 py-2.5 pr-8 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#022448] w-full cursor-pointer">
+                            class="appearance-none bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2.5 pr-8 rounded-2xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-cyan-600 w-full cursor-pointer">
                             <option value="">Semua Jenis Bantuan</option>
                             <option value="Bantuan Pendidikan" {{ request('jenis_bantuan') == 'Bantuan Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
                             <option value="Bantuan Kesehatan" {{ request('jenis_bantuan') == 'Bantuan Kesehatan' ? 'selected' : '' }}>Kesehatan</option>
@@ -91,13 +91,13 @@
                 <div class="flex flex-col gap-1.5">
                     <label for="wilayah" class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider">Wilayah (Kec/Kel)</label>
                     <input type="text" id="wilayah" name="wilayah" value="{{ request('wilayah') }}" placeholder="Cari Kecamatan/Kelurahan..."
-                        class="bg-slate-50 border border-slate-200 text-[#022448] px-4 py-2.5 rounded-2xl text-xs font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#022448] w-full">
+                        class="bg-slate-50 border border-slate-200 text-slate-800 px-4 py-2.5 rounded-2xl text-xs font-bold placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-cyan-600 w-full">
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-slate-100 mt-2">
                 <div class="flex items-center gap-1.5">
-                    <span class="px-3.5 py-1.5 bg-[#022448] text-white text-[10px] font-extrabold rounded-full">Mei 2026</span>
+                    <span class="px-3.5 py-1.5 bg-cyan-600 text-white text-[10px] font-extrabold rounded-full">Mei 2026</span>
                     <span class="px-3.5 py-1.5 bg-slate-100 text-slate-500 text-[10px] font-bold rounded-full">vs April 2026</span>
                 </div>
 
@@ -107,7 +107,7 @@
                         Reset
                     </a>
                     <button type="submit" 
-                        class="px-5 py-2.5 bg-[#022448] hover:bg-[#1E3A5F] text-white font-bold text-xs rounded-xl shadow transition-all">
+                        class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xs rounded-xl shadow transition-all cursor-pointer">
                         Terapkan Filter
                     </button>
                 </div>
@@ -131,12 +131,12 @@
     {{-- Main Visualizations Grid --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {{-- Peta Penyerapan Regional (Left, 8 Columns) --}}
+        {{-- Peta Penyerapan Jawa Barat (Left, 8 Columns) --}}
         <div class="lg:col-span-8 bg-white rounded-3xl p-8 border border-slate-100 shadow-sm flex flex-col justify-between">
             <div class="flex items-center justify-between mb-8">
                 <div>
-                    <h2 class="text-lg font-bold text-[#022448] font-['Plus_Jakarta_Sans']">Peta Penyerapan Regional</h2>
-                    <p class="text-sm text-slate-500">Perbandingan realisasi anggaran per provinsi.</p>
+                    <h2 class="text-lg font-bold text-[#022448] font-['Plus_Jakarta_Sans']">Peta Penyerapan Jawa Barat</h2>
+                    <p class="text-sm text-slate-500">Perbandingan realisasi anggaran per desa.</p>
                 </div>
                 {{-- Toggle View buttons --}}
                 <div class="flex items-center bg-slate-50 border border-slate-200 p-1 rounded-xl">
@@ -152,47 +152,58 @@
             {{-- Map View Container --}}
             <div id="map-container" class="relative w-full h-[400px] bg-[#0F172A] rounded-2xl overflow-hidden flex items-center justify-center p-4">
                 
-                {{-- Vektor Peta Indonesia --}}
-                <svg class="w-full h-full text-[#1E293B]" viewBox="0 0 1000 400" fill="currentColor">
-                    <!-- Sumatra -->
-                    <path d="M50,150 L100,100 L180,220 L250,260 L200,300 L100,220 Z" fill="#334155" opacity="0.8" />
-                    <!-- Java -->
-                    <path d="M220,310 L450,330 L450,345 L220,325 Z" fill="#334155" opacity="0.8" />
-                    <!-- Kalimantan -->
-                    <path d="M380,120 L480,100 L500,200 L440,250 L360,200 Z" fill="#334155" opacity="0.8" />
-                    <!-- Sulawesi -->
-                    <path d="M540,160 L620,130 L600,220 L550,250 L560,200 Z" fill="#334155" opacity="0.8" />
-                    <!-- Lesser Sunda & Bali -->
-                    <path d="M465,335 L620,350 L620,360 L465,345 Z" fill="#334155" opacity="0.8" />
-                    <!-- Maluku -->
-                    <path d="M660,180 A20,20 0 1,1 700,220 A20,20 0 1,1 660,180" fill="#334155" opacity="0.8" />
-                    <!-- Papua -->
-                    <path d="M760,200 L880,180 L950,220 L920,320 L760,280 Z" fill="#334155" opacity="0.8" />
+                {{-- Vektor Peta Jawa Barat --}}
+                <svg class="w-full h-full text-[#1E293B] max-h-[350px]" viewBox="0 0 800 400" fill="currentColor">
+                    <path d="M 80,180 
+                             C 100,170 120,180 140,165 
+                             C 160,150 180,160 200,160 
+                             C 220,160 240,150 260,155 
+                             C 280,160 300,140 320,145 
+                             C 340,150 360,135 380,140 
+                             C 400,145 420,120 440,125 
+                             C 460,130 480,130 500,120
+                             C 520,110 540,115 560,110
+                             C 580,105 600,115 620,110
+                             L 650,115 
+                             C 670,110 690,125 710,130 
+                             C 730,135 740,150 750,170
+                             L 750,210
+                             C 740,230 720,240 700,250
+                             C 680,260 670,270 650,280
+                             C 630,290 610,295 590,300
+                             C 570,305 550,295 530,290
+                             C 510,285 490,290 470,295
+                             C 450,300 430,310 410,315
+                             C 390,320 370,315 350,310
+                             C 330,305 310,300 290,295
+                             C 270,290 250,295 230,290
+                             C 210,285 190,280 170,280
+                             C 150,280 130,270 110,265
+                             C 90,260 85,250 80,240
+                             Z" 
+                          fill="#1E293B" stroke="#334155" stroke-width="2" opacity="0.8" />
                 </svg>
 
                 {{-- Pin Markers --}}
                 @foreach($wilayahData as $w)
                     @php
-                        // Hitung posisi pin koordinat pada peta
+                        // Hitung posisi pin koordinat pada peta Jawa Barat
                         $coords = [
-                            'Jawa Barat' => ['x' => '32%', 'y' => '78%', 'color' => 'bg-blue-500', 'text' => 'Rp 2,1T (94%)', 'open' => true],
-                            'Jawa Timur' => ['x' => '42%', 'y' => '80%', 'color' => 'bg-blue-500', 'text' => 'Rp 1,9T (92%)'],
-                            'Sumatera Utara' => ['x' => '12%', 'y' => '45%', 'color' => 'bg-amber-500', 'text' => 'Rp 1,5T (88%)'],
-                            'Kalimantan Timur' => ['x' => '46%', 'y' => '45%', 'color' => 'bg-amber-500', 'text' => 'Rp 1,2T (78%)'],
-                            'Papua' => ['x' => '84%', 'y' => '60%', 'color' => 'bg-amber-500', 'text' => 'Rp 0,8T (82%)', 'open' => true],
-                            'Sulawesi Selatan' => ['x' => '58%', 'y' => '62%', 'color' => 'bg-red-500', 'text' => 'Rp 0,7T (45%)'],
-                            'Nusa Tenggara Barat' => ['x' => '51%', 'y' => '84%', 'color' => 'bg-red-500', 'text' => 'Rp 0,38T (44%)'],
-                            'Bali' => ['x' => '47%', 'y' => '83%', 'color' => 'bg-blue-500', 'text' => 'Rp 0,4T (89%)'],
-                            'Maluku' => ['x' => '70%', 'y' => '52%', 'color' => 'bg-red-500', 'text' => 'Rp 0,3T (35%)']
+                            'Desa Bojongsoang' => ['x' => '38%', 'y' => '56%', 'color' => 'bg-blue-500', 'text' => 'Rp 210M (94%)', 'open' => true],
+                            'Desa Lengkong' => ['x' => '34%', 'y' => '48%', 'color' => 'bg-amber-500', 'text' => 'Rp 150M (88%)'],
+                            'Desa Cipagalo' => ['x' => '42%', 'y' => '52%', 'color' => 'bg-blue-500', 'text' => 'Rp 190M (92%)'],
+                            'Desa Bojongsari' => ['x' => '48%', 'y' => '58%', 'color' => 'bg-amber-500', 'text' => 'Rp 120M (78%)'],
+                            'Desa Buahbatu' => ['x' => '40%', 'y' => '45%', 'color' => 'bg-red-500', 'text' => 'Rp 70M (45%)', 'open' => true],
+                            'Desa Tegalluar' => ['x' => '46%', 'y' => '50%', 'color' => 'bg-amber-500', 'text' => 'Rp 80M (82%)']
                         ];
-                        $coord = $coords[$w['provinsi']] ?? ['x' => '50%', 'y' => '50%', 'color' => 'bg-slate-500', 'text' => 'Data'];
+                        $coord = $coords[$w['desa']] ?? ['x' => '50%', 'y' => '50%', 'color' => 'bg-slate-500', 'text' => 'Data'];
                     @endphp
 
-                    <div class="absolute group" style="left: {{ $coord['x'] }}; top: {{ $coord['y'] }}; transform: translate(-50%, -100%);" data-region-slug="{{ Str::slug($w['provinsi']) }}">
+                    <div class="absolute group" style="left: {{ $coord['x'] }}; top: {{ $coord['y'] }}; transform: translate(-50%, -100%);" data-region-slug="{{ Str::slug($w['desa']) }}">
                         {{-- Tooltip info --}}
                         <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-[#022448] text-[10px] font-extrabold px-3 py-1.5 rounded-xl border border-slate-100 shadow-lg whitespace-nowrap z-20 
                             {{ isset($coord['open']) ? 'block' : 'hidden group-hover:block transition-all' }}">
-                            <p class="uppercase text-slate-400 text-[8px] tracking-wider mb-0.5">{{ $w['provinsi'] }}</p>
+                            <p class="uppercase text-slate-400 text-[8px] tracking-wider mb-0.5">{{ $w['desa'] }}</p>
                             <p>{{ $coord['text'] }}</p>
                             {{-- Arrow --}}
                             <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-2 h-2 bg-white rotate-40 border-r border-b border-slate-100"></div>
@@ -208,9 +219,9 @@
                     </div>
                 @endforeach
                 
-                {{-- Indonesian water watermark --}}
+                {{-- Jawa Barat water watermark --}}
                 <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-[10px] text-slate-600 font-extrabold tracking-widest uppercase opacity-40">
-                    Indonesia Archipelago
+                    Provinsi Jawa Barat
                 </div>
             </div>
 
@@ -219,8 +230,8 @@
                 <table class="w-full text-left text-sm">
                     <thead>
                         <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-bold text-xs uppercase tracking-wider">
-                            <th class="px-6 py-4">Provinsi</th>
-                            <th class="px-6 py-4">Pulau</th>
+                            <th class="px-6 py-4">Desa</th>
+                            <th class="px-6 py-4">Kabupaten/Kota</th>
                             <th class="px-6 py-4">Pagu Anggaran</th>
                             <th class="px-6 py-4">Realisasi Dana</th>
                             <th class="px-6 py-4 text-center">Penyerapan</th>
@@ -228,9 +239,9 @@
                     </thead>
                     <tbody class="divide-y divide-slate-50 font-semibold text-[#022448]">
                         @foreach($wilayahData as $w)
-                            <tr class="hover:bg-slate-50/50" data-region-row="{{ Str::slug($w['provinsi']) }}">
-                                <td class="px-6 py-4">{{ $w['provinsi'] }}</td>
-                                <td class="px-6 py-4 text-slate-400 text-xs uppercase tracking-wider">{{ $w['pulau'] }}</td>
+                            <tr class="hover:bg-slate-50/50" data-region-row="{{ Str::slug($w['desa']) }}">
+                                <td class="px-6 py-4">{{ $w['desa'] }}</td>
+                                <td class="px-6 py-4 text-slate-400 text-xs uppercase tracking-wider">{{ $w['kabupaten'] }}</td>
                                 <td class="px-6 py-4">Rp {{ number_format($w['pagu'] / 1000000000, 1, ',', '.') }} Miliar</td>
                                 <td class="px-6 py-4">Rp {{ number_format($w['realisasi'] / 1000000000, 1, ',', '.') }} Miliar</td>
                                 <td class="px-6 py-4">
@@ -311,7 +322,7 @@
             </div>
 
             <button onclick="window.location.href='{{ route('admin.validasi.export') }}'"
-                class="w-full mt-8 py-4 bg-[#022448] hover:bg-[#1E3A5F] text-white font-bold text-sm rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 duration-200">
+                class="w-full mt-8 py-4 bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-sm rounded-2xl shadow-lg transition-all hover:-translate-y-0.5 duration-200 cursor-pointer">
                 Unduh Laporan Sektoral
             </button>
         </div>
@@ -335,7 +346,7 @@
 
             <div class="flex items-center justify-between text-xs font-bold text-slate-500 uppercase tracking-widest mt-6 pt-4 border-t border-slate-100">
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-full bg-[#022448]"></span>
+                    <span class="w-3 h-3 rounded-full bg-cyan-600"></span>
                     Mei 2026: {{ $totalMeiFormatted }}
                 </div>
                 <div class="flex items-center gap-2">
@@ -357,7 +368,7 @@
                     {{-- Circular SVG border progress --}}
                     <svg class="absolute inset-0 w-full h-full transform -rotate-90">
                         <circle cx="56" cy="56" r="46" stroke="#E2E8F0" stroke-width="8" fill="transparent" />
-                        <circle cx="56" cy="56" r="46" stroke="#022448" stroke-width="8" fill="transparent" 
+                        <circle cx="56" cy="56" r="46" stroke="#0891b2" stroke-width="8" fill="transparent" 
                             stroke-dasharray="289" stroke-dashoffset="{{ 289 - (289 * $transparencyIndex / 100) }}" stroke-linecap="round" />
                     </svg>
                     <span class="text-3xl font-extrabold text-[#022448]">{{ $transparencyIndex }}</span>
@@ -391,32 +402,6 @@
 
     </div>
 
-    {{-- Bottom Section: Pelaporan Publik Banner & Footer --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-4">
-        
-        {{-- Banner Pelaporan (Left, 5 Columns) --}}
-        <div class="lg:col-span-5 bg-gradient-to-r from-amber-100 via-amber-50 to-orange-100 rounded-3xl p-8 border border-orange-200/50 shadow-sm flex items-start gap-4">
-            <div class="p-3 bg-amber-500 text-white rounded-2xl shadow-md flex-shrink-0">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
-                </svg>
-            </div>
-            <div class="space-y-4">
-                <div>
-                    <h3 class="font-bold text-[#022448] text-sm sm:text-base leading-snug">Pelaporan Publik</h3>
-                    <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
-                        Ada ketidaksesuaian di lapangan? Laporkan langsung melalui kanal pengajuan kami.
-                    </p>
-                </div>
-                <a href="{{ route('masyarakat.pelaporan.create') }}"
-                    class="inline-block px-5 py-2.5 bg-black hover:bg-slate-900 text-white text-xs font-bold rounded-xl transition-all hover:-translate-y-0.5 duration-200">
-                    Buat Laporan Baru
-                </a>
-            </div>
-        </div>
-
-    </div>
-
 </div>
 
 {{-- Chart JS Initialization --}}
@@ -432,13 +417,13 @@
         if (view === 'map') {
             mapContainer.classList.remove('hidden');
             listContainer.classList.add('hidden');
-            mapBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-white shadow text-[#022448]";
-            listBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-[#022448]";
+            mapBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-white shadow text-cyan-600";
+            listBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-cyan-600";
         } else {
             mapContainer.classList.add('hidden');
             listContainer.classList.remove('hidden');
-            mapBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-[#022448]";
-            listBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-white shadow text-[#022448]";
+            mapBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-500 hover:text-cyan-600";
+            listBtn.className = "px-4 py-1.5 rounded-lg text-xs font-bold transition-all bg-white shadow text-cyan-600";
         }
     }
 
@@ -491,7 +476,7 @@
                     {
                         label: 'Mei 2026',
                         data: dataMei,
-                        backgroundColor: '#022448',
+                        backgroundColor: '#0891b2',
                         borderRadius: 4,
                         barPercentage: 0.5,
                         categoryPercentage: 0.4
@@ -522,7 +507,8 @@
                         ticks: { font: { size: 10 }, color: '#94a3b8', callback: value => 'Rp ' + value + '{{ $chartUnit }}' }
                     }
                 }
-            });
+            }
         });
+    });
 </script>
 @endsection
