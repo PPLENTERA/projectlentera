@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Recipient;
+use App\Http\Controllers\Controller;
 
 class RecipientController extends Controller
 {

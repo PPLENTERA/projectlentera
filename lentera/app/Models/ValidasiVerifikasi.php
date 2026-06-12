@@ -15,6 +15,9 @@ class ValidasiVerifikasi extends Model
         'status_validasi',
         'catatan',
         'tanggal_verifikasi',
+        'tanggal_pengambilan',
+        'waktu_pengambilan',
+        'lokasi_pengambilan',
     ];
 
     public function pengajuan()

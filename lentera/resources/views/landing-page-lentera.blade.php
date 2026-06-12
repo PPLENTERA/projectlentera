@@ -63,7 +63,7 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 
 @endif
 
-<a href="{{ url('/statistik-publik') }}" class="pill light">
+<a href="{{ url('/masyarakat/statistik-publik') }}" class="pill light">
     Statistik Bantuan
 </a>
 

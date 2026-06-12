@@ -24,7 +24,7 @@
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
                     <a
-                        href="{{ route('feedback.create') }}"
+                        href="{{ route('masyarakat.feedback.create') }}"
                         class="inline-block px-5 py-1.5 rounded-sm border border-transparent bg-cyan-600 text-white hover:bg-cyan-700 text-sm leading-normal"
                     >
                         Feedback
