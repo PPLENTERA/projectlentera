@@ -75,12 +75,11 @@ class DatabaseSeeder extends Seeder
             'status' => 'belum_ditinjau',
         ]);
 
-        // Seed Scoring Indicators & Rules
+         // Seed Scoring Indicators & Rules
         $penghasilanInd = \App\Models\ScoringIndicator::create([
             'name' => 'Penghasilan',
             'column_name' => 'penghasilan',
         ]);
-
         $penghasilanInd->rules()->createMany([
             [
                 'operator' => '<',
@@ -102,12 +101,10 @@ class DatabaseSeeder extends Seeder
                 'label' => 'Lebih dari Rp 3.000.000',
             ],
         ]);
-
         $tanggunganInd = \App\Models\ScoringIndicator::create([
             'name' => 'Jumlah Tanggungan',
             'column_name' => 'jumlah_tanggungan',
         ]);
-
         $tanggunganInd->rules()->createMany([
             [
                 'operator' => '>',

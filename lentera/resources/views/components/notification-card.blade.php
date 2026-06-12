@@ -69,16 +69,7 @@
             </div>
         @endif
 
-        @if($notification->type === 'reminder')
-            <div class="mt-4">
-                <a href="#" class="inline-flex items-center text-xs font-bold text-[#3b82f6] hover:text-[#1d4ed8] transition-colors gap-1">
-                    Lihat Lokasi Pengambilan
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path>
-                    </svg>
-                </a>
-            </div>
-        @endif
+
     </div>
 
     @if($isUnread)
