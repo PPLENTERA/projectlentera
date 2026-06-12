@@ -9,6 +9,13 @@ class FeedbackController extends Controller
 {
     public function create()
     {
+        if (auth()->check()) {
+            if (auth()->user()->role === 'admin') {
+                return view('admin.feedback.create');
+            } elseif (auth()->user()->role === 'masyarakat') {
+                return view('masyarakat.feedback');
+            }
+        }
         return view('feedback');
     }
 

@@ -56,6 +56,9 @@
                         <option value="" disabled>Pilih kolom</option>
                         <option value="penghasilan" {{ old('column_name', $indicator->column_name) == 'penghasilan' ? 'selected' : '' }}>penghasilan (Desimal)</option>
                         <option value="jumlah_tanggungan" {{ old('column_name', $indicator->column_name) == 'jumlah_tanggungan' ? 'selected' : '' }}>jumlah_tanggungan (Integer)</option>
+                        <option value="status_rumah" {{ old('column_name', $indicator->column_name) == 'status_rumah' ? 'selected' : '' }}>status_rumah (Teks)</option>
+                        <option value="bukti_pendukung" {{ old('column_name', $indicator->column_name) == 'bukti_pendukung' ? 'selected' : '' }}>bukti_pendukung (Teks: Ada/Tidak Ada)</option>
+                        <option value="sktm" {{ old('column_name', $indicator->column_name) == 'sktm' ? 'selected' : '' }}>sktm (Teks: Ada/Tidak Ada)</option>
                     </select>
                 </div>
             </div>
@@ -121,21 +124,21 @@
             <td class="px-4 py-3">
                 <select name="rules[${ruleIndex}][operator]" onchange="toggleValueMax(this, ${ruleIndex})" required
                         class="w-full px-3 py-2 bg-[#F0F2F5] rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white outline-none">
+                    <option value="=" ${operator === '=' ? 'selected' : ''}>=</option>
                     <option value="<" ${operator === '<' ? 'selected' : ''}>&lt;</option>
                     <option value="<=" ${operator === '<=' ? 'selected' : ''}>&lt;=</option>
                     <option value=">" ${operator === '>' ? 'selected' : ''}>&gt;</option>
                     <option value=">=" ${operator === '>=' ? 'selected' : ''}>&gt;=</option>
-                    <option value="=" ${operator === '=' ? 'selected' : ''}>=</option>
                     <option value="between" ${operator === 'between' ? 'selected' : ''}>BETWEEN</option>
                 </select>
             </td>
             <td class="px-4 py-3">
-                <input type="number" name="rules[${ruleIndex}][value]" value="${value}" required
+                <input type="text" name="rules[${ruleIndex}][value]" value="${value}" required
                        class="w-full px-3 py-2 bg-[#F0F2F5] rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white outline-none text-right"
                        placeholder="Nilai 1">
             </td>
             <td class="px-4 py-3">
-                <input type="number" id="value-max-${ruleIndex}" name="rules[${ruleIndex}][value_max]" value="${valueMax}"
+                <input type="text" id="value-max-${ruleIndex}" name="rules[${ruleIndex}][value_max]" value="${valueMax}"
                        ${operator !== 'between' ? 'disabled' : ''}
                        class="w-full px-3 py-2 bg-[#F0F2F5] rounded-xl text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white outline-none text-right disabled:opacity-40"
                        placeholder="Nilai 2 (Max)">
@@ -181,8 +184,8 @@
             addRuleRow(
                 "{{ $rule->label }}",
                 "{{ $rule->operator }}",
-                "{{ (float)$rule->value }}",
-                "{{ $rule->value_max ? (float)$rule->value_max : '' }}",
+                "{{ is_numeric($rule->value) ? (float)$rule->value : $rule->value }}",
+                "{{ $rule->value_max ? (is_numeric($rule->value_max) ? (float)$rule->value_max : $rule->value_max) : '' }}",
                 "{{ $rule->score }}"
             );
         @endforeach

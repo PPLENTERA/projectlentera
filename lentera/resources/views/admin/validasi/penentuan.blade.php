@@ -180,14 +180,24 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 @if($item->status_pengajuan == 'diverifikasi')
-                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
-                                        @csrf
-                                        <input type="hidden" name="status" value="diterima">
-                                        <button type="submit"
-                                                class="text-xs font-bold text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl transition-colors">
-                                            Terima Bantuan
-                                        </button>
-                                    </form>
+                                    <div class="flex items-center justify-end gap-2">
+                                        <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="diterima">
+                                            <button type="submit"
+                                                    class="text-xs font-bold text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
+                                                Terima Bantuan
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="ditolak">
+                                            <button type="submit"
+                                                    class="text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
+                                                Tolak Bantuan
+                                            </button>
+                                        </form>
+                                    </div>
                                 @elseif($item->status_pengajuan == 'diterima')
                                     <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
                                         @csrf

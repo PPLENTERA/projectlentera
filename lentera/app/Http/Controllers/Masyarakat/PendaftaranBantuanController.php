@@ -62,7 +62,7 @@ class PendaftaranBantuanController extends Controller
             'dokumen_kk' => $dokumen_kk,
             'dokumen_rumah' => $dokumen_rumah,
             'dokumen_sktm' => $dokumen_sktm,
-            'status' => 'pending',
+            'status' => 'disetujui',
         ]);
 
         return redirect()->route('masyarakat.dashboard')->with('success', 'Pendaftaran Bantuan berhasil diajukan!');

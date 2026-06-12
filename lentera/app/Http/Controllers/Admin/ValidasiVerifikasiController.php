@@ -64,11 +64,19 @@ class ValidasiVerifikasiController extends Controller
 
         if ($status_pengajuan === 'diverifikasi') {
             $pengajuan = PengajuanBantuan::findOrFail($id);
+            $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $pengajuan->id_users)->latest()->first();
+            $status_rumah = $pendaftaran ? $pendaftaran->status_rumah : null;
+            $hasSktm = ($pendaftaran && $pendaftaran->dokumen_sktm) || $pengajuan->dokumen()->where('jenis_dokumen', 'sktm')->exists();
+            $sktm = $hasSktm ? 'Ada' : 'Tidak Ada';
+            $bukti_pendukung = $pengajuan->bukti_pendukung ? 'Ada' : 'Tidak Ada';
+
             $score = ScoringIndicator::calculateScore(
                 $pengajuan->penghasilan,
                 $pengajuan->jumlah_tanggungan,
                 $pengajuan->deskripsi_kebutuhan,
-                $pengajuan->bukti_pendukung
+                $bukti_pendukung,
+                $status_rumah,
+                $sktm
             );
         } else {
             $pengajuan = PengajuanBantuan::findOrFail($id);
@@ -152,11 +160,19 @@ class ValidasiVerifikasiController extends Controller
         // Recalculate score on-the-fly jika 0 atau null
         foreach ($pengajuan as $item) {
             if ($item->skor_kelayakan === null || $item->skor_kelayakan === 0) {
+                $pendaftaran = \App\Models\PendaftaranBantuan::where('user_id', $item->id_users)->latest()->first();
+                $status_rumah = $pendaftaran ? $pendaftaran->status_rumah : null;
+                $hasSktm = ($pendaftaran && $pendaftaran->dokumen_sktm) || $item->dokumen()->where('jenis_dokumen', 'sktm')->exists();
+                $sktm = $hasSktm ? 'Ada' : 'Tidak Ada';
+                $bukti_pendukung = $item->bukti_pendukung ? 'Ada' : 'Tidak Ada';
+
                 $newScore = ScoringIndicator::calculateScore(
                     $item->penghasilan,
                     $item->jumlah_tanggungan,
                     $item->deskripsi_kebutuhan,
-                    $item->bukti_pendukung
+                    $bukti_pendukung,
+                    $status_rumah,
+                    $sktm
                 );
                 if ($newScore > 0) {
                     $item->update(['skor_kelayakan' => $newScore]);
@@ -216,9 +232,33 @@ class ValidasiVerifikasiController extends Controller
             'status_pengajuan' => $request->status,
         ]);
 
+        if ($request->status === 'diterima') {
+            Notification::create([
+                'user_id' => $pengajuan->id_users,
+                'title' => 'Pengajuan Bantuan Diterima',
+                'message' => 'Selamat! Pengajuan bantuan ' . $pengajuan->jenis_bantuan . ' Anda telah disetujui dan diterima sebagai penerima bantuan.',
+                'type' => 'status_update',
+                'icon' => 'check',
+                'status_badge' => 'STATUS: DITERIMA',
+                'action_link' => route('masyarakat.pengajuan.index'),
+            ]);
+        } elseif ($request->status === 'ditolak') {
+            Notification::create([
+                'user_id' => $pengajuan->id_users,
+                'title' => 'Pengajuan Bantuan Ditolak',
+                'message' => 'Mohon maaf, pengajuan bantuan ' . $pengajuan->jenis_bantuan . ' Anda ditolak pada tahap penentuan akhir.',
+                'type' => 'status_update',
+                'icon' => 'info',
+                'status_badge' => 'STATUS: DITOLAK',
+                'action_link' => route('masyarakat.pengajuan.index'),
+            ]);
+        }
+
         $message = $request->status === 'diterima'
             ? 'Pengajuan berhasil disetujui sebagai penerima bantuan!'
-            : 'Status pengajuan berhasil diperbarui.';
+            : ($request->status === 'ditolak'
+                ? 'Pengajuan berhasil ditolak.'
+                : 'Status pengajuan berhasil diperbarui.');
 
         return redirect()->route('admin.validasi.penentuan')
             ->with('success', $message);

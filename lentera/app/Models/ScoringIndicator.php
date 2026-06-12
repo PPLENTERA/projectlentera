@@ -17,27 +17,27 @@ class ScoringIndicator extends Model
     }
     /**
      * Calculate score based on active indicators and rules in the database.
-     *
-     * @param  int|float  $penghasilan         Penghasilan per bulan (dari PendaftaranBantuan)
-     * @param  int        $jumlah_tanggungan   Jumlah tanggungan keluarga
-     * @param  string|null $deskripsi_kebutuhan Deskripsi pengajuan (opsional, +10 jika diisi ≥ 20 karakter)
-     * @param  string|null $bukti_pendukung     Path file bukti pendukung (opsional, +20 jika ada)
      */
     public static function calculateScore(
         $penghasilan,
         $jumlah_tanggungan,
         $deskripsi_kebutuhan = null,
-        $bukti_pendukung = null
+        $bukti_pendukung = null,
+        $status_rumah = null,
+        $sktm = null
     ) {
         $totalScore = 0;
         $indicators = self::with('rules')->get();
 
         $hasPenghasilan = $indicators->contains('column_name', 'penghasilan');
         $hasTanggungan  = $indicators->contains('column_name', 'jumlah_tanggungan');
+        $hasStatusRumah = $indicators->contains('column_name', 'status_rumah');
+        $hasBuktiPendukung = $indicators->contains('column_name', 'bukti_pendukung');
+        $hasSktm = $indicators->contains('column_name', 'sktm');
 
         $displayIndicators = collect();
 
-        // --- Indikator: Penghasilan (maks 40 poin) ---
+        // --- Indikator: Penghasilan ---
         if ($hasPenghasilan) {
             $displayIndicators->push($indicators->firstWhere('column_name', 'penghasilan'));
         } else {
@@ -53,7 +53,7 @@ class ScoringIndicator extends Model
             $displayIndicators->push($penghasilanInd);
         }
 
-        // --- Indikator: Jumlah Tanggungan (maks 30 poin) ---
+        // --- Indikator: Jumlah Tanggungan ---
         if ($hasTanggungan) {
             $displayIndicators->push($indicators->firstWhere('column_name', 'jumlah_tanggungan'));
         } else {
@@ -69,21 +69,85 @@ class ScoringIndicator extends Model
             $displayIndicators->push($tanggunganInd);
         }
 
-        // Tambahkan indikator lain dari DB (selain penghasilan & tanggungan)
+        // --- Indikator: Status Rumah ---
+        if ($hasStatusRumah) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'status_rumah'));
+        } else {
+            $statusRumahInd = new self([
+                'name'        => 'Status Rumah',
+                'column_name' => 'status_rumah',
+            ]);
+            $statusRumahInd->setRelation('rules', collect([
+                new ScoringRule(['operator' => '=', 'value' => 'Sewa/Kontrak', 'score' => 30]),
+                new ScoringRule(['operator' => '=', 'value' => 'Numpang', 'score' => 20]),
+                new ScoringRule(['operator' => '=', 'value' => 'Milik Sendiri', 'score' => 10]),
+            ]));
+            $displayIndicators->push($statusRumahInd);
+        }
+
+        // --- Indikator: Bukti Pendukung ---
+        if ($hasBuktiPendukung) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'bukti_pendukung'));
+        } else {
+            $buktiPendukungInd = new self([
+                'name'        => 'Bukti Pendukung',
+                'column_name' => 'bukti_pendukung',
+            ]);
+            $buktiPendukungInd->setRelation('rules', collect([
+                new ScoringRule(['operator' => '=', 'value' => 'Ada', 'score' => 15]),
+                new ScoringRule(['operator' => '=', 'value' => 'Tidak Ada', 'score' => 0]),
+            ]));
+            $displayIndicators->push($buktiPendukungInd);
+        }
+
+        // --- Indikator: SKTM ---
+        if ($hasSktm) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'sktm'));
+        } else {
+            $sktmInd = new self([
+                'name'        => 'Surat Keterangan Tidak Mampu (SKTM)',
+                'column_name' => 'sktm',
+            ]);
+            $sktmInd->setRelation('rules', collect([
+                new ScoringRule(['operator' => '=', 'value' => 'Ada', 'score' => 25]),
+                new ScoringRule(['operator' => '=', 'value' => 'Tidak Ada', 'score' => 0]),
+            ]));
+            $displayIndicators->push($sktmInd);
+        }
+
+        // Tambahkan indikator kustom lainnya dari database
         foreach ($indicators as $ind) {
-            if ($ind->column_name !== 'penghasilan' && $ind->column_name !== 'jumlah_tanggungan') {
+            if (!in_array($ind->column_name, ['penghasilan', 'jumlah_tanggungan', 'status_rumah', 'bukti_pendukung', 'sktm'])) {
                 $displayIndicators->push($ind);
             }
         }
 
-        // Hitung skor dari indikator range (penghasilan & tanggungan)
+        // Map paths/states to standardized string values
+        $buktiPendukungVal = $bukti_pendukung;
+        if ($buktiPendukungVal !== 'Ada' && $buktiPendukungVal !== 'Tidak Ada') {
+            $buktiPendukungVal = !empty($buktiPendukungVal) ? 'Ada' : 'Tidak Ada';
+        }
+
+        $sktmVal = $sktm;
+        if ($sktmVal !== 'Ada' && $sktmVal !== 'Tidak Ada') {
+            $sktmVal = !empty($sktmVal) ? 'Ada' : 'Tidak Ada';
+        }
+
+        // Hitung skor dari setiap indikator
         foreach ($displayIndicators as $indicator) {
             $value = null;
             if ($indicator->column_name === 'penghasilan') {
                 $value = $penghasilan;
             } elseif ($indicator->column_name === 'jumlah_tanggungan') {
                 $value = $jumlah_tanggungan;
+            } elseif ($indicator->column_name === 'status_rumah') {
+                $value = $status_rumah;
+            } elseif ($indicator->column_name === 'bukti_pendukung') {
+                $value = $buktiPendukungVal;
+            } elseif ($indicator->column_name === 'sktm') {
+                $value = $sktmVal;
             }
+
             if ($value === null) {
                 continue;
             }
@@ -97,19 +161,38 @@ class ScoringIndicator extends Model
                 }
             }
 
-            // Fallback ke aturan default jika tidak ada di DB
-            if (!$matched && ($indicator->column_name === 'penghasilan' || $indicator->column_name === 'jumlah_tanggungan')) {
-                $defaultRules = $indicator->column_name === 'penghasilan'
-                    ? collect([
+            // Fallback ke aturan default jika tidak ada di database
+            if (!$matched) {
+                $defaultRules = collect();
+                if ($indicator->column_name === 'penghasilan') {
+                    $defaultRules = collect([
                         new ScoringRule(['operator' => '<',       'value' => 1000000,                       'score' => 40]),
                         new ScoringRule(['operator' => 'between', 'value' => 1000000, 'value_max' => 3000000, 'score' => 25]),
                         new ScoringRule(['operator' => '>',       'value' => 3000000,                       'score' => 10]),
-                    ])
-                    : collect([
+                    ]);
+                } elseif ($indicator->column_name === 'jumlah_tanggungan') {
+                    $defaultRules = collect([
                         new ScoringRule(['operator' => '>',       'value' => 3,               'score' => 30]),
                         new ScoringRule(['operator' => 'between', 'value' => 2, 'value_max' => 3, 'score' => 20]),
                         new ScoringRule(['operator' => '<',       'value' => 2,               'score' => 10]),
                     ]);
+                } elseif ($indicator->column_name === 'status_rumah') {
+                    $defaultRules = collect([
+                        new ScoringRule(['operator' => '=', 'value' => 'Sewa/Kontrak', 'score' => 30]),
+                        new ScoringRule(['operator' => '=', 'value' => 'Numpang', 'score' => 20]),
+                        new ScoringRule(['operator' => '=', 'value' => 'Milik Sendiri', 'score' => 10]),
+                    ]);
+                } elseif ($indicator->column_name === 'bukti_pendukung') {
+                    $defaultRules = collect([
+                        new ScoringRule(['operator' => '=', 'value' => 'Ada', 'score' => 15]),
+                        new ScoringRule(['operator' => '=', 'value' => 'Tidak Ada', 'score' => 0]),
+                    ]);
+                } elseif ($indicator->column_name === 'sktm') {
+                    $defaultRules = collect([
+                        new ScoringRule(['operator' => '=', 'value' => 'Ada', 'score' => 25]),
+                        new ScoringRule(['operator' => '=', 'value' => 'Tidak Ada', 'score' => 0]),
+                    ]);
+                }
 
                 foreach ($defaultRules as $rule) {
                     if (self::evaluateRule($value, $rule)) {
@@ -126,14 +209,9 @@ class ScoringIndicator extends Model
             $totalScore += 10;
         }
 
-        // --- Indikator: Bukti Pendukung (+20 poin) ---
-        // Diberikan jika pemohon mengunggah file bukti pendukung
-        if (!empty($bukti_pendukung)) {
-            $totalScore += 20;
-        }
-
         return $totalScore;
     }
+
     /**
      * Evaluate if a value satisfies a specific rule.
      */
@@ -141,17 +219,17 @@ class ScoringIndicator extends Model
     {
         switch ($rule->operator) {
             case '<':
-                return $value < $rule->value;
+                return (float)$value < (float)$rule->value;
             case '<=':
-                return $value <= $rule->value;
+                return (float)$value <= (float)$rule->value;
             case '>':
-                return $value > $rule->value;
+                return (float)$value > (float)$rule->value;
             case '>=':
-                return $value >= $rule->value;
+                return (float)$value >= (float)$rule->value;
             case '=':
-                return $value == $rule->value;
+                return strtolower(trim((string)$value)) === strtolower(trim((string)$rule->value));
             case 'between':
-                return $value >= $rule->value && $value <= $rule->value_max;
+                return (float)$value >= (float)$rule->value && (float)$value <= (float)$rule->value_max;
             default:
                 return false;
         }

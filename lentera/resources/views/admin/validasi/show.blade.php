@@ -153,9 +153,9 @@
                     </div>
 
                     <div class="border-t border-slate-100 pt-4">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Jadwal Pengambilan (Opsional)</p>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Jadwal Survei (Opsional)</p>
                         
-                        <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[0.65rem] font-bold text-slate-500 uppercase tracking-wider mb-1">Tanggal</label>
                                 <input type="date" name="tanggal_pengambilan" 
@@ -166,12 +166,6 @@
                                 <input type="time" name="waktu_pengambilan" 
                                     class="w-full px-3 py-2 bg-slate-50 rounded-xl text-sm font-medium text-slate-800 border border-slate-200 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none">
                             </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-[0.65rem] font-bold text-slate-500 uppercase tracking-wider mb-1">Lokasi Kantor</label>
-                            <input type="text" name="lokasi_pengambilan" placeholder="misal: Kantor Kelurahan Lentera"
-                                class="w-full px-3 py-2.5 bg-slate-50 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 border border-slate-200 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600 outline-none">
                         </div>
                     </div>
 
