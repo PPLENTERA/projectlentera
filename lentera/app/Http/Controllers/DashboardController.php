@@ -59,6 +59,31 @@ class DashboardController extends Controller
             $perWilayah->push(['wilayah' => $villageName, 'total' => $count]);
         }
 
+        // Hitung penyaluran bulanan untuk admin
+        $pengajuanApproved = PengajuanBantuan::whereIn('status_pengajuan', ['diverifikasi', 'diterima'])->get();
+        
+        $grouped = $pengajuanApproved->groupBy(function ($date) {
+            return \Carbon\Carbon::parse($date->tanggal_pengajuan)->format('M');
+        });
+
+        $penyaluranBulanan = collect();
+        foreach (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] as $month) {
+            $monthData = $grouped->get($month, collect());
+            
+            $pendidikan = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Pendidikan') !== false)->count() * 1500000;
+            $kesehatan  = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Kesehatan') !== false)->count() * 1000000;
+            $pangan     = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Pangan') !== false)->count() * 500000;
+            $perumahan  = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Perumahan') !== false)->count() * 2000000;
+
+            $penyaluranBulanan->push([
+                'bulan'      => strtoupper($month),
+                'pendidikan' => $pendidikan,
+                'kesehatan'  => $kesehatan,
+                'pangan'     => $pangan,
+                'perumahan'  => $perumahan,
+            ]);
+        }
+
         $recent         = $this->getAdminRecentReports();
         $categoriesList = $this->getCategoriesData();
         $authUser       = Auth::user();
@@ -71,6 +96,7 @@ class DashboardController extends Controller
             'rataRataScore',
             'totalBantuan',
             'perWilayah',
+            'penyaluranBulanan',
             'recent',
             'categoriesList',
             'feedbackBelumDitinjau',
@@ -118,6 +144,49 @@ class DashboardController extends Controller
 
         $pengajuan = PengajuanBantuan::whereIn('status_pengajuan', ['diverifikasi', 'diterima'])->get();
 
+        // Hitung progress per wilayah untuk masyarakat
+        $villages = [
+            'Bojongsoang' => 'Desa Bojongsoang',
+            'Bojongsari'  => 'Desa Bojongsari',
+            'Buahbatu'    => 'Desa Buahbatu',
+            'Cipagalo'    => 'Desa Cipagalo',
+            'Lengkong'    => 'Desa Lengkong',
+            'Tegalluar'   => 'Desa Tegalluar',
+        ];
+
+        $pendaftaranAll = \App\Models\PendaftaranBantuan::all();
+        $wilayahProgressData = [];
+        
+        foreach ($villages as $key => $villageName) {
+            $wilayahCounts = 0;
+            $wilayahApproved = 0;
+            
+            foreach ($pendaftaranAll as $p) {
+                $alamat = strtoupper($p->alamat_lengkap);
+                if (str_contains($alamat, strtoupper($key))) {
+                    $wilayahCounts++;
+                    
+                    // Hitung yang sudah diterima
+                    $userPengajuanApproved = PengajuanBantuan::where('id_users', $p->user_id)
+                        ->whereIn('status_pengajuan', ['diverifikasi', 'diterima'])
+                        ->count();
+                    if ($userPengajuanApproved > 0) {
+                        $wilayahApproved++;
+                    }
+                }
+            }
+            
+            $progress = $wilayahCounts > 0 ? round(($wilayahApproved / $wilayahCounts) * 100) : 0;
+            $wilayahProgressData[$villageName] = [
+                'wilayah' => $villageName,
+                'total' => $wilayahCounts,
+                'approved' => $wilayahApproved,
+                'progress' => $progress
+            ];
+        }
+
+        $wilayahProgress = collect($wilayahProgressData);
+
         $grouped = $pengajuan->groupBy(function ($date) {
             return \Carbon\Carbon::parse($date->tanggal_pengajuan)->format('M');
         });
@@ -126,29 +195,24 @@ class DashboardController extends Controller
         foreach (['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] as $month) {
             $monthData = $grouped->get($month, collect());
             
-            // Map types of received assistance:
-            // Tunai includes Kesehatan, Pendidikan, Perumahan
-            $tunai = $monthData->filter(fn($q) => 
-                stripos($q->jenis_bantuan, 'Kesehatan') !== false || 
-                stripos($q->jenis_bantuan, 'Pendidikan') !== false ||
-                stripos($q->jenis_bantuan, 'Perumahan') !== false
-            )->count() * 500000;
-            
-            // Sembako includes Pangan
-            $sembako = $monthData->filter(fn($q) => 
-                stripos($q->jenis_bantuan, 'Pangan') !== false
-            )->count() * 300000;
+            $pendidikan = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Pendidikan') !== false)->count() * 1500000;
+            $kesehatan  = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Kesehatan') !== false)->count() * 1000000;
+            $pangan     = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Pangan') !== false)->count() * 500000;
+            $perumahan  = $monthData->filter(fn($q) => stripos($q->jenis_bantuan, 'Perumahan') !== false)->count() * 2000000;
 
             $penyaluranBulanan->push([
                 'bulan'      => strtoupper($month),
-                'dana_tunai' => $tunai,
-                'sembako'    => $sembako,
+                'pendidikan' => $pendidikan,
+                'kesehatan'  => $kesehatan,
+                'pangan'     => $pangan,
+                'perumahan'  => $perumahan,
             ]);
         }
 
         $recent         = $this->getMasyarakatRecentReports($userId);
         $categoriesList = $this->getCategoriesData(true);
         $authUser       = Auth::user();
+        $unreadNotificationsCount = 0; // Placeholder untuk notifikasi yang belum dibaca
 
         return view('masyarakat.dashboard', compact(
             'totalBantuan',
@@ -156,11 +220,13 @@ class DashboardController extends Controller
             'disetujui',
             'ditolak',
             'penyaluranBulanan',
+            'wilayahProgress',
             'recent',
             'categoriesList',
             'pendaftaranUser',
             'pengajuanTerbaru',
-            'authUser'
+            'authUser',
+            'unreadNotificationsCount'
         ));
     }
 

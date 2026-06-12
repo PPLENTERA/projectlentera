@@ -82,21 +82,10 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 </div>
 </div>
 </section>
-<section class="section reveal">
-<div class="wrap impact">
-<div>
-</section>
-<footer class="wrap foot">
-<div class="cols">
-<div><strong>LENTERA</strong><div class="small" style="margin-top:10px">Menjaga amanah negara lewat inovasi digital transparan.</div></div>
-<div><strong>Navigasi</strong><div class="small" style="margin-top:10px">Tentang Kami<br>Dashboard Publik<br>Kontak</div></div>
-<div><strong>Hubungi Kami</strong><div class="small" style="margin-top:10px">Gedung Nusantara Lt.12<br>support@lentera.id</div></div>
-</div>
-</footer>
-<div class='cursor' id='cursor'></div><script>
+<div class='cursor' id='cursor'></div>
+<script>
 document.addEventListener('mousemove',e=>{const c=document.getElementById('cursor');c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';});const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')})},{threshold:.12});document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
-function countUp(el,target,prefix=''){let n=0;const step=Math.ceil(target/60);const run=()=>{n=Math.min(target,n+step);el.textContent=prefix+n.toLocaleString('id-ID');if(n<target)requestAnimationFrame(run)};run();}
-window.addEventListener('load',()=>{document.body.classList.add('loaded');});window.addEventListener('load',()=>{document.querySelectorAll('.big').forEach((el,i)=>{if(i==0)countUp(el,{{ $totalDana ?? 12400000000000 }},'Rp ');if(i==1)countUp(el,{{ $totalPenerima ?? 4200000 }},'');});});
+window.addEventListener('load',()=>{document.body.classList.add('loaded');});
 </script>
 </body>
 </html>

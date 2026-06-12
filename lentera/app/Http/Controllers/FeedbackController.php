@@ -23,7 +23,7 @@ class FeedbackController extends Controller
     {
         $validated = $request->validate([
             'nama_lengkap' => ['required', 'string', 'max:200'],
-            'nomor_telepon' => ['required', 'numeric'],
+            'nomor_telepon' => ['required', 'numeric', 'digits_between:10,15'],
             'kategori_masukan' => ['required', 'string', 'max:100'],
             'deskripsi_masukan' => ['required', 'string', 'max:2000'],
         ]);

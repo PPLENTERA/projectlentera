@@ -9,6 +9,7 @@
     <link rel="stylesheet"
     href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-900">
@@ -35,7 +36,7 @@
         {{-- Profil Admin --}}
         @if($authUser)
             <div class="flex items-center gap-3 mb-6 p-3 rounded-2xl border border-slate-100 bg-slate-50">
-                <div class="h-10 w-10 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700 flex-shrink-0">
+                <div class="h-10 w-10 rounded-full bg-cyan-100 flex items-center justify-center font-bold text-cyan-700 shrink-0">
                     {{ strtoupper(substr($authUser->name ?? 'A', 0, 2)) }}
                 </div>
                 <div class="overflow-hidden">
