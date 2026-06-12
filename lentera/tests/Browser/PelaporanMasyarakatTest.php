@@ -21,6 +21,7 @@ class PelaporanMasyarakatTest extends DuskTestCase
         $this->browse(function (Browser $browser) use ($user) {
             $browser->loginAs($user)
                     ->visit('/masyarakat/pelaporan') 
+                    ->select('jenis_bantuan', 'Bantuan Pendidikan')
                     ->type('deskripsi_kejadian', 'Terjadi pungli bantuan di Desa')
                     ->attach('bukti', __DIR__.'/stubs/bukti.png')
                     ->type('lokasi_kejadian', 'Wilayah A')
@@ -63,6 +64,7 @@ class PelaporanMasyarakatTest extends DuskTestCase
         
         LaporanPenyalahgunaan::create([
             'user_id' => $masyarakat->id,
+            'jenis_bantuan' => 'Bantuan Pendidikan',
             'deskripsi_kejadian' => 'Bukti fiktif',
             'lokasi_kejadian' => 'Wilayah Test',
             'status' => 'menunggu_tindak_lanjut',

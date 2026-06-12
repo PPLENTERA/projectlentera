@@ -1,26 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail Laporan Penyalahgunaan - LENTERA</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-<body class="bg-[#F3F4F6] min-h-screen p-6 font-['Inter']">
+@extends('layouts.admin')
 
-    <div class="max-w-3xl mx-auto">
-        <div class="mb-6 flex justify-between items-end">
-            <div>
-                <h1 class="text-2xl font-bold text-[#1C2C4E]">Detail Laporan</h1>
-                <p class="text-sm text-slate-500 mt-1">Periksa informasi dan bukti sebelum mengubah status tindak lanjut.</p>
-            </div>
-            <a href="{{ route('admin.laporan.index') }}" class="text-sm font-bold text-slate-500 hover:text-[#1C2C4E] transition-colors">
-                &larr; Kembali
-            </a>
+@section('title', 'Detail Laporan Penyalahgunaan')
+
+@section('content')
+<div class="space-y-6">
+    <div class="mb-6 flex justify-between items-end">
+        <div>
+            <h1 class="text-2xl font-bold text-[#1C2C4E]">Detail Laporan</h1>
+            <p class="text-sm text-slate-500 mt-1">Periksa informasi dan bukti sebelum mengubah status tindak lanjut.</p>
         </div>
+        <a href="{{ route('admin.laporan.index') }}" class="text-sm font-bold text-slate-500 hover:text-[#1C2C4E] transition-colors">
+            &larr; Kembali
+        </a>
+    </div>
 
         <div class="bg-white rounded-2xl shadow p-6 mb-4 border-t-4 border-[#1C2C4E]">
             <h2 class="text-sm font-bold text-slate-600 uppercase tracking-widest mb-4">Informasi Laporan</h2>
@@ -50,6 +42,12 @@
                     @else
                         <span class="text-xs font-bold bg-slate-50 text-slate-600 px-3 py-1 rounded-full inline-block mt-1">{{ $laporan->status }}</span>
                     @endif
+                </div>
+                <div class="col-span-2 mt-2">
+                    <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Jenis Bantuan yang Dilaporkan</p>
+                    <span class="px-2.5 py-1 bg-cyan-50 text-cyan-700 text-xs font-bold rounded-md border border-cyan-100 inline-block mt-1">
+                        {{ $laporan->jenis_bantuan }}
+                    </span>
                 </div>
                 <div class="col-span-2 mt-2">
                     <p class="text-slate-400 text-xs font-semibold uppercase tracking-widest mb-1">Lokasi Kejadian</p>
@@ -134,8 +132,5 @@
                 </div>
             </form>
         </div>
-
     </div>
-
-</body>
-</html>
+@endsection

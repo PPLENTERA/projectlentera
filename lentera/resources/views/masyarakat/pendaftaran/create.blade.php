@@ -43,6 +43,17 @@
             <p class="mt-2 text-sm text-slate-500">Lengkapi data di bawah ini dengan valid dan benar.</p>
         </div>
 
+        @if(session('warning'))
+            <div class="bg-amber-50 text-amber-600 text-sm p-4 rounded-xl border border-amber-100 mb-6 font-medium">
+                {{ session('warning') }}
+            </div>
+        @endif
+        @if(session('info'))
+            <div class="bg-blue-50 text-blue-600 text-sm p-4 rounded-xl border border-blue-100 mb-6 font-medium">
+                {{ session('info') }}
+            </div>
+        @endif
+
         @if ($errors->any())
             <div class="bg-red-50 text-red-600 text-sm p-4 rounded-xl border border-red-100 mb-6 font-medium">
                 <ul class="list-disc pl-5">
@@ -100,15 +111,15 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">NIK (Nomor Induk Kependudukan)</label>
-                            <input type="text" name="nik" maxlength="16" minlength="16" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nik') }}" required placeholder="16 Digit NIK">
+                            <input type="text" name="nik" maxlength="16" minlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nik') }}" required placeholder="16 Digit NIK">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Nomor KK (Kartu Keluarga)</label>
-                            <input type="text" name="nomor_kk" maxlength="16" minlength="16" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nomor_kk') }}" required placeholder="16 Digit No. KK">
+                            <input type="text" name="nomor_kk" maxlength="16" minlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nomor_kk') }}" required placeholder="16 Digit No. KK">
                         </div>
                         <div class="col-span-2 md:col-span-1">
                             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Nomor HP / WhatsApp Aktif</label>
-                            <input type="text" name="nomor_hp" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nomor_hp') }}" required placeholder="08xxxxxxxxxx">
+                            <input type="text" name="nomor_hp" oninput="this.value = this.value.replace(/[^0-9]/g, '')" class="w-full px-4 py-3 bg-[#F0F2F5] rounded-xl border-none focus:ring-2 focus:ring-[#1C2C4E] text-sm" value="{{ old('nomor_hp') }}" required placeholder="08xxxxxxxxxx">
                         </div>
                         <div class="col-span-2">
                             <label class="block text-xs font-bold text-slate-600 uppercase tracking-wide mb-2">Alamat Lengkap</label>

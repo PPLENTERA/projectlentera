@@ -9,6 +9,12 @@ class PendaftaranBantuanController extends Controller
 {
     public function create()
     {
+        $hasRegistered = \App\Models\PendaftaranBantuan::where('user_id', auth()->id())->exists();
+        if ($hasRegistered) {
+            return redirect()->route('masyarakat.dashboard')
+                ->with('info', 'Anda sudah melakukan pendaftaran bantuan.');
+        }
+
         return view('masyarakat.pendaftaran.create');
     }
 
@@ -17,9 +23,9 @@ class PendaftaranBantuanController extends Controller
         $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
-            'nik' => 'required|string|size:16',
-            'nomor_kk' => 'required|string|size:16',
-            'nomor_hp' => 'required|string|max:15',
+            'nik' => 'required|numeric|digits:16',
+            'nomor_kk' => 'required|numeric|digits:16',
+            'nomor_hp' => 'required|numeric|digits_between:10,15',
             'jenis_kelamin' => 'required|string',
             'alamat_lengkap' => 'required|string',
             'pekerjaan' => 'required|string|max:255',
@@ -56,7 +62,7 @@ class PendaftaranBantuanController extends Controller
             'dokumen_kk' => $dokumen_kk,
             'dokumen_rumah' => $dokumen_rumah,
             'dokumen_sktm' => $dokumen_sktm,
-            'status' => 'pending',
+            'status' => 'disetujui',
         ]);
 
         return redirect()->route('masyarakat.dashboard')->with('success', 'Pendaftaran Bantuan berhasil diajukan!');

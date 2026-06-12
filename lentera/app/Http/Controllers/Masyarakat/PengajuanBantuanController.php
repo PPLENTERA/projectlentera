@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Masyarakat;
 
 use App\Http\Controllers\Controller;
 use App\Models\PengajuanBantuan;
+use App\Models\PendaftaranBantuan;
 use App\Models\DokumenPengajuan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,24 +19,38 @@ class PengajuanBantuanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'nama_lengkap'        => 'required|string|max:255',
+            'nik'                 => 'required|numeric|digits:16',
             'jenis_bantuan'       => 'required|string',
-            'jumlah_tanggungan'   => 'required|integer|min:0',
-            'penghasilan'         => 'required|numeric|min:0',
             'deskripsi_kebutuhan' => 'nullable|string',
+            'bukti_pendukung'     => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ]);
 
-        $pengajuan = PengajuanBantuan::create([
+        $buktiPath = null;
+        if ($request->hasFile('bukti_pendukung')) {
+            $buktiPath = $request->file('bukti_pendukung')->store('bukti_pendukung', 'public');
+        }
+
+        // Ambil data ekonomi dari PendaftaranBantuan milik user
+        $pendaftaran = PendaftaranBantuan::where('user_id', Auth::id())->first();
+        $penghasilan       = $pendaftaran ? $pendaftaran->penghasilan_per_bulan : 0;
+        $jumlahTanggungan  = $pendaftaran ? $pendaftaran->jumlah_tanggungan : 0;
+
+        PengajuanBantuan::create([
             'id_users'            => Auth::id(),
+            'nama_lengkap'        => $request->nama_lengkap,
+            'nik'                 => $request->nik,
             'jenis_bantuan'       => $request->jenis_bantuan,
-            'jumlah_tanggungan'   => $request->jumlah_tanggungan,
-            'penghasilan'         => $request->penghasilan,
+            'jumlah_tanggungan'   => $jumlahTanggungan,
+            'penghasilan'         => $penghasilan,
             'deskripsi_kebutuhan' => $request->deskripsi_kebutuhan,
+            'bukti_pendukung'     => $buktiPath,
             'status_pengajuan'    => 'pending',
             'tanggal_pengajuan'   => now()->toDateString(),
         ]);
 
-        return redirect()->route('masyarakat.pengajuan.upload', $pengajuan->id_pengajuan)
-            ->with('success', 'Data berhasil disimpan! Silakan upload dokumen.');
+        return redirect()->route('masyarakat.pengajuan.index')
+            ->with('success', 'Pengajuan berhasil dikirim!');
     }
 
     public function uploadForm($id)
@@ -65,13 +80,17 @@ class PengajuanBantuanController extends Controller
             ->with('success', 'Pengajuan berhasil dikirim!');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $pengajuan = PengajuanBantuan::where('id_users', Auth::id())
             ->with('dokumen', 'validasi')
             ->latest()
             ->get();
 
-        return view('masyarakat.pengajuan.index', compact('pengajuan'));
+        $selected = $request->id 
+            ? $pengajuan->firstWhere('id_pengajuan', $request->id)
+            : $pengajuan->first();
+
+        return view('masyarakat.pengajuan.index', compact('pengajuan', 'selected'));
     }
 }

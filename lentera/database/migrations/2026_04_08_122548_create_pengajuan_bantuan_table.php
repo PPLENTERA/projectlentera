@@ -14,10 +14,13 @@ return new class extends Migration
         Schema::create('pengajuan_bantuan', function (Blueprint $table) {
             $table->id('id_pengajuan');
             $table->foreignId('id_users')->constrained('users');
+            $table->string('nama_lengkap');
+            $table->string('nik', 16);
             $table->string('jenis_bantuan');
             $table->integer('jumlah_tanggungan');
             $table->decimal('penghasilan', 15, 2);
             $table->text('deskripsi_kebutuhan')->nullable();
+            $table->string('bukti_pendukung')->nullable();
             $table->enum('status_pengajuan', ['pending', 'diverifikasi', 'diterima', 'ditolak'])->default('pending');
             $table->date('tanggal_pengajuan');
             $table->timestamps();

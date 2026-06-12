@@ -15,13 +15,18 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <header class="wrap nav navfix">
 <div class="logo">LENTERA</div>
 <nav class="menu">
-<a href="{{ url('/') }}" class="on">Home</a>
-<a href="{{ url('/dashboard') }}">Dashboard</a>
-<a href="{{ url('/bantuan') }}">Bantuan</a>
-<a href="{{ url('/pengajuan') }}">Pengajuan</a></nav>
 <div style="display:flex;gap:10px;align-items:center">
-<a href="{{ url('/login') }}">Login</a>
-<a href="{{ url('/register') }}" class="pill dark">Register</a>
+@auth
+    @if(auth()->user()->role === 'admin')
+        <a href="{{ url('/admin/dashboard') }}" class="pill dark">Dashboard</a>
+    @else
+        <a href="{{ url('/masyarakat/dashboard') }}" class="pill dark">Dashboard</a>
+    @endif
+    <a href="{{ url('/logout') }}">Logout</a>
+@else
+    <a href="{{ url('/login') }}">Login</a>
+    <a href="{{ url('/register') }}" class="pill dark">Register</a>
+@endauth
 </div>
 </header>
 <section class="hero wrap reveal">
@@ -29,8 +34,41 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <h1>Transparansi Bantuan untuk Semua</h1>
 <p>LENTERA hadir sebagai jembatan kepercayaan antara pemerintah dan masyarakat. Memastikan setiap bantuan sampai ke tangan yang tepat dengan kebijakan penuh.</p>
 <div class="btns float">
-<a href="{{ url('/pengajuan') }}" class="pill dark">Ajukan Bantuan →</a>
-<a href="{{ url('/dashboard') }}" class="pill light">Lihat Dashboard</a>
+
+@guest
+
+<a href="{{ url('/login') }}" class="pill dark">
+    Masuk ke Sistem →
+</a>
+
+<a href="{{ url('/login') }}" class="pill light">
+    Dashboard
+</a>
+
+@endguest
+
+@auth
+
+@if(auth()->user()->role === 'admin')
+
+<a href="{{ url('/admin/dashboard') }}" class="pill dark">
+    Dashboard Admin →
+</a>
+
+@else
+
+<a href="{{ url('/masyarakat/dashboard') }}" class="pill dark">
+    Dashboard Masyarakat →
+</a>
+
+@endif
+
+<a href="{{ url('/masyarakat/statistik-publik') }}" class="pill light">
+    Statistik Bantuan
+</a>
+
+@endauth
+
 </div>
 </section>
 <section class="section reveal">
@@ -47,29 +85,6 @@ body:before{content:'';position:fixed;inset:-20%;background:radial-gradient(circ
 <section class="section reveal">
 <div class="wrap impact">
 <div>
-<div class="title">Dampak Nyata Dalam Angka Terbuka</div>
-<p class="muted">Kepercayaan adalah fondasi utama LENTERA. Melalui dashboard publik, siapapun dapat memantau efektivitas program bantuan secara langsung.</p>
-<div class="avatars"><span></span><span></span><span></span><span></span></div>
-<div class="small" style="margin-top:10px">10,000+ bantuan tervalidasi dan sudah tersalurkan</div>
-</div>
-<div class="stats">
-<div class="stat"><div class="small">Distribusi 6 Bulan</div><div class="chart"><div class="bar" style="height:40%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:88%"></div><div class="bar" style="height:96%"></div></div></div>
-<div class="stat glow"><div class="small">Total Bantuan Disalurkan</div><div class="big">Rp {{ number_format($totalDana ?? 12400000000000,0,',','.') }}</div></div>
-<div class="stat glow"><div class="small">Penerima Manfaat</div><div class="big">{{ number_format($totalPenerima ?? 4200000,0,',','.') }}</div></div>
-<div class="stat glow"><div class="small">Data Tersinkron Real-Time</div><div class="big">100%</div></div>
-</div>
-</div>
-</section>
-<section class="section reveal">
-<div class="wrap box glow">
-<div class="title">Suara Masyarakat</div>
-<p class="muted">Cerita nyata dari penerima manfaat dan warga yang memantau distribusi bantuan.</p>
-<div class="testi">
-<div class="quote"><strong>Siti Rahma</strong><p class="muted" style="margin-top:10px">Pengajuan lebih cepat dan status bantuan jelas. Tidak perlu datang berkali-kali.</p></div>
-<div class="quote"><strong>Budi Santoso</strong><p class="muted" style="margin-top:10px">Dashboard publik membantu kami memantau penyaluran di wilayah kami.</p></div>
-<div class="quote"><strong>Rina Kartika</strong><p class="muted" style="margin-top:10px">Pelaporan digital membuat penyalahgunaan lebih cepat ditindak.</p></div>
-</div>
-</div>
 </section>
 <footer class="wrap foot">
 <div class="cols">
