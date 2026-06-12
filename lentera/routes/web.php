@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\BroadcastController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Landing Page
@@ -87,19 +88,8 @@ Route::get('/ranking', function () {
     }
 });
 
-/*
-|--------------------------------------------------------------------------
-| Recommendation
-|--------------------------------------------------------------------------
-*/
-Route::get('/rekomendasi', [RecommendationController::class, 'index']);
 
-/*
-|--------------------------------------------------------------------------
-| Store Recipient
-|--------------------------------------------------------------------------
-*/
-Route::post('/recipient/store', [RecipientController::class, 'store']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -143,6 +133,43 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('admin.laporan.index');
     Route::get('/laporan/{id}', [LaporanController::class, 'show'])->name('admin.laporan.show');
     Route::put('/laporan/{id}', [LaporanController::class, 'update'])->name('admin.laporan.update');
+    Route::get('/rekomendasi', [RecommendationController::class, 'index'])->name('admin.recommendation.index');
+    /*
+    |--------------------------------------------------------------------------
+    | PBI #42 - Perbandingan Bantuan Antar Daerah
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
+    Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | PBI #44 - Statistik Distribusi Bantuan
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/statistik-bantuan', function () {
+
+        $total = \App\Models\Recipient::count();
+
+        $mapped = \App\Models\Recipient::whereNotNull('latitude')
+            ->whereNotNull('longitude')
+            ->count();
+
+        $unmapped = $total - $mapped;
+
+        $coverage = $total > 0
+            ? round(($mapped / $total) * 100)
+            : 0;
+
+        return view('statistik-bantuan', compact(
+            'total',
+            'mapped',
+            'unmapped',
+            'coverage'
+        ));
+    });
 
     Route::get('/broadcast', [BroadcastController::class, 'index'])->name('admin.broadcast.index');
     Route::post('/broadcast', [BroadcastController::class, 'send'])->name('admin.broadcast.send');
@@ -150,12 +177,12 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('feedback', AdminFeedbackController::class)->names('admin.feedback');
 });
 
-| /*                                                                                        |
+/*
 | ----------------------------------------------------------------------------------------- |
 | Masyarakat                                                                                |
 | --------------------------------------------------------------------------                |
-| */                                                                                        |
-| Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () { |
+*/
+Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
 
 Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
 
@@ -183,10 +210,9 @@ Route::post('/feedback', [FeedbackController::class, 'store'])->name('masyarakat
 | PBI #43 - Perbandingan Bantuan Antar Daerah
 |--------------------------------------------------------------------------
 */
-
 Route::get('/peta-bantuan', function () {
 
-    $data = Recipient::whereNotNull('latitude')
+    $data = \App\Models\Recipient::whereNotNull('latitude')
         ->whereNotNull('longitude')
         ->get();
 
@@ -198,16 +224,15 @@ Route::get('/peta-bantuan', function () {
 | PBI #45 - Statistik Distribusi Bantuan
 |--------------------------------------------------------------------------
 */
-
 Route::get('/statistik-publik', function () {
 
-    $total = Recipient::count();
+    $total = \App\Models\Recipient::count();
 
-    $tinggi = Recipient::where('score', '>=', 80)->count();
+    $tinggi = \App\Models\Recipient::where('score', '>=', 80)->count();
 
-    $sedang = Recipient::whereBetween('score', [60,79])->count();
+    $sedang = \App\Models\Recipient::whereBetween('score', [60,79])->count();
 
-    $rendah = Recipient::where('score', '<', 60)->count();
+    $rendah = \App\Models\Recipient::where('score', '<', 60)->count();
 
     $jenisBantuan = [
         ['nama' => 'Pangan', 'total' => 15],
@@ -227,48 +252,15 @@ Route::get('/statistik-publik', function () {
     );
 });
 
+Route::get('/recipient/{id}', [RecipientController::class, 'show']);
+
 });
 
-| /*                                                                         |
+/*
 | -------------------------------------------------------------------------- |
 | Route Umum                                                                 |
 | -------------------------------------------------------------------------- |
-| */                                                                         |
+*/
 
 Route::post('/recipient/store', [RecipientController::class, 'store']);
 Route::get('/recipient/{id}', [RecipientController::class, 'show']);
-
-| /*                                                                         |
-| -------------------------------------------------------------------------- |
-| PBI #42 & PBI #44 (ADMIN)                                                  |
-| -------------------------------------------------------------------------- |
-| */                                                                         |
-
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
-
-Route::get('/lokasi-bantuan', [RecipientController::class, 'location']);
-Route::post('/lokasi-bantuan/save', [RecipientController::class, 'saveLocation']);
-
-Route::get('/statistik-bantuan', function () {
-
-    $total = Recipient::count();
-
-    $mapped = Recipient::whereNotNull('latitude')
-        ->whereNotNull('longitude')
-        ->count();
-
-    $unmapped = $total - $mapped;
-
-    $coverage = $total > 0
-        ? round(($mapped / $total) * 100)
-        : 0;
-
-    return view('statistik-bantuan', compact(
-        'total',
-        'mapped',
-        'unmapped',
-        'coverage'
-    ));
-});
-
-});
