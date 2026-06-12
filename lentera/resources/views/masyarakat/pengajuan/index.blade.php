@@ -61,6 +61,25 @@
                         <span class="ml-auto bg-red-100 text-red-650 text-xs font-bold px-2 py-0.5 rounded-full">{{ $unreadNotificationsCount }}</span>
                     @endif
                 </a>
+                <a href="{{ url('/masyarakat/peta-bantuan') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            Peta Bantuan
+                        </a>
+
+                        <a href="{{ url('/masyarakat/statistik-publik') }}"
+                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-6m4 6V7m4 10v-3"/>
+                            </svg>
+                            Statistik Bantuan
+                        </a>
                 <a href="{{ route('masyarakat.feedback.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
                     <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     Beri Feedback
@@ -210,22 +229,18 @@
                         </div>
 
                         {{-- Step 2: Verifikasi Dokumen --}}
+                        @php
+                            $docPassed = in_array($latest->status_pengajuan, ['diverifikasi', 'diterima']) || 
+                                         ($latest->status_pengajuan == 'ditolak' && $latest->validasi && $latest->validasi->status_validasi == 'valid');
+                            $docFailed = $latest->status_pengajuan == 'ditolak' && (!$latest->validasi || $latest->validasi->status_validasi == 'tidak_valid');
+                        @endphp
                         <div class="flex gap-4 pb-6 relative">
-                            @php
-                                $hasValidasi = $latest->validasi;
-                                $isValid = $hasValidasi && $latest->validasi->status_validasi === 'valid';
-                                $isNotValid = $hasValidasi && $latest->validasi->status_validasi === 'tidak_valid';
-                            @endphp
-                            <div class="w-7 h-7 rounded-full 
-                                @if($isValid) bg-green-500 
-                                @elseif($isNotValid) bg-red-500 
-                                @else bg-slate-200 
-                                @endif flex items-center justify-center flex-shrink-0 z-10">
-                                @if($isValid)
+                            <div class="w-7 h-7 rounded-full {{ $docPassed ? 'bg-green-500' : ($docFailed ? 'bg-red-500' : 'bg-slate-200') }} flex items-center justify-center flex-shrink-0 z-10">
+                                @if($docPassed)
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                     </svg>
-                                @elseif($isNotValid)
+                                @elseif($docFailed)
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
@@ -234,70 +249,77 @@
                                 @endif
                             </div>
                             <div>
-                                <p class="text-sm font-bold @if($hasValidasi) text-[#1E3A5F] @else text-slate-400 @endif">Verifikasi Dokumen</p>
-                                <p class="text-xs text-slate-400 mt-0.5">
-                                    @if($isNotValid)
-                                        Dokumen persyaratan dinyatakan tidak valid / tidak lengkap.
+                                <p class="text-sm font-bold {{ ($docPassed || $docFailed) ? 'text-[#1E3A5F]' : 'text-slate-400' }}">
+                                    @if($docFailed)
+                                        Verifikasi Dokumen: Ditolak
                                     @else
-                                        Tim kurator memvalidasi kelengkapan dokumen persyaratan.
+                                        Verifikasi Dokumen
                                     @endif
                                 </p>
-                                @if($hasValidasi && $latest->validasi->tanggal_verifikasi)
+                                <p class="text-xs text-slate-400 mt-0.5">Tim kurator telah memvalidasi kelengkapan dokumen persyaratan.</p>
+                                @if($latest->validasi && $latest->validasi->tanggal_verifikasi)
                                     <p class="text-xs text-slate-300 mt-1">{{ \Carbon\Carbon::parse($latest->validasi->tanggal_verifikasi)->format('d M Y') }}</p>
                                 @endif
                             </div>
                         </div>
 
-                        {{-- Step 3: Verifikasi Survei --}}
+                        {{-- Step 3: Survei Lapangan --}}
+                        @php
+                            $hasSurvey = $latest->validasi && $latest->validasi->tanggal_pengambilan;
+                            $surveyComplete = $latest->status_pengajuan == 'diterima';
+                            $surveyRejected = $latest->status_pengajuan == 'ditolak' && $latest->validasi && $latest->validasi->status_validasi == 'valid';
+                            $surveyActive = $latest->status_pengajuan == 'diverifikasi';
+                        @endphp
                         <div class="flex gap-4 pb-6 relative">
-                            @php
-                                $showSurveySuccess = $isValid && $latest->status_pengajuan === 'diterima';
-                                $showSurveyFailed = $isValid && $latest->status_pengajuan === 'ditolak';
-                                $showSurveyPending = $isValid && $latest->status_pengajuan === 'diverifikasi';
-                            @endphp
-                            <div class="w-7 h-7 rounded-full 
-                                @if($showSurveySuccess) bg-green-500 
-                                @elseif($showSurveyFailed) bg-red-500 
-                                @else bg-slate-200 
-                                @endif flex items-center justify-center flex-shrink-0 z-10">
-                                @if($showSurveySuccess)
+                            <div class="w-7 h-7 rounded-full {{ $surveyComplete ? 'bg-green-500' : ($surveyRejected ? 'bg-red-500' : ($surveyActive ? 'bg-blue-500' : 'bg-slate-200')) }} flex items-center justify-center flex-shrink-0 z-10">
+                                @if($surveyComplete)
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                     </svg>
-                                @elseif($showSurveyFailed)
+                                @elseif($surveyRejected)
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                @elseif($surveyActive)
+                                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                     </svg>
                                 @else
                                     <div class="w-2 h-2 rounded-full bg-slate-400"></div>
                                 @endif
                             </div>
                             <div>
-                                <p class="text-sm font-bold @if($showSurveySuccess || $showSurveyFailed || $showSurveyPending) text-[#1E3A5F] @else text-slate-400 @endif">Verifikasi Survei</p>
-                                <p class="text-xs text-slate-400 mt-0.5">
-                                    @if($showSurveySuccess)
-                                        Survei selesai. Hasil penilaian kelayakan pemohon disetujui.
-                                    @elseif($showSurveyFailed)
-                                        Survei selesai. Pemohon dinyatakan tidak memenuhi kriteria kelayakan.
+                                <p class="text-sm font-bold {{ ($surveyActive || $surveyComplete || $surveyRejected) ? 'text-[#1E3A5F]' : 'text-slate-400' }}">
+                                    @if($surveyRejected)
+                                        Survei Lapangan: Ditolak
                                     @else
-                                        Survei lapangan dan penilaian kelayakan pemohon hasil dari aksi penentuan.
+                                        Survei Lapangan
                                     @endif
                                 </p>
+                                <p class="text-xs text-slate-400 mt-0.5">
+                                    @if($surveyRejected)
+                                        Pengajuan ditolak pada tahap penentuan hasil survei.
+                                    @elseif($hasSurvey)
+                                        Jadwal survei lapangan untuk pengecekan kelayakan kondisi tempat tinggal secara langsung.
+                                    @else
+                                        Menunggu penentuan jadwal survei kondisi lapangan oleh petugas.
+                                    @endif
+                                </p>
+                                @if($hasSurvey && !$surveyRejected)
+                                    <p class="text-xs text-blue-600 font-semibold mt-1">
+                                        📅 Jadwal: {{ \Carbon\Carbon::parse($latest->validasi->tanggal_pengambilan)->format('d M Y') }}
+                                        @if($latest->validasi->waktu_pengambilan)
+                                             - {{ \Carbon\Carbon::parse($latest->validasi->waktu_pengambilan)->format('H:i') }} WIB
+                                        @endif
+                                    </p>
+                                @endif
                             </div>
                         </div>
 
                         {{-- Step 4: Keputusan Akhir --}}
                         <div class="flex gap-4 relative">
-                            @php
-                                $isApproved = $latest->status_pengajuan === 'diterima';
-                                $isRejected = $latest->status_pengajuan === 'ditolak';
-                            @endphp
-                            <div class="w-7 h-7 rounded-full 
-                                @if($isApproved) bg-green-500 
-                                @elseif($isRejected) bg-red-500 
-                                @else bg-slate-200 
-                                @endif flex items-center justify-center flex-shrink-0 z-10">
-                                @if($isApproved)
+                            <div class="w-7 h-7 rounded-full {{ $latest->status_pengajuan == 'diterima' ? 'bg-green-500' : ($latest->status_pengajuan == 'ditolak' ? 'bg-red-500' : 'bg-slate-200') }} flex items-center justify-center flex-shrink-0 z-10">
+                                @if($latest->status_pengajuan == 'diterima')
                                     <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
                                     </svg>
@@ -310,20 +332,16 @@
                                 @endif
                             </div>
                             <div>
-                                <p class="text-sm font-bold 
-                                    @if($isApproved) text-green-600 
-                                    @elseif($isRejected) text-red-500 
-                                    @else text-slate-400 
-                                    @endif">Keputusan Akhir</p>
-                                <p class="text-xs text-slate-400 mt-0.5">
-                                    @if($isApproved)
-                                        Selamat! Anda terpilih sebagai penerima manfaat bantuan.
-                                    @elseif($isRejected)
-                                        Mohon maaf, Anda belum dapat menerima bantuan pada periode ini.
+                                <p class="text-sm font-bold {{ $latest->status_pengajuan == 'diterima' ? 'text-green-600' : ($latest->status_pengajuan == 'ditolak' ? 'text-red-500' : 'text-slate-400') }}">
+                                    @if($latest->status_pengajuan == 'diterima')
+                                        Keputusan Akhir: Diterima
+                                    @elseif($latest->status_pengajuan == 'ditolak')
+                                        Keputusan Akhir: Ditolak
                                     @else
-                                        Penetapan status kelayakan penerima bantuan oleh dewan pengawas.
+                                        Keputusan Akhir
                                     @endif
                                 </p>
+                                <p class="text-xs text-slate-400 mt-0.5">Penetapan status kelayakan penerima bantuan oleh dewan pengawas.</p>
                             </div>
                         </div>
                     </div>

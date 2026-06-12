@@ -46,7 +46,7 @@
             💡 Panduan Penilaian Default 
         </h2>
         <p class="text-xs text-blue-600 mb-4">Berikut adalah acuan aturan penilaian bantuan:</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-700">
             <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
                 <p class="font-bold text-blue-900 mb-2">1. Indikator Penghasilan (penghasilan)</p>
                 <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
@@ -61,6 +61,28 @@
                     <li>Lebih dari 3 orang (&gt; 3) &rarr; <span class="font-bold text-green-600">+30 Poin</span></li>
                     <li>2 - 3 orang (between) &rarr; <span class="font-bold text-green-600">+20 Poin</span></li>
                     <li>Kurang dari 2 orang (&lt; 2) &rarr; <span class="font-bold text-green-600">+10 Poin</span></li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                <p class="font-bold text-blue-900 mb-2">3. Indikator Status Rumah (status_rumah)</p>
+                <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
+                    <li>Sewa/Kontrak (= Sewa/Kontrak) &rarr; <span class="font-bold text-green-600">+30 Poin</span></li>
+                    <li>Menumpang (= Numpang) &rarr; <span class="font-bold text-green-600">+20 Poin</span></li>
+                    <li>Milik Sendiri (= Milik Sendiri) &rarr; <span class="font-bold text-green-600">+10 Poin</span></li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                <p class="font-bold text-blue-900 mb-2">4. Indikator Bukti Pendukung (bukti_pendukung)</p>
+                <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
+                    <li>Ada Bukti (= Ada) &rarr; <span class="font-bold text-green-600">+15 Poin</span></li>
+                    <li>Tidak Ada (= Tidak Ada) &rarr; <span class="font-bold text-green-600">+0 Poin</span></li>
+                </ul>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-blue-100">
+                <p class="font-bold text-blue-900 mb-2">5. Indikator SKTM (sktm)</p>
+                <ul class="space-y-1.5 list-disc pl-4 font-medium text-slate-600">
+                    <li>Ada SKTM (= Ada) &rarr; <span class="font-bold text-green-600">+25 Poin</span></li>
+                    <li>Tidak Ada (= Tidak Ada) &rarr; <span class="font-bold text-green-600">+0 Poin</span></li>
                 </ul>
             </div>
         </div>
@@ -81,19 +103,25 @@
                         <p class="text-xs text-slate-400 mt-1">Mengambil data field `{{ $indicator->column_name }}` pengajuan.</p>
                     </div>
                     <div class="flex gap-2">
-                        <a href="{{ route('admin.scoring_indicators.edit', $indicator->id) }}"
-                           class="text-xs font-bold text-[#1C2C4E] bg-slate-100 hover:bg-[#E8EDF9] hover:text-[#1F54CE] px-4 py-2 rounded-xl transition-all">
-                            Ubah
-                        </a>
-                        <form action="{{ route('admin.scoring_indicators.destroy', $indicator->id) }}" method="POST"
-                              class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus indikator ini? Semua aturan di dalamnya akan ikut dihapus.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit"
-                                    class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">
-                                Hapus
-                            </button>
-                        </form>
+                        @if($indicator->id < 9990)
+                            <a href="{{ route('admin.scoring_indicators.edit', $indicator->id) }}"
+                               class="text-xs font-bold text-[#1C2C4E] bg-slate-100 hover:bg-[#E8EDF9] hover:text-[#1F54CE] px-4 py-2 rounded-xl transition-all">
+                                Ubah
+                            </a>
+                            <form action="{{ route('admin.scoring_indicators.destroy', $indicator->id) }}" method="POST"
+                                  class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus indikator ini? Semua aturan di dalamnya akan ikut dihapus.');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-all">
+                                    Hapus
+                                </button>
+                            </form>
+                        @else
+                            <span class="text-xs font-bold text-slate-400 bg-slate-100 px-4 py-2 rounded-xl">
+                                Default (Sistem)
+                            </span>
+                        @endif
                     </div>
                 </div>
                 
@@ -115,9 +143,9 @@
                                     </td>
                                     <td class="px-6 py-4 text-center text-xs font-mono font-bold text-slate-500">
                                         @if($rule->operator == 'between')
-                                            {{ $indicator->column_name }} BETWEEN {{ number_format($rule->value, 0, ',', '.') }} AND {{ number_format($rule->value_max, 0, ',', '.') }}
+                                            {{ $indicator->column_name }} BETWEEN {{ is_numeric($rule->value) ? number_format($rule->value, 0, ',', '.') : $rule->value }} AND {{ is_numeric($rule->value_max) ? number_format($rule->value_max, 0, ',', '.') : $rule->value_max }}
                                         @else
-                                            {{ $indicator->column_name }} {{ $rule->operator }} {{ number_format($rule->value, 0, ',', '.') }}
+                                            {{ $indicator->column_name }} {{ $rule->operator }} {{ is_numeric($rule->value) ? number_format($rule->value, 0, ',', '.') : $rule->value }}
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-right font-extrabold text-emerald-600">

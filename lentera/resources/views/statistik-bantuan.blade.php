@@ -1,39 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Statistik Distribusi Bantuan</title>
+@extends('layouts.admin')
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@section('title', 'Statistik Bantuan')
+
+@section('content')
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,sans-serif;
-}
-
-body{
-background:#f4f6f9;
-padding:30px;
-}
-
-.header{
-margin-bottom:30px;
-}
-
-.header h1{
-color:#0f2a44;
-font-size:32px;
-}
-
-.header p{
-color:#6b7280;
-margin-top:8px;
-}
-
 .cards{
 display:grid;
 grid-template-columns:repeat(4,1fr);
@@ -48,30 +19,24 @@ border-radius:24px;
 box-shadow:0 10px 25px rgba(0,0,0,.05);
 }
 
-.card .number{
+.number{
 font-size:42px;
 font-weight:800;
 color:#0f2a44;
 }
 
-.card .label{
+.label{
 margin-top:10px;
 color:#6b7280;
 }
 
-.chart{
-background:white;
-padding:30px;
-border-radius:24px;
-box-shadow:0 10px 25px rgba(0,0,0,.05);
-}
-
+.chart,
 .table-box{
-margin-top:30px;
 background:white;
 padding:25px;
 border-radius:24px;
 box-shadow:0 10px 25px rgba(0,0,0,.05);
+margin-bottom:30px;
 }
 
 table{
@@ -90,17 +55,7 @@ padding:12px;
 border-bottom:1px solid #eee;
 text-align:center;
 }
-
-@media(max-width:900px){
-.cards{
-grid-template-columns:1fr;
-}
-}
-
 </style>
-</head>
-
-<body>
 
 <div class="header">
 <h1>📊 Statistik Distribusi Bantuan</h1>
@@ -162,9 +117,8 @@ grid-template-columns:1fr;
 </table>
 
 </div>
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-
 new Chart(
 document.getElementById('chart'),
 {
@@ -187,5 +141,4 @@ data:[{{ $mapped }}]
 
 </script>
 
-</body>
-</html>
+@endsection

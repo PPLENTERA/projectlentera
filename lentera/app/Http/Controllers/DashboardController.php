@@ -105,6 +105,11 @@ class DashboardController extends Controller
 
         $pendaftaranUser = \App\Models\PendaftaranBantuan::where('user_id', $userId)->latest()->first();
 
+        if (!$pendaftaranUser) {
+            return redirect()->route('pendaftaran.create')
+                ->with('warning', 'Silakan melakukan pendaftaran bantuan terlebih dahulu.');
+        }
+
         $pengajuanTerbaru = PengajuanBantuan::where('id_users', $userId)
             ->with('validasi')
             ->latest()

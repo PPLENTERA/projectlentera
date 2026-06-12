@@ -23,6 +23,7 @@ class LaporanPenyalahgunaanController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'jenis_bantuan' => 'required|string|in:Bantuan Pendidikan,Bantuan Kesehatan,Infrastruktur Desa,Bantuan Pangan',
             'deskripsi_kejadian' => 'required|string',
             'lokasi_kejadian' => 'required|string|max:255',
             'bukti' => 'required|file|mimes:jpg,jpeg,png,mp4,mov|max:10240', // 10MB max
@@ -35,6 +36,7 @@ class LaporanPenyalahgunaanController extends Controller
 
         LaporanPenyalahgunaan::create([
             'user_id' => Auth::id(),
+            'jenis_bantuan' => $request->jenis_bantuan,
             'deskripsi_kejadian' => $request->deskripsi_kejadian,
             'lokasi_kejadian' => $request->lokasi_kejadian,
             'bukti_path' => $buktiPath,

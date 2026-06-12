@@ -146,17 +146,14 @@ class MonitoringController extends Controller
             ];
         }
 
-        // 3. Data Distribusi Wilayah (Provinsi)
+        // 3. Data Distribusi Wilayah (Desa di Jawa Barat)
         $baseWilayah = [
-            'Jawa Barat' => ['pulau' => 'Jawa', 'pagu' => 2234000000000, 'realisasi' => 2100000000000, 'lat' => -6.9175, 'lon' => 107.6191],
-            'Jawa Timur' => ['pulau' => 'Jawa', 'pagu' => 2065000000000, 'realisasi' => 1900000000000, 'lat' => -7.2575, 'lon' => 112.7521],
-            'Sumatera Utara' => ['pulau' => 'Sumatera', 'pagu' => 1704000000000, 'realisasi' => 1500000000000, 'lat' => 2.1121, 'lon' => 99.3905],
-            'Kalimantan Timur' => ['pulau' => 'Kalimantan', 'pagu' => 1538000000000, 'realisasi' => 1200000000000, 'lat' => 0.5387, 'lon' => 116.4194],
-            'Papua' => ['pulau' => 'Papua', 'pagu' => 975000000000, 'realisasi' => 800000000000, 'lat' => -4.2699, 'lon' => 138.0803],
-            'Sulawesi Selatan' => ['pulau' => 'Sulawesi', 'pagu' => 1555000000000, 'realisasi' => 700000000000, 'lat' => -3.6687, 'lon' => 119.9741],
-            'Nusa Tenggara Barat' => ['pulau' => 'Nusa Tenggara & Bali', 'pagu' => 850000000000, 'realisasi' => 380000000000, 'lat' => -8.6529, 'lon' => 116.3249],
-            'Bali' => ['pulau' => 'Nusa Tenggara & Bali', 'pagu' => 450000000000, 'realisasi' => 400000000000, 'lat' => -8.4095, 'lon' => 115.1889],
-            'Maluku' => ['pulau' => 'Papua & Maluku', 'pagu' => 857000000000, 'realisasi' => 300000000000, 'lat' => -3.2384, 'lon' => 130.1453],
+            'Desa Bojongsoang' => ['kabupaten' => 'Bandung', 'pagu' => 223400000000, 'realisasi' => 210000000000, 'lat' => -6.9744, 'lon' => 107.6369],
+            'Desa Lengkong' => ['kabupaten' => 'Bandung', 'pagu' => 170400000000, 'realisasi' => 150000000000, 'lat' => -6.9271, 'lon' => 107.6214],
+            'Desa Cipagalo' => ['kabupaten' => 'Bandung', 'pagu' => 206500000000, 'realisasi' => 190000000000, 'lat' => -6.9669, 'lon' => 107.6433],
+            'Desa Bojongsari' => ['kabupaten' => 'Bandung', 'pagu' => 153800000000, 'realisasi' => 120000000000, 'lat' => -6.9681, 'lon' => 107.6775],
+            'Desa Buahbatu' => ['kabupaten' => 'Bandung', 'pagu' => 155500000000, 'realisasi' => 70000000000, 'lat' => -6.9458, 'lon' => 107.6483],
+            'Desa Tegalluar' => ['kabupaten' => 'Bandung', 'pagu' => 97500000000, 'realisasi' => 80000000000, 'lat' => -6.9688, 'lon' => 107.6894],
         ];
 
         $approvedSubmissions = $query->get();
@@ -170,7 +167,7 @@ class MonitoringController extends Controller
 
         foreach ($approvedSubmissions as $sub) {
             $alamat = $sub->user?->pendaftaran?->alamat_lengkap ?? '';
-            $prov = $this->getProvinceFromAddress($alamat);
+            $prov = $this->getVillageFromAddress($alamat);
             if (isset($dbWilayahCounts[$prov])) {
                 $dbWilayahCounts[$prov]++;
             }
@@ -196,7 +193,7 @@ class MonitoringController extends Controller
 
         foreach ($totalSubmissions as $sub) {
             $alamat = $sub->user?->pendaftaran?->alamat_lengkap ?? '';
-            $prov = $this->getProvinceFromAddress($alamat);
+            $prov = $this->getVillageFromAddress($alamat);
             if (isset($dbWilayahTotals[$prov])) {
                 $dbWilayahTotals[$prov]++;
             }
@@ -219,8 +216,8 @@ class MonitoringController extends Controller
             elseif ($persentase >= 50) $status = 'Moderat';
 
             $wilayahData[] = [
-                'provinsi' => $prov,
-                'pulau' => $info['pulau'],
+                'desa' => $prov,
+                'kabupaten' => $info['kabupaten'],
                 'pagu' => $pagu,
                 'realisasi' => $realisasi,
                 'persentase' => $persentase,
@@ -379,37 +376,34 @@ class MonitoringController extends Controller
         ));
     }
 
-    private function getProvinceFromAddress($alamat)
+    private function getVillageFromAddress($alamat)
     {
         $alamat = strtolower($alamat);
-        if (str_contains($alamat, 'jawa barat') || str_contains($alamat, 'bojongsoang') || str_contains($alamat, 'cipagalo') || str_contains($alamat, 'bandung')) {
-            return 'Jawa Barat';
+        if (str_contains($alamat, 'bojongsoang')) {
+            return 'Desa Bojongsoang';
         }
-        if (str_contains($alamat, 'jawa timur') || str_contains($alamat, 'surabaya') || str_contains($alamat, 'malang')) {
-            return 'Jawa Timur';
+        if (str_contains($alamat, 'lengkong')) {
+            return 'Desa Lengkong';
         }
-        if (str_contains($alamat, 'sumatera utara') || str_contains($alamat, 'medan') || str_contains($alamat, 'deli serdang')) {
-            return 'Sumatera Utara';
+        if (str_contains($alamat, 'cipagalo')) {
+            return 'Desa Cipagalo';
         }
-        if (str_contains($alamat, 'kalimantan timur') || str_contains($alamat, 'samarinda') || str_contains($alamat, 'balikpapan')) {
-            return 'Kalimantan Timur';
+        if (str_contains($alamat, 'bojongsari')) {
+            return 'Desa Bojongsari';
         }
-        if (str_contains($alamat, 'papua') || str_contains($alamat, 'jayapura')) {
-            return 'Papua';
+        if (str_contains($alamat, 'buahbatu')) {
+            return 'Desa Buahbatu';
         }
-        if (str_contains($alamat, 'sulawesi selatan') || str_contains($alamat, 'makassar')) {
-            return 'Sulawesi Selatan';
+        if (str_contains($alamat, 'tegalluar')) {
+            return 'Desa Tegalluar';
         }
-        if (str_contains($alamat, 'nusa tenggara barat') || str_contains($alamat, 'ntb') || str_contains($alamat, 'mataram')) {
-            return 'Nusa Tenggara Barat';
-        }
-        if (str_contains($alamat, 'bali') || str_contains($alamat, 'denpasar') || str_contains($alamat, 'badung')) {
-            return 'Bali';
-        }
-        if (str_contains($alamat, 'maluku') || str_contains($alamat, 'ambon')) {
-            return 'Maluku';
-        }
-        return 'Jawa Barat';
+        
+        $villages = [
+            'Desa Bojongsoang', 'Desa Lengkong', 'Desa Cipagalo', 
+            'Desa Bojongsari', 'Desa Buahbatu', 'Desa Tegalluar'
+        ];
+        $index = abs(crc32($alamat)) % count($villages);
+        return $villages[$index];
     }
 
     private function getWeekOfMonth($dateStr)
