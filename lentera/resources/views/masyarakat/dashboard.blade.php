@@ -36,9 +36,19 @@
 
                 {{-- Status Pendaftaran (badge) --}}
                 @if($pendaftaranUser)
-                    <div class="mb-4 px-3 py-2 rounded-xl bg-blue-50 border border-blue-100 text-blue-700">
-                        <p class="text-xs font-semibold">
-                            Pendaftaran: ✅ Terdaftar
+                    <div class="mb-4 px-3 py-2 rounded-xl
+                        @if($pendaftaranUser->status === 'disetujui') bg-emerald-50 border border-emerald-100
+                        @elseif($pendaftaranUser->status === 'ditolak') bg-red-50 border border-red-100
+                        @else bg-amber-50 border border-amber-100 @endif">
+                        <p class="text-xs font-semibold
+                            @if($pendaftaranUser->status === 'disetujui') text-emerald-700
+                            @elseif($pendaftaranUser->status === 'ditolak') text-red-600
+                            @else text-amber-700 @endif">
+                            Pendaftaran:
+                            @if($pendaftaranUser->status === 'disetujui') ✅ Diterima
+                            @elseif($pendaftaranUser->status === 'ditolak') ❌ Ditolak
+                            @else ⏳ Menunggu Verifikasi
+                            @endif
                         </p>
                     </div>
                 @else
