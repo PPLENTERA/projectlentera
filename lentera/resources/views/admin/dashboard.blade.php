@@ -98,7 +98,7 @@
     <section class="grid gap-4 xl:grid-cols-2">
         {{-- Widget Feedback --}}
         <a href="{{ route('admin.feedback.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-cyan-200 transition-all group">
-            <div class="h-14 w-14 rounded-2xl bg-cyan-600 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+            <div class="h-14 w-14 rounded-2xl bg-cyan-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
             </div>
             <div class="flex-1">
@@ -115,7 +115,7 @@
 
         {{-- Widget Laporan Penyalahgunaan --}}
         <a href="{{ route('admin.laporan.index') }}" class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex items-center gap-5 hover:shadow-md hover:border-red-200 transition-all group">
-            <div class="h-14 w-14 rounded-2xl bg-rose-500 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+            <div class="h-14 w-14 rounded-2xl bg-rose-500 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm">
                 <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
             </div>
             <div class="flex-1">
@@ -144,8 +144,29 @@
                     Export CSV
                 </a>
             </div>
-            <div class="flex-1 relative min-h-[300px]">
+            <div class="flex-1 relative min-h-75">
                 <canvas id="wilayahChart"></canvas>
+            </div>
+        </div>
+    </section>
+
+    {{-- ===== CHART PENYALURAN BULANAN ===== --}}
+    <section class="grid gap-6 xl:grid-cols-1">
+        <div class="rounded-3xl bg-white p-6 shadow-sm border border-slate-200 flex flex-col">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-lg font-semibold text-slate-900">Penyaluran Bantuan Bulanan</h2>
+                    <p class="text-xs text-slate-400 font-semibold">Data penyaluran dana bansos per bulan</p>
+                </div>
+                <div class="flex gap-4 items-center">
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #3b82f6;"></span><span class="text-xs text-slate-600 font-semibold">Pendidikan</span></div>
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #10b981;"></span><span class="text-xs text-slate-600 font-semibold">Kesehatan</span></div>
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #f59e0b;"></span><span class="text-xs text-slate-600 font-semibold">Pangan</span></div>
+                    <div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full" style="background-color: #8b5cf6;"></span><span class="text-xs text-slate-600 font-semibold">Perumahan</span></div>
+                </div>
+            </div>
+            <div class="relative h-64 w-full">
+                <canvas id="penyaluranChartAdmin"></canvas>
             </div>
         </div>
     </section>
@@ -168,7 +189,7 @@
                 @foreach($categoriesList->filter(fn($i) => $i['percentage'] > 0) as $item)
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: {{ $item['hex'] }}"></span>
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $item['hex'] }}"></span>
                         <span class="text-sm text-slate-600">{{ $item['name'] }}</span>
                     </div>
                     <span class="text-sm font-semibold text-slate-800">{{ $item['percentage'] }}%</span>
@@ -190,7 +211,7 @@
                 <div class="space-y-4">
                     @foreach($recent as $item)
                         <div class="flex items-start gap-4">
-                            <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                            <div class="h-12 w-12 rounded-2xl bg-slate-900 text-white flex items-center justify-center shrink-0">
                                 @if($item['icon'] == 'beras')
                                     <svg class="w-6 h-6 text-orange-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                                 @elseif($item['icon'] == 'buku')
@@ -254,6 +275,35 @@
             },
             onHover: (event, chartElement) => {
                 event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            }
+        }
+    });
+
+    // Chart Penyaluran Bulanan
+    const penyaluranBulanAdmin = @json($penyaluranBulanan);
+    const labelsPenyaluran = penyaluranBulanAdmin.map(item => item.bulan);
+    const dataPendidikanAdmin = penyaluranBulanAdmin.map(item => item.pendidikan);
+    const dataKesehatanAdmin = penyaluranBulanAdmin.map(item => item.kesehatan);
+    const dataPanganAdmin = penyaluranBulanAdmin.map(item => item.pangan);
+    const dataPerumahanAdmin = penyaluranBulanAdmin.map(item => item.perumahan);
+
+    new Chart(document.getElementById('penyaluranChartAdmin'), {
+        type: 'bar',
+        data: {
+            labels: labelsPenyaluran,
+            datasets: [
+                { label: 'Pendidikan', data: dataPendidikanAdmin, backgroundColor: '#3b82f6', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                { label: 'Kesehatan', data: dataKesehatanAdmin, backgroundColor: '#10b981', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                { label: 'Pangan', data: dataPanganAdmin, backgroundColor: '#f59e0b', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 },
+                { label: 'Perumahan', data: dataPerumahanAdmin, backgroundColor: '#8b5cf6', borderRadius: 4, barPercentage: 0.6, categoryPercentage: 0.4 }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { grid: { display: false }, ticks: { font: { size: 12, weight: 'bold' }, color: '#64748b' } },
+                y: { display: false, grid: { display: false } }
             }
         }
     });

@@ -145,7 +145,7 @@
                                 <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
                                     Nomor Telepon
                                 </label>
-                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nomor_telepon" value="{{ old('nomor_telepon') }}" required
+                                <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" name="nomor_telepon" value="{{ old('nomor_telepon') }}" required minlength="10" maxlength="15"
                                     class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1E3A5F] focus:bg-white transition-all outline-none"
                                     placeholder="0812XXXX">
                                 @error('nomor_telepon')

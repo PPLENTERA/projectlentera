@@ -42,7 +42,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2">Nomor Telepon</label>
                     <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
-                           name="nomor_telepon" value="{{ old('nomor_telepon') }}" required
+                           name="nomor_telepon" value="{{ old('nomor_telepon') }}" required minlength="10" maxlength="15"
                            class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-800 focus:ring-2 focus:ring-cyan-600 outline-none">
                 </div>
             </div>
