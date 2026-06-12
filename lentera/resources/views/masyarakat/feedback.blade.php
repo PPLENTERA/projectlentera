@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pengajuan Bantuan - LENTERA</title>
+    <title>Beri Feedback - LENTERA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -46,8 +46,8 @@
                     <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                     Pengajuan Saya
                 </a>
-                <a href="{{ route('masyarakat.pengajuan.create') }}" class="flex items-center gap-3 rounded-2xl bg-white border border-slate-200 text-slate-900 px-4 py-3 shadow-sm font-medium">
-                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                <a href="{{ route('masyarakat.pengajuan.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
+                    <svg class="w-5 h-5 text-slate-400 group-hover:text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     Ajukan Bantuan
                 </a>
                 <a href="{{ route('masyarakat.pelaporan.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
@@ -61,27 +61,8 @@
                         <span class="ml-auto bg-red-100 text-red-650 text-xs font-bold px-2 py-0.5 rounded-full">{{ $unreadNotificationsCount }}</span>
                     @endif
                 </a>
-                <a href="{{ url('/masyarakat/peta-bantuan') }}"
-                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            Peta Bantuan
-                        </a>
-
-                        <a href="{{ url('/masyarakat/statistik-publik') }}"
-                        class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
-                            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 17v-6m4 6V7m4 10v-3"/>
-                            </svg>
-                            Statistik Bantuan
-                        </a>
-                <a href="{{ route('masyarakat.feedback.create') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-slate-600 hover:bg-slate-100 font-medium transition-colors">
-                    <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+                <a href="{{ route('feedback.create') }}" class="flex items-center gap-3 rounded-2xl bg-white border border-slate-200 text-slate-900 px-4 py-3 shadow-sm font-medium">
+                    <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
                     Beri Feedback
                 </a>
             </nav>
@@ -98,10 +79,17 @@
         <main class="col-span-12 xl:col-span-9 space-y-6">
             <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900 font-['Plus_Jakarta_Sans'] tracking-tight">Pengajuan Bantuan</h1>
-                    <p class="text-sm text-slate-500 mt-1">Silakan lengkapi formulir di bawah ini dengan data yang sebenar-benarnya untuk mempercepat proses verifikasi tim LENTERA.</p>
+                    <h1 class="text-3xl font-extrabold text-slate-900 font-['Plus_Jakarta_Sans'] tracking-tight">Saran & Masukan</h1>
+                    <p class="text-sm text-slate-500 mt-1">Setiap masukan Anda adalah lentera yang membimbing kami menuju pelayanan yang lebih transparan dan berintegritas.</p>
                 </div>
             </header>
+
+            {{-- ALERT SUCCESS --}}
+            @if(session('success'))
+                <div class="bg-green-50 text-green-600 text-sm p-4 rounded-xl border border-green-100 mb-6">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             {{-- ALERT ERROR --}}
             @if($errors->any())
@@ -115,99 +103,65 @@
             @endif
 
             {{-- FORM --}}
-            <form action="{{ route('masyarakat.pengajuan.store') }}" method="POST" enctype="multipart/form-data"
+            <form action="{{ route('feedback.store') }}" method="POST"
                 class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6">
                 @csrf
 
-                {{-- Nama Lengkap & NIK --}}
+                {{-- Nama Lengkap & Nomor Telepon --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
                             Nama Lengkap
                         </label>
-                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap') }}" required
+                        <input type="text" name="nama_lengkap" value="{{ old('nama_lengkap', Auth::user()->name ?? '') }}" required
                             class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
-                            placeholder="Sesuai KTP">
+                            placeholder="Contoh: Budi Santoso">
                     </div>
                     <div>
                         <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                            NIK (Nomor Induk Kependudukan)
+                            Nomor Telepon
                         </label>
-                        <input type="text" name="nik" value="{{ old('nik') }}" required maxlength="16" minlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                        <input type="text" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" 
+                            name="nomor_telepon" value="{{ old('nomor_telepon') }}" required
                             class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none"
-                            placeholder="16 Digit Nomor KTP">
+                            placeholder="0812XXXX">
                     </div>
                 </div>
 
-                {{-- Jenis Bantuan --}}
+                {{-- Kategori Masukan --}}
                 <div>
                     <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                        Jenis Bantuan
+                        Kategori Masukan
                     </label>
-                    <select name="jenis_bantuan" required
+                    <select name="kategori_masukan" required
                         class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none">
-                        <option value="" disabled selected>Pilih kategori bantuan</option>
-                        <option value="Bantuan Pangan" {{ old('jenis_bantuan') == 'Bantuan Pangan' ? 'selected' : '' }}>Bantuan Pangan</option>
-                        <option value="Bantuan Kesehatan" {{ old('jenis_bantuan') == 'Bantuan Kesehatan' ? 'selected' : '' }}>Bantuan Kesehatan</option>
-                        <option value="Bantuan Pendidikan" {{ old('jenis_bantuan') == 'Bantuan Pendidikan' ? 'selected' : '' }}>Bantuan Pendidikan</option>
-                        <option value="Bantuan Perumahan" {{ old('jenis_bantuan') == 'Bantuan Perumahan' ? 'selected' : '' }}>Bantuan Perumahan</option>
+                        <option value="" disabled selected>Pilih Kategori</option>
+                        <option value="Saran" {{ old('kategori_masukan') === 'Saran' ? 'selected' : '' }}>Saran</option>
+                        <option value="Laporan" {{ old('kategori_masukan') === 'Laporan' ? 'selected' : '' }}>Laporan</option>
+                        <option value="Keluhan" {{ old('kategori_masukan') === 'Keluhan' ? 'selected' : '' }}>Keluhan</option>
+                        <option value="Pertanyaan" {{ old('kategori_masukan') === 'Pertanyaan' ? 'selected' : '' }}>Pertanyaan</option>
                     </select>
                 </div>
 
-                {{-- Deskripsi Kebutuhan --}}
+                {{-- Deskripsi Masukan --}}
                 <div>
                     <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                        Deskripsi Kebutuhan
+                        Deskripsi Masukan
                     </label>
-                    <textarea name="deskripsi_kebutuhan" rows="4"
+                    <textarea name="deskripsi_masukan" rows="6" required
                         class="w-full px-4 py-3.5 bg-[#F0F2F5] rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:ring-2 focus:ring-[#1C2C4E] focus:bg-white transition-all outline-none resize-none"
-                        placeholder="Ceritakan kondisi Anda dan alasan mengajukan bantuan ini...">{{ old('deskripsi_kebutuhan') }}</textarea>
-                </div>
-
-                {{-- Upload Bukti Pendukung (Opsional) --}}
-                <div>
-                    <label class="block text-[0.7rem] font-bold text-slate-600 uppercase tracking-widest mb-2">
-                        Unggah Bukti Pendukung <span class="text-slate-400 normal-case font-normal">(Opsional)</span>
-                    </label>
-                    <div class="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center bg-[#F8F9FA]">
-                        <svg class="w-8 h-8 text-slate-400 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                        <p class="text-xs text-slate-400 mb-3">Klik atau seret file foto/PDF bukti kondisi (Max. 5MB)</p>
-                        <input type="file" name="bukti_pendukung" accept=".pdf,.jpg,.jpeg,.png"
-                            class="text-sm text-slate-500 file:mr-4 file:py-1.5 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#1C2C4E] file:text-white hover:file:bg-[#111A31]">
-                    </div>
+                        placeholder="Ceritakan pengalaman Anda secara detail di sini...">{{ old('deskripsi_masukan') }}</textarea>
                 </div>
 
                 {{-- Tombol --}}
                 <div class="flex gap-3 pt-2 border-t border-slate-100">
-                    <a href="{{ route('masyarakat.pengajuan.index') }}"
-                        class="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-xl text-sm font-bold text-slate-600 bg-[#F0F2F5] hover:bg-slate-200 transition-all">
-                        ← Kembali ke Riwayat
-                    </a>
                     <button type="submit"
-                        class="flex-1 flex justify-center items-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#172545] to-[#1F335C] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
-                        Kirim Pengajuan Bantuan
+                        class="w-full flex justify-center items-center gap-2 py-3.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#172545] to-[#1F335C] shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                        Kirim Feedback
                     </button>
                 </div>
 
             </form>
-
-            {{-- BANTUAN BOX --}}
-            <div class="bg-yellow-50 border border-yellow-100 rounded-3xl p-5 flex gap-4">
-                <div class="text-yellow-400 mt-1">
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-sm font-bold text-slate-700 mb-1">Butuh Bantuan Mengisi?</p>
-                    <p class="text-xs text-slate-500 leading-relaxed">
-                        Jika Anda kesulitan mengisi formulir ini, silakan hubungi relawan LENTERA terdekat atau kunjungi pusat bantuan masyarakat di kecamatan Anda.
-                    </p>
-                    <a href="#" class="text-xs font-bold text-[#1F54CE] mt-2 inline-block hover:underline">Lihat Lokasi Relawan</a>
-                </div>
-            </div>
         </main>
     </div>
 </div>

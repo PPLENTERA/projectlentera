@@ -13,6 +13,9 @@ class ScoringIndicatorController extends Controller
 
         $hasPenghasilan = $indicators->contains('column_name', 'penghasilan');
         $hasTanggungan = $indicators->contains('column_name', 'jumlah_tanggungan');
+        $hasStatusRumah = $indicators->contains('column_name', 'status_rumah');
+        $hasBuktiPendukung = $indicators->contains('column_name', 'bukti_pendukung');
+        $hasSktm = $indicators->contains('column_name', 'sktm');
 
         $displayIndicators = collect();
 
@@ -28,20 +31,20 @@ class ScoringIndicatorController extends Controller
             $penghasilanInd->setRelation('rules', collect([
                 new ScoringRule([
                     'operator' => '<',
-                    'value' => 1000000,
+                    'value' => '1000000',
                     'score' => 40,
                     'label' => 'Kurang dari Rp 1.000.000',
                 ]),
                 new ScoringRule([
                     'operator' => 'between',
-                    'value' => 1000000,
-                    'value_max' => 3000000,
+                    'value' => '1000000',
+                    'value_max' => '3000000',
                     'score' => 25,
                     'label' => 'Rp 1.000.000 - Rp 3.000.000',
                 ]),
                 new ScoringRule([
                     'operator' => '>',
-                    'value' => 3000000,
+                    'value' => '3000000',
                     'score' => 10,
                     'label' => 'Lebih dari Rp 3.000.000',
                 ]),
@@ -61,20 +64,20 @@ class ScoringIndicatorController extends Controller
             $tanggunganInd->setRelation('rules', collect([
                 new ScoringRule([
                     'operator' => '>',
-                    'value' => 3,
+                    'value' => '3',
                     'score' => 30,
                     'label' => 'Lebih dari 3 orang',
                 ]),
                 new ScoringRule([
                     'operator' => 'between',
-                    'value' => 2,
-                    'value_max' => 3,
+                    'value' => '2',
+                    'value_max' => '3',
                     'score' => 20,
                     'label' => '2 - 3 orang',
                 ]),
                 new ScoringRule([
                     'operator' => '<',
-                    'value' => 2,
+                    'value' => '2',
                     'score' => 10,
                     'label' => 'Kurang dari 2 orang',
                 ]),
@@ -82,9 +85,93 @@ class ScoringIndicatorController extends Controller
             $displayIndicators->push($tanggunganInd);
         }
 
+        // Status Rumah
+        if ($hasStatusRumah) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'status_rumah'));
+        } else {
+            $statusRumahInd = new ScoringIndicator([
+                'name' => 'Status Rumah (Default)',
+                'column_name' => 'status_rumah',
+            ]);
+            $statusRumahInd->id = 9993;
+            $statusRumahInd->setRelation('rules', collect([
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Sewa/Kontrak',
+                    'score' => 30,
+                    'label' => 'Sewa/Kontrak',
+                ]),
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Numpang',
+                    'score' => 20,
+                    'label' => 'Menumpang (Keluarga/Orang Tua)',
+                ]),
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Milik Sendiri',
+                    'score' => 10,
+                    'label' => 'Milik Sendiri',
+                ]),
+            ]));
+            $displayIndicators->push($statusRumahInd);
+        }
+
+        // Bukti Pendukung
+        if ($hasBuktiPendukung) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'bukti_pendukung'));
+        } else {
+            $buktiPendukungInd = new ScoringIndicator([
+                'name' => 'Bukti Pendukung (Default)',
+                'column_name' => 'bukti_pendukung',
+            ]);
+            $buktiPendukungInd->id = 9994;
+            $buktiPendukungInd->setRelation('rules', collect([
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Ada',
+                    'score' => 15,
+                    'label' => 'Ada Bukti Pendukung',
+                ]),
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Tidak Ada',
+                    'score' => 0,
+                    'label' => 'Tidak Ada Bukti Pendukung',
+                ]),
+            ]));
+            $displayIndicators->push($buktiPendukungInd);
+        }
+
+        // SKTM
+        if ($hasSktm) {
+            $displayIndicators->push($indicators->firstWhere('column_name', 'sktm'));
+        } else {
+            $sktmInd = new ScoringIndicator([
+                'name' => 'Surat Keterangan Tidak Mampu (SKTM) (Default)',
+                'column_name' => 'sktm',
+            ]);
+            $sktmInd->id = 9995;
+            $sktmInd->setRelation('rules', collect([
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Ada',
+                    'score' => 25,
+                    'label' => 'Ada SKTM',
+                ]),
+                new ScoringRule([
+                    'operator' => '=',
+                    'value' => 'Tidak Ada',
+                    'score' => 0,
+                    'label' => 'Tidak Ada SKTM',
+                ]),
+            ]));
+            $displayIndicators->push($sktmInd);
+        }
+
         // Add any other custom indicators if present in the database
         foreach ($indicators as $ind) {
-            if ($ind->column_name !== 'penghasilan' && $ind->column_name !== 'jumlah_tanggungan') {
+            if (!in_array($ind->column_name, ['penghasilan', 'jumlah_tanggungan', 'status_rumah', 'bukti_pendukung', 'sktm'])) {
                 $displayIndicators->push($ind);
             }
         }
@@ -101,11 +188,11 @@ class ScoringIndicatorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'column_name' => 'required|string|in:penghasilan,jumlah_tanggungan',
+            'column_name' => 'required|string|in:penghasilan,jumlah_tanggungan,status_rumah,bukti_pendukung,sktm',
             'rules' => 'required|array|min:1',
             'rules.*.operator' => 'required|string|in:<,<=,>,>=,=,between',
-            'rules.*.value' => 'required|numeric|min:0',
-            'rules.*.value_max' => 'nullable|numeric|min:0',
+            'rules.*.value' => 'required|string|max:255',
+            'rules.*.value_max' => 'nullable|string|max:255',
             'rules.*.score' => 'required|integer|min:0',
             'rules.*.label' => 'nullable|string|max:255',
         ]);
@@ -130,11 +217,11 @@ class ScoringIndicatorController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'column_name' => 'required|string|in:penghasilan,jumlah_tanggungan',
+            'column_name' => 'required|string|in:penghasilan,jumlah_tanggungan,status_rumah,bukti_pendukung,sktm',
             'rules' => 'required|array|min:1',
             'rules.*.operator' => 'required|string|in:<,<=,>,>=,=,between',
-            'rules.*.value' => 'required|numeric|min:0',
-            'rules.*.value_max' => 'nullable|numeric|min:0',
+            'rules.*.value' => 'required|string|max:255',
+            'rules.*.value_max' => 'nullable|string|max:255',
             'rules.*.score' => 'required|integer|min:0',
             'rules.*.label' => 'nullable|string|max:255',
         ]);

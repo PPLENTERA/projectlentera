@@ -89,8 +89,11 @@
 
     {{-- Comparison Table --}}
     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="p-6 border-b border-slate-100">
+        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
             <h2 class="text-sm font-bold text-slate-600 uppercase tracking-wider">Peringkat Kelayakan Pengajuan</h2>
+            <span class="text-xs text-slate-400 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg">
+                ⚠️ Skor &lt; 40 (<strong>Kurang Layak</strong>) otomatis ditolak
+            </span>
         </div>
 
         <div class="overflow-x-auto">
@@ -165,6 +168,10 @@
                                     <span class="text-xs font-bold bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
                                         Diterima
                                     </span>
+                                @elseif($item->status_pengajuan == 'ditolak')
+                                    <span class="text-xs font-bold bg-red-50 text-red-600 px-3 py-1 rounded-full border border-red-100">
+                                        Ditolak
+                                    </span>
                                 @else
                                     <span class="text-xs font-bold bg-slate-50 text-slate-600 px-3 py-1 rounded-full border border-slate-100">
                                         {{ $item->status_pengajuan }}
@@ -173,23 +180,25 @@
                             </td>
                             <td class="px-6 py-4 text-right">
                                 @if($item->status_pengajuan == 'diverifikasi')
-                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline-block">
-                                        @csrf
-                                        <input type="hidden" name="status" value="diterima">
-                                        <button type="submit"
-                                                class="text-xs font-bold text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl transition-colors">
-                                            Terima Bantuan
-                                        </button>
-                                    </form>
-                                    <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline-block ml-1" onsubmit="return confirm('Apakah Anda yakin ingin menolak pengajuan ini?');">
-                                        @csrf
-                                        <input type="hidden" name="status" value="ditolak">
-                                        <button type="submit"
-                                                class="text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-colors">
-                                            Tolak Bantuan
-                                        </button>
-                                    </form>
-                                @elseif($item->status_pengajuan == 'diterima' || $item->status_pengajuan == 'ditolak')
+                                    <div class="flex items-center justify-end gap-2">
+                                        <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="diterima">
+                                            <button type="submit"
+                                                    class="text-xs font-bold text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
+                                                Terima Bantuan
+                                            </button>
+                                        </form>
+                                        <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="status" value="ditolak">
+                                            <button type="submit"
+                                                    class="text-xs font-bold text-white bg-red-600 hover:bg-red-700 px-4 py-2 rounded-xl transition-colors whitespace-nowrap">
+                                                Tolak Bantuan
+                                            </button>
+                                        </form>
+                                    </div>
+                                @elseif($item->status_pengajuan == 'diterima')
                                     <form action="{{ route('admin.validasi.update_status', $item->id_pengajuan) }}" method="POST" class="inline">
                                         @csrf
                                         <input type="hidden" name="status" value="diverifikasi">

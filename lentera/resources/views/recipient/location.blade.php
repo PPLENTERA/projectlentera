@@ -1,64 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Lokasi Bantuan</title>
+@extends('layouts.admin')
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+@section('title', 'Lokasi Bantuan')
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+@section('content')
 
-<style>
-body{
-font-family:Arial,sans-serif;
-background:#f3f4f6;
-padding:20px;
-}
+<h1 class="text-3xl font-bold text-slate-800 mb-2">
+📍 Lokasi Bantuan
+</h1>
 
-.container{
-display:grid;
-grid-template-columns:350px 1fr;
-gap:20px;
-}
+<p class="text-slate-500 mb-6">
+Kelola titik koordinat penerima bantuan di wilayah Bojongsoang
+</p>
 
-.card{
-background:white;
-padding:20px;
-border-radius:15px;
-}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-#map{
-height:700px;
-border-radius:15px;
-}
+<div class="bg-white p-6 rounded-3xl shadow-sm">
 
-input,select{
-width:100%;
-padding:10px;
-margin-bottom:15px;
-}
-
-button{
-background:#0f2a44;
-color:white;
-padding:12px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-}
-</style>
-
-</head>
-<body>
-
-<h2>Lokasi Bantuan</h2>
-
-<div class="container">
-
-<div class="card">
-
-<form method="POST" action="/lokasi-bantuan/save">
+<form method="POST" action="{{ url('/admin/lokasi-bantuan/save') }}">
 @csrf
 
 <label>Penerima Bantuan</label>
@@ -97,10 +55,17 @@ Simpan Lokasi
 
 </div>
 
-<div id="map"></div>
-
+<div class="lg:col-span-2 bg-white p-4 rounded-3xl shadow-sm">
+    <div id="map"></div>
 </div>
 
+</div>
+<style>
+#map{
+    height:700px;
+    border-radius:16px;
+}
+</style>
 <script>
 
 var map = L.map('map')
@@ -134,5 +99,4 @@ e.latlng.lng;
 
 </script>
 
-</body>
-</html>
+@endsection
