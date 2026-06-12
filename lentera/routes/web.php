@@ -150,14 +150,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::resource('feedback', AdminFeedbackController::class)->names('admin.feedback');
 });
 
-| /*                                                                                        |
-| ----------------------------------------------------------------------------------------- |
-| Masyarakat                                                                                |
-| --------------------------------------------------------------------------                |
-| */                                                                                        |
-| Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () { |
+/*
+| --------------------------------------------------------------------------
+| Masyarakat
+| --------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'role:masyarakat'])->prefix('masyarakat')->group(function () {
 
-Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'masyarakatDashboard'])->name('masyarakat.dashboard');
 
 Route::get('/pendaftaran/create', [PendaftaranBantuanController::class, 'create'])->name('pendaftaran.create');
 Route::post('/pendaftaran', [PendaftaranBantuanController::class, 'store'])->name('pendaftaran.store');
@@ -229,20 +229,20 @@ Route::get('/statistik-publik', function () {
 
 });
 
-| /*                                                                         |
-| -------------------------------------------------------------------------- |
-| Route Umum                                                                 |
-| -------------------------------------------------------------------------- |
-| */                                                                         |
+/*
+|--------------------------------------------------------------------------
+| Route Umum
+|--------------------------------------------------------------------------
+*/
 
 Route::post('/recipient/store', [RecipientController::class, 'store']);
 Route::get('/recipient/{id}', [RecipientController::class, 'show']);
 
-| /*                                                                         |
-| -------------------------------------------------------------------------- |
-| PBI #42 & PBI #44 (ADMIN)                                                  |
-| -------------------------------------------------------------------------- |
-| */                                                                         |
+/*
+|--------------------------------------------------------------------------
+| PBI #42 & PBI #44 (ADMIN)
+|--------------------------------------------------------------------------
+*/
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 
