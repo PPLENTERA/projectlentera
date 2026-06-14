@@ -12,6 +12,17 @@ class MonitoringController extends Controller
 {
     public function index(Request $request)
     {
+        if ($request->filled('start_date') || $request->filled('end_date')) {
+            $request->validate([
+                'start_date' => 'required|date',
+                'end_date'   => 'required|date|after_or_equal:start_date',
+            ], [
+                'start_date.required' => 'Tanggal mulai harus diisi jika tanggal selesai ditentukan.',
+                'end_date.required'   => 'Tanggal selesai harus diisi jika tanggal mulai ditentukan.',
+                'end_date.after_or_equal' => 'Tanggal selesai harus setelah atau sama dengan tanggal mulai.',
+            ]);
+        }
+
         $isFiltered = $request->filled('start_date') || $request->filled('end_date') || $request->filled('jenis_bantuan') || $request->filled('wilayah');
 
         // 1. Ambil data pengajuan dari database untuk memperkaya data real-time dengan filter

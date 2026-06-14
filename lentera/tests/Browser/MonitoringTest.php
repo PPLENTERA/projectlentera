@@ -12,6 +12,13 @@ class MonitoringTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Disable CSRF middleware for all tests since they run in local environment under Dusk
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    }
+
     private function setupTestData(): array
     {
         // Setup Admin
@@ -164,5 +171,43 @@ class MonitoringTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Rp 1.000.000'); // dari Budi Santoso (15 May)
         $response->assertDontSee('Rp 2.000.000'); // data April tidak ikut
+    }
+
+    /**
+     * TC.Monitor.005 - Negative
+     * Menguji ketahanan filter jika admin memasukkan rentang tanggal kosong / tidak valid.
+     */
+    public function test_admin_cannot_filter_monitoring_with_invalid_date_range(): void
+    {
+        $admin = User::create([
+            'name' => 'Admin User',
+            'email' => 'admin@lentera.com',
+            'password' => bcrypt('password'),
+            'role' => 'admin',
+        ]);
+
+        // 1. Set start_date but leave end_date empty (invalid range because one is empty)
+        $response = $this->actingAs($admin)->get(route('admin.monitoring', [
+            'start_date' => '2026-05-01',
+            'end_date' => '',
+        ]));
+
+        $response->assertSessionHasErrors(['end_date']);
+
+        // 2. Set end_date but leave start_date empty
+        $response = $this->actingAs($admin)->get(route('admin.monitoring', [
+            'start_date' => '',
+            'end_date' => '2026-05-31',
+        ]));
+
+        $response->assertSessionHasErrors(['start_date']);
+
+        // 3. Set start_date > end_date
+        $response = $this->actingAs($admin)->get(route('admin.monitoring', [
+            'start_date' => '2026-05-31',
+            'end_date' => '2026-05-01',
+        ]));
+
+        $response->assertSessionHasErrors(['end_date']);
     }
 }
