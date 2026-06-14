@@ -12,6 +12,13 @@ class BroadcastTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Disable CSRF middleware for all tests since they run in local environment under Dusk
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    }
+
     public function test_admin_can_send_broadcast_to_matching_recipients(): void
     {
         // 1. Setup Admin & Users
