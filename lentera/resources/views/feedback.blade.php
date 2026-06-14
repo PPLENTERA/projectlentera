@@ -124,7 +124,7 @@
             <div class="grid grid-cols-12 gap-6">
                 {{-- Form Section --}}
                 <div class="col-span-12 lg:col-span-8">
-                    <form action="{{ route('masyarakat.feedback.store') }}" method="POST"
+                    <form action="{{ route('masyarakat.feedback.store') }}" method="POST" novalidate
                         class="bg-white rounded-3xl border border-slate-200 shadow-sm p-8 space-y-6">
                         @csrf
 
