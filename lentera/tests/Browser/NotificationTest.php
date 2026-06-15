@@ -12,6 +12,13 @@ class NotificationTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        // Disable CSRF middleware for all tests since they run in local environment under Dusk
+        $this->withoutMiddleware(\Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class);
+    }
+
     public function test_admin_can_validate_and_trigger_notifications(): void
     {
         // 1. Setup Users
@@ -70,7 +77,7 @@ class NotificationTest extends TestCase
         $this->assertDatabaseHas('notifications', [
             'user_id' => $user->id,
             'type' => 'reminder',
-            'title' => 'Jadwal Pengambilan Bantuan: Besok',
+            'title' => 'Jadwal Survei Lapangan: Besok',
         ]);
     }
 
@@ -132,5 +139,24 @@ class NotificationTest extends TestCase
         
         $this->assertNotNull($notification1->refresh()->read_at);
         $this->assertNotNull($notification2->refresh()->read_at);
+    }
+
+    /**
+     * TC.Notification.004 - Negative
+     * Menguji respons halaman notifikasi jika akun masyarakat tidak memiliki pemberitahuan apapun.
+     */
+    public function test_masyarakat_notifikasi_empty_state(): void
+    {
+        $user = User::create([
+            'name' => 'Budi Santoso',
+            'email' => 'budi@lentera.com',
+            'password' => bcrypt('password'),
+            'role' => 'masyarakat',
+        ]);
+
+        $response = $this->actingAs($user)->get(route('masyarakat.notifikasi.index'));
+
+        $response->assertStatus(200);
+        $response->assertSee('Belum ada notifikasi');
     }
 }

@@ -17,8 +17,13 @@ class FeedbackTest extends DuskTestCase
      */
     public function testFeedbackValid(): void
     {
-        $this->browse(function (Browser $browser) {
-            $browser->visit('/feedback')
+        $user = User::factory()->create(['role' => 'masyarakat']);
+        $this->createPendaftaranBantuan($user);
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->maximize()
+                    ->visit('/masyarakat/feedback')
                     ->type('nama_lengkap', 'via')
                     ->type('nomor_telepon', '08123456789')
                     ->select('kategori_masukan', 'Saran')
@@ -41,9 +46,16 @@ class FeedbackTest extends DuskTestCase
      */
      public function testFeedbackKosong()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->visit('/feedback')
+        $user = User::factory()->create(['role' => 'masyarakat']);
+        $this->createPendaftaranBantuan($user);
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->maximize()
+                    ->visit('/masyarakat/feedback')
+                    ->clear('nama_lengkap')
                     ->press('Kirim Feedback')
+                    ->pause(1000)
                     ->assertSee('The nama lengkap field is required');
         });
     }
@@ -53,13 +65,20 @@ class FeedbackTest extends DuskTestCase
      */
     public function testFeedbackTersimpan()
     {
-        $this->browse(function (Browser $browser) {
-            $browser->visit('/feedback')
+        $user = User::factory()->create(['role' => 'masyarakat']);
+        $this->createPendaftaranBantuan($user);
+
+        $this->browse(function (Browser $browser) use ($user) {
+            $browser->loginAs($user)
+                    ->maximize()
+                    ->visit('/masyarakat/feedback')
+                    ->clear('nama_lengkap')
                     ->type('nama_lengkap', 'Budi')
                     ->type('nomor_telepon', '08987654321')
                     ->select('kategori_masukan', 'Laporan')
                     ->type('deskripsi_masukan', 'Feedback untuk PBI #2')
                     ->press('Kirim Feedback')
+                    ->pause(1000)
                     ->assertSee('Terima kasih, masukan Anda telah dikirim');
 
             //Pengecekan database
@@ -102,12 +121,13 @@ class FeedbackTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) use ($admin, $feedback) {
             $browser->loginAs($admin)
+                    ->maximize()
                     ->visit('/admin/feedback')
                     ->assertSee('User Test Status')
                     ->clickLink('Lihat')
                     ->assertPathIs('/admin/feedback/' . $feedback->id . '/edit')
                     ->select('status', 'sudah_ditindaklanjuti')
-                    ->press('Simpan Perubahan')
+                    ->press('Simpan')
                     ->assertPathIs('/admin/feedback')
                     ->assertSee('Sudah Ditindaklanjuti');
 
@@ -124,15 +144,49 @@ class FeedbackTest extends DuskTestCase
     public function testFeedbackInvalidTidakTersimpan()
     {
         $initialCount = Feedback::count();
+        $user = User::factory()->create(['role' => 'masyarakat']);
+        $this->createPendaftaranBantuan($user);
 
-        $this->browse(function (Browser $browser) use ($initialCount) {
-            $browser->visit('/feedback')
+        $this->browse(function (Browser $browser) use ($initialCount, $user) {
+            $browser->loginAs($user)
+                    ->maximize()
+                    ->visit('/masyarakat/feedback')
+                    ->clear('nama_lengkap')
                     // Membiarkan form kosong
                     ->press('Kirim Feedback')
+                    ->pause(1000)
                     ->assertSee('The nama lengkap field is required');
                     
             // Memastikan data tidak masuk ke database
             $this->assertDatabaseCount('feedbacks', $initialCount);
         });
+    }
+
+    private function createPendaftaranBantuan($user): void
+    {
+        \App\Models\PendaftaranBantuan::unguard();
+        \App\Models\PendaftaranBantuan::insert([
+            'user_id' => $user->id,
+            'status' => 'disetujui',
+            'nama_lengkap' => $user->name,
+            'tanggal_lahir' => '1990-01-01',
+            'nik' => '1234567890123456',
+            'nomor_kk' => '1234567890123456',
+            'nomor_hp' => '081234567890',
+            'jenis_kelamin' => 'Laki-laki',
+            'alamat_lengkap' => 'Desa Bojongsoang, Kab Bandung',
+            'pekerjaan' => 'Buruh',
+            'penghasilan_per_bulan' => 1000000,
+            'pengeluaran_bulanan' => 500000,
+            'jumlah_tanggungan' => 2,
+            'status_rumah' => 'Sewa',
+            'dokumen_ktp' => 'ktp.jpg',
+            'dokumen_kk' => 'kk.jpg',
+            'dokumen_rumah' => 'rumah.jpg',
+            'dokumen_sktm' => 'sktm.jpg',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        \App\Models\PendaftaranBantuan::reguard();
     }
 }
