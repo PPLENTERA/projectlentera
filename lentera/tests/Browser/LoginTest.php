@@ -17,8 +17,10 @@ class LoginTest extends DuskTestCase
                     ->type('email', 'budisantoso@gmail.com')
                     ->type('password', 'password')
                     ->press('Masuk')
+                    ->waitForLocation('/masyarakat/dashboard', 10)
                     ->assertPathIs('/masyarakat/dashboard')
-                    ->assertSee('Ini halaman Dashboard Masyarakat.');
+                    ->assertSee('Selamat datang kembali')
+                    ->logout();
         });
     }
 
@@ -32,6 +34,7 @@ class LoginTest extends DuskTestCase
                     ->type('password', 'password12')
                     ->press('Masuk')
                     ->assertSee('Email atau kata sandi salah.');
+        
         });
     }
 }
