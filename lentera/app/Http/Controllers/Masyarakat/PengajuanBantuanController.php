@@ -82,10 +82,20 @@ class PengajuanBantuanController extends Controller
 
     public function index(Request $request)
     {
-        $pengajuan = PengajuanBantuan::where('id_users', Auth::id())
-            ->with('dokumen', 'validasi')
-            ->latest()
-            ->get();
+        $search = trim($request->input('search', ''));
+
+        $query = PengajuanBantuan::where('id_users', Auth::id())
+            ->with('dokumen', 'validasi');
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('jenis_bantuan', 'like', "%{$search}%")
+                  ->orWhere('id_pengajuan', 'like', "%{$search}%")
+                  ->orWhere('nama_lengkap', 'like', "%{$search}%");
+            });
+        }
+
+        $pengajuan = $query->latest()->get();
 
         $selected = $request->id 
             ? $pengajuan->firstWhere('id_pengajuan', $request->id)
